@@ -33,7 +33,7 @@ import func from './vue-temp/vue-editor-bridge';
                      <a href="">{{item.name}}</a>
                  </template>
                 <template v-if="item.list">
-                     <ul :class="item.tag?'secondary show':'secondary hide'">
+                     <ul class="secondary" v-if="item.tag">
                          <li v-for="sub in item.list" :key="sub.name">
                             <a href="">{{ sub.name }}</a>
                         </li>
@@ -73,7 +73,7 @@ return {
     },
     lessontab:{
         title:'课堂学习',
-         list:[
+        list:[
              {
                 name:'作业分享',
                 url:'',
@@ -127,7 +127,10 @@ methods: {
     slideToggle:function(tag,index){
         let self = this;
         let tags = tag;
-        console.log(self.beforetab[0])
+        self.$set(self.lessontab['list'][index],'tag',!tags)
+        /**
+         * this.$set(self.lessontab['list'][index]) 数据数组对象的第index项  'tag' 数组对象的某一项的标记  tags要修改后的值
+         */
     }
 }
 }

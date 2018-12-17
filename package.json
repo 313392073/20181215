@@ -2,7 +2,7 @@
   "name": "lzvue",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "313392073 <313392073@qq.com>",
+  "author": "313392073@QQ.com.com>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -12,6 +12,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "echarts": "^4.2.0-rc.2",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
     "vue": "^2.5.2",

@@ -2,11 +2,11 @@
   <div id="app">
     <div class="wrapper">
       <div class="left-wrapper">
-        333
+       <router-view/>
       </div>
       <side-bar></side-bar>
     </div>
-    <router-view/>
+    
   </div>
 </template>
 <script>
