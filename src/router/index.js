@@ -7,6 +7,8 @@ import Show from '@/components/Show'
 import Echart from '@/components/Echart'
 import Echart2 from '@/components/Echart2'
 import Echart3 from '@/components/Echart3'
+import Echart4 from '@/components/Echart4'
+import Echart5 from '@/components/Echart5'
 
 Vue.use(Router)
 
@@ -47,6 +49,16 @@ export default new Router({
       path: '/echart3',
       name: 'Echart3',
       component: Echart3
+    },
+    {
+      path: '/echart4',
+      name: 'Echart4',
+      component: Echart4
+    },
+    {
+      path: '/echart5',
+      name: 'Echart5',
+      component: Echart5
     }
   ]
 })

@@ -11,11 +11,11 @@ import func from './vue-temp/vue-editor-bridge';
             <p class="user-name">Administrator</p>
         </div>
     </div>
-    <div class="list">
+    <div class="list" style="margin-top:0.4rem;">
         <p class="side-title">{{beforetab.title}}</p>
         <ul class="before-class menu">
             <li v-for="item in beforetab.list" :key="item.name" >
-                <a href="">{{ item.name }}</a>
+                <a @click="goRoute(item.url)">{{ item.name }}</a>
             </li>
         </ul>
     </div>
@@ -25,7 +25,7 @@ import func from './vue-temp/vue-editor-bridge';
             
             <li v-for="(item,index) in lessontab.list" :key="item.name">
                  <template v-if="item.list">
-                    <a href="javascript:void(0);" :class="item.tag? 'show':'hide'"  @click="slideToggle(item.tag,index)">{{item.name}}
+                    <a href="javascript:void(0);"  @click="slideToggle(item.tag,index)">{{item.name}}
                         <span :class="item.tag? 'iconfont icon-sanjiaoxing':'iconfont icon-sanjiaoxing1'"></span>
                     </a>
                  </template>
@@ -35,7 +35,7 @@ import func from './vue-temp/vue-editor-bridge';
                 <template v-if="item.list">
                      <ul class="secondary" v-if="item.tag">
                          <li v-for="sub in item.list" :key="sub.name">
-                            <a href="">{{ sub.name }}</a>
+                            <a @click="goRoute(sub.target)">{{ sub.name }}</a>
                         </li>
                      </ul>
                 </template>
@@ -47,7 +47,7 @@ import func from './vue-temp/vue-editor-bridge';
         <p class="side-title">{{aftertab.title}}</p>
         <ul class="after-class menu">
            <li v-for="item in aftertab.list" :key="item.name">
-                <a href="">{{ item.name }}</a>
+                <a @click="goRoute(item.url)">{{ item.name }}</a>
             </li>
         </ul>
     </div>
@@ -69,33 +69,33 @@ data() {
 return {
     beforetab: {
         title:'课前预习',
-        list:[{name:'在线测试',url:''},{name:'寻找棱锥',url:''},{name:'制作棱锥',url:''}]
+        list:[{name:'在线测试',url:'/'},{name:'寻找棱锥',url:'/echart2'},{name:'制作棱锥',url:'/echart3'}]
     },
     lessontab:{
         title:'课堂学习',
         list:[
              {
                 name:'作业分享',
-                url:'',
+                url:'/echart',
              },
              {
                 name:'正棱锥表面积',
-                url:'',
+                url:'/echart2',
                 tag:false,
                 list:[
-                   {name:'视频分享',target:'' },
-                    {name:'侧面积公式',target:'' },
-                    {name:'表面积公式',target:'' },
-                    {name:'计算表面积',target:'' },
+                   {name:'视频分享',target:'/echart3'},
+                    {name:'侧面积公式',target:'/echart4' },
+                    {name:'表面积公式',target:'/echart5' },
+                    {name:'计算表面积',target:'/echart2' },
                 ]
             },
             {
                 name:'正棱锥体积',
-                url:'',
+                url:'/show',
                 tag:false,
                 list:[
-                   {name:'体积公式',target:'' },
-                    {name:'计算体积',target:'' },
+                   {name:'体积公式',target:'/test' },
+                    {name:'计算体积',target:'/reg' },
                 ]
             },
             {
@@ -103,16 +103,16 @@ return {
                 url:'',
                 tag:false,
                 list:[
-                   {name:'分组讨论',target:'' },
-                    {name:'小组汇报',target:'' },
-                    {name:'课堂总结',target:'' },
+                   {name:'分组讨论',target:'/echart2' },
+                    {name:'小组汇报',target:'/echart3' },
+                    {name:'课堂总结',target:'echart4' },
                 ]
             },
          ]
     },
     aftertab: {
         title:'课后拓展',
-        list:[{name:'课后习题',url:''},{name:'课后实验',url:''},{name:'分享体会',url:''}]
+        list:[{name:'课后习题',url:'/echart2'},{name:'课后实验',url:'/echart3'},{name:'分享体会',url:'echart4'}]
     }
 };
 },
@@ -124,6 +124,9 @@ watch: {
 },
 //方法集合
 methods: {
+    goRoute:function(url){
+        this.$router.push(url)
+    },
     slideToggle:function(tag,index){
         let self = this;
         let tags = tag;
@@ -136,60 +139,11 @@ methods: {
 }
 </script>
 <style lang='less' scoped>
-//@import url(); 引入公共css类
-@keyframes hide {
-    form {
-        display:block;
-        opacity: 1;
-        height: auto; 
-    }
-    to{
-        opacity: 0;
-        height: 0;
-        display:none;
-    }
-}
-@-webkit-keyframes hide {
-    form {
-        display:block;
-        opacity: 1;
-        height: auto; 
-    }
-    to{
-        opacity: 0;
-        height: 0;
-        display:none;
-    }
-}
-
-@keyframes show {
-    form {
-        opacity: 0;
-        height: 0;
-        display:none;
-    }
-    to{
-        display:block;
-        opacity: 1;
-        height: auto;
-    }
-}
-
-@keyframes hide {
-    form {
-        opacity: 0;
-        height: 0;
-        display:none;
-    }
-    to{
-        display:block;
-        opacity: 1;
-        height: auto;
-    }
-}
+@fcolor:#5c5a5a;
 .right-wrapper{
-    width: 2.4rem;
+    width: 3.08rem;
     height: 100%;
+    overflow: auto;
     box-sizing: border-box;
     background-color: #fff;
     .user-info{
@@ -213,30 +167,40 @@ methods: {
        } 
     }
     .list{
-        text-indent: 0.3rem;
+        text-indent: 70*0.4*0.02rem;
         .side-title{
             font-size: 0.28rem;
-            color: #5c5a5a;
+            color: @fcolor;
             margin: 0.2rem 0;
+            &.first-title{
+                margin-top: 150*0.4*0.02rem;
+            }
         }
         .menu{
-            border-bottom: 1px solid #666666;
-            &.after-class{
-                border-bottom: none;
-            }
+
             &>li{
-                line-height: 0.5rem;
-                min-height: 0.5rem;
+                line-height: 60*0.4*0.02rem;
+                min-height: 60*0.4*0.02rem;
+                margin: 40.6*0.04*0.02rem auto;
                 &>a{
-                    color: #5c5a5a;
+                    color: @fcolor;
                     font-size: 0.24rem;
+                    display: block;
+                    width: 255*0.4*0.02rem;
+                    margin: 0 auto;
                     position: relative;
+                    text-indent: 0;
                     .iconfont{
-                        margin-left: 0.02rem;
+                        position: absolute;
+                        right: 0;
+                        top: 0;
                         font-size: 0.2rem;
                         color: #666666;
                     }
-
+                    &.tabborder-bottom{
+                        padding-bottom: 15*0.4*0.02rem;
+                        border-bottom: 1px solid #666666;
+                    }
                 }
                 &.active{
                     background-color: #6C63FF;
@@ -246,20 +210,13 @@ methods: {
                     }
                 }
                 .secondary{
-                    &.hide{
-                        display: none;
-                    }
-                    &.show{
-                        display: block;
-                    }
                     li{
-                        text-indent: 0.55rem;
+                        padding-left: 35*0.4*0.02rem;
                         a{
                             font-size: 0.2rem;
-                            color: #5c5a5a;
+                            color: @fcolor;
                         }
                     }
-                    
                 }
             }
         }
@@ -272,11 +229,12 @@ methods: {
                 margin: 0 auto;
                 line-height: 0.5rem;
                 background-color: #666666;
-                color: #5c5a5a;
+                color: @fcolor;
                 font-size: 0.24rem;
                 text-align: center;
             }
         }
     }
+    
 }
 </style>
