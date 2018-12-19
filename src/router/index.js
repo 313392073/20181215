@@ -36,6 +36,11 @@ import AssignGroup from '@/pages/AssignGroup'    // 分配小组
 import AssignGroupCase from '@/pages/AssignGroupCase'    // 小组分配情况
 import TeaHomeworkShare from '@/pages/TeaHomeworkShare'    // 老师端作业分享1
 import TeaShareDetail from '@/pages/TeaShareDetail'    // 老师端作业分享2
+import ExpregPyramid from '@/pages/ExpregPyramid'    // 探索正三棱锥
+import CalSurfaceArea from '@/pages/CalSurfaceArea'    // 计算表面积
+import RegularPyramidTotal from '@/pages/RegularPyramidTotal'    // 第一次计算表面积数据统计
+import RegCheckTotal from '@/pages/RegCheckTotal'    // 正棱锥表面积检测数据统计
+import AfterExpTotal from '@/pages/AfterExpTotal'    // 课后实验成绩统计
 
 Vue.use(Router)
 export default new Router({
@@ -170,6 +175,31 @@ export default new Router({
       path: '/teasharedetail',
       name: 'TeaShareDetail',
       component: TeaShareDetail
+    },
+    {
+      path: '/expregpyramid',
+      name: 'ExpregPyramid',
+      component: ExpregPyramid
+    },
+    {
+      path: '/calsurfacearea',
+      name: 'CalSurfaceArea',
+      component: CalSurfaceArea
+    },
+    {
+      path: '/regularpyramidtotal',
+      name: 'RegularPyramidTotal',
+      component: RegularPyramidTotal
+    },
+    {
+      path: '/regchecktotal',
+      name: 'RegCheckTotal',
+      component: RegCheckTotal
+    },
+    {
+      path: '/afterexptotal',
+      name: 'AfterExpTotal',
+      component: AfterExpTotal
     },
 
     // {
