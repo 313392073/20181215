@@ -1,5 +1,8 @@
+<!--  -->
 <template>
-  <div class="left-box">
+<div class="wrapper">
+<div class="left-wrapper">
+ <div class="left-box">
     <div class="desc-menu">课堂学习</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
@@ -17,8 +20,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item,index) in 7" :key="index">
-                                <td><i class="iconfont icon-huizhang"></i><img src="/images/default.png" class="head-pic" alt="default"><span>流星雨</span></td>
+                            <tr v-for="item in 7" :key="item">
+                                <td><i class="iconfont icon-huizhang"></i><img src="../assets/images/default.png" class="head-pic" alt="default"><span>流星雨</span></td>
                                 <td>100分</td>
                                 <td class="use-time">09分45秒</td>
                             </tr>
@@ -35,8 +38,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item,index) in 7" :key="index">
-                                <td><i>{{index+1}}</i><img src="/images/default.png" class="head-pic" alt="default"><span>流星雨</span></td>
+                            <tr v-for="(item,index) in 7" :key="item">
+                                <td><i>{{index+1}}</i><img src="../assets/images/default.png" class="head-pic" alt="default"><span>流星雨</span></td>
                                 <td>100分</td>
                                 <td class="use-time">09分45秒</td>
                             </tr>
@@ -47,24 +50,55 @@
         </div>
     </div>
   </div>
+  </div>
+<side-bar></side-bar>
+</div>
 </template>
+
 <script>
+//这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
+//例如：import 《组件名称》 from '《组件路径》';
+import SideBar from "@/common/SideBar";
 export default {
-  name: 'HelloWorld',
-  data () {
-    return {
-      
-    }
-  }
+//import引入的组件需要注入到对象中才能使用
+components: {SideBar},
+data() {
+//这里存放数据
+return {
+
+};
+},
+//监听属性 类似于data概念
+computed: {},
+//监控data中的数据变化
+watch: {},
+//方法集合
+methods: {
+
+},
+//生命周期 - 创建完成（可以访问当前this实例）
+created() {
+
+},
+//生命周期 - 挂载完成（可以访问DOM元素）
+mounted() {
+
+},
+beforeCreate() {}, //生命周期 - 创建之前
+beforeMount() {}, //生命周期 - 挂载之前
+beforeUpdate() {}, //生命周期 - 更新之前
+updated() {}, //生命周期 - 更新之后
+beforeDestroy() {}, //生命周期 - 销毁之前
+destroyed() {}, //生命周期 - 销毁完成
+activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang='less' scoped>
+//@import url(); 引入公共css类
 @fcolor:#5c5a5a;
 .left-box{
-    width: 100%;
     height: 100%;
+    width: 100%; 
     .title{
         height: 106*0.4*0.02rem;
         line-height: 106*0.4*0.02rem;
@@ -75,6 +109,7 @@ export default {
     .main-box{
         width: 90.78%;
         margin: 0 auto 70*0.4*0.02rem;
+        height: 1150*0.4*0.02rem; 
         box-shadow: 0 2px 5px 3px rgba(0,0,0,0.1); 
         .main-title{
             font-size: 34*0.02*0.4rem;
@@ -89,9 +124,7 @@ export default {
             .greed-tab{
                 float: left;
                 width: calc(~"50% - 0.22rem");
-                overflow: auto;
                 margin-right: 55*0.4*0.02rem;
-                margin-bottom: 50*0.4*0.02rem;
                 &.right-tab{
                     margin-right: 0;
                 }

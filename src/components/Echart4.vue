@@ -39,7 +39,6 @@ methods: {
             title:{
                 show:true,
                 text:'表面积',
-                
                 x:'center',
                 y:'100px',
                 textStyle:{
@@ -48,46 +47,46 @@ methods: {
                     verticalAlign:'middle'
                 }
             },
-        tooltip : {
-            trigger: 'item',
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
-        },
-        calculable : true,
-        series : [
-            {
-                name:'访问来源',
-                type:'pie',
-                legendHoverLink:false,
-                hoverAnimation :false,
-                radius : ['20%', '25%'],
-                itemStyle : {
-                    normal : {
-                        label : {
-                            show : false
+            tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            calculable : true,
+            series : [
+                {
+                    name:'访问来源',
+                    type:'pie',
+                    legendHoverLink:false,
+                    hoverAnimation :false,
+                    radius : ['20%', '25%'],
+                    itemStyle : {
+                        normal : {
+                            label : {
+                                show : false
+                            },
+                            labelLine : {
+                                show : false
+                            },
+                            color:new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ 
+                                    offset: 0,
+                                    color: '#E3F7E9'
+                                },{
+                                    offset: 1,
+                                    color: '#33CB67'
+                                }])
                         },
-                        labelLine : {
-                            show : false
-                        },
-                        color:new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ 
-                                 offset: 0,
-                                color: '#E3F7E9'
-                            },{
-                                offset: 1,
-                                color: '#33CB67'
-                            }])
-                    },
-                    emphasis : {
-                        label : {
-                            show : false
+                        emphasis : {
+                            label : {
+                                show : false
+                            }
                         }
-                    }
-                },
-                data:[
-                    {value:92, name:'表面积'},
-                    {value:8, name:'默认数据'},
-                ]
-            }
-        ]
+                    },
+                    data:[
+                        {value:92, name:'表面积'},
+                        {value:8, name:'默认数据'},
+                    ]
+                }
+            ]
         })
     }
 },

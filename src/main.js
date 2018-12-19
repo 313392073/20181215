@@ -7,7 +7,6 @@ import rem from '@/assets/js/rem'
 import landscape from '@/assets/js/landscape'
 import iconfont from '@/assets/style/iconfont.css'
 import common from '@/assets/style/common.css'
-import animate from '@/assets/style/animate.css'
 
 Vue.config.productionTip = false
 

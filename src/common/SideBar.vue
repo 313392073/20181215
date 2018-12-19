@@ -1,5 +1,3 @@
-<!--  -->
-import func from './vue-temp/vue-editor-bridge';
 <template>
 <div class="right-wrapper">
     <div class="user-info clearfix" style="display: none">
@@ -15,14 +13,13 @@ import func from './vue-temp/vue-editor-bridge';
         <p class="side-title">{{beforetab.title}}</p>
         <ul class="before-class menu">
             <li v-for="item in beforetab.list" :key="item.name" >
-                <a @click="goRoute(item.url)">{{ item.name }}</a>
+                <a @click="goRoute(item.url)">{{ item.name}}</a>
             </li>
         </ul>
     </div>
     <div class="list">
         <p class="side-title">{{lessontab.title}}</p>
         <ul class="lesson-learn menu">
-            
             <li v-for="(item,index) in lessontab.list" :key="item.name">
                  <template v-if="item.list">
                     <a href="javascript:void(0);"  @click="slideToggle(item.tag,index)">{{item.name}}
@@ -69,24 +66,24 @@ data() {
 return {
     beforetab: {
         title:'课前预习',
-        list:[{name:'在线测试',url:'/'},{name:'寻找棱锥',url:'/echart2'},{name:'制作棱锥',url:'/echart3'}]
+        list:[{name:'在线测试',url:'/PracticReport'},{name:'寻找棱锥',url:'/FindPyramid'},{name:'制作棱锥',url:'/MakePyramid'}]
     },
     lessontab:{
         title:'课堂学习',
         list:[
              {
                 name:'作业分享',
-                url:'/echart',
+                url:'/TeaHomeworkShare',
              },
              {
                 name:'正棱锥表面积',
-                url:'/echart2',
+                url:'/RegularAreaFormula',
                 tag:false,
                 list:[
-                   {name:'视频分享',target:'/echart3'},
-                    {name:'侧面积公式',target:'/echart4' },
-                    {name:'表面积公式',target:'/echart5' },
-                    {name:'计算表面积',target:'/echart2' },
+                   {name:'视频分享',target:'/VideoShare'},
+                    {name:'侧面积公式',target:'/SideAreaFormula' },
+                    {name:'表面积公式',target:'/RegularAreaFormula' },
+                    {name:'计算表面积',target:'/RegularAreaFormula' },
                 ]
             },
             {
@@ -94,8 +91,8 @@ return {
                 url:'/show',
                 tag:false,
                 list:[
-                   {name:'体积公式',target:'/test' },
-                    {name:'计算体积',target:'/reg' },
+                   {name:'体积公式',target:'/LearningReport' },
+                    {name:'计算体积',target:'/TestReport' },
                 ]
             },
             {
@@ -103,16 +100,16 @@ return {
                 url:'',
                 tag:false,
                 list:[
-                   {name:'分组讨论',target:'/echart2' },
-                    {name:'小组汇报',target:'/echart3' },
-                    {name:'课堂总结',target:'echart4' },
+                   {name:'分组讨论',target:'/PracticReport' },
+                    {name:'小组汇报',target:'/JobResults' },
+                    {name:'课堂总结',target:'ClassTotalResult' },
                 ]
             },
          ]
     },
     aftertab: {
         title:'课后拓展',
-        list:[{name:'课后习题',url:'/echart2'},{name:'课后实验',url:'/echart3'},{name:'分享体会',url:'echart4'}]
+        list:[{name:'课后习题',url:'/HomeworkProblems'},{name:'课后实验',url:'/AftClaExp'},{name:'分享体会',url:'TeaHomeworkShare'}]
     }
 };
 },
@@ -143,7 +140,7 @@ methods: {
 .right-wrapper{
     width: 3.08rem;
     height: 100%;
-    overflow: auto;
+    overflow-y: auto;
     box-sizing: border-box;
     background-color: #fff;
     .user-info{
@@ -177,7 +174,6 @@ methods: {
             }
         }
         .menu{
-
             &>li{
                 line-height: 60*0.4*0.02rem;
                 min-height: 60*0.4*0.02rem;

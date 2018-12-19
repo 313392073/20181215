@@ -1,18 +1,22 @@
 <template>
   <div id="app">
-    <div class="wrapper">
-      <div class="left-wrapper">
-       <router-view/>
-      </div>
-      <side-bar></side-bar>
-    </div>
+    <router-view/>
   </div>
 </template>
 <script>
-import SideBar from "@/common/SideBar";
+// import RegPage from "@/pages/RegPage";
 export default {
   name: "App",
-  components: { SideBar }
+  components: { },
+  data(){
+    return {
+      // isLogin:localStorage.getItem('loginInfo')?true:false
+    }
+    
+  },
+  created(){
+      this.$router.push('/sideareaformula')
+  }
 };
 </script>
 
