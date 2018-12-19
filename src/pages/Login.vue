@@ -1,6 +1,6 @@
 <!--  -->
 <template>
- <div class="login-clearfix">
+ <div class="login-wrapper clearfix">
         <div class="left-wrapper"></div>
         <div class="right-wrapper">
             <!--登录 -->
