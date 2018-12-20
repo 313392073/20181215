@@ -9,7 +9,7 @@ api.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest'
 //登录
 function getReg(){
     axios.post(api.defaults.baseURL+'/v1/api/user/regist', {
-        userLoginname: 'qijing',
+        userLoginname: 'qijing1',
         userPassword: 'Qj123456',
         headImage: '',
         userType: 0,

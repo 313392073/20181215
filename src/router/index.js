@@ -42,6 +42,7 @@ import CalSurfaceArea from '@/pages/CalSurfaceArea'    // 计算表面积
 import RegularPyramidTotal from '@/pages/RegularPyramidTotal'    // 第一次计算表面积数据统计
 import RegCheckTotal from '@/pages/RegCheckTotal'    // 正棱锥表面积检测数据统计
 import AfterExpTotal from '@/pages/AfterExpTotal'    // 课后实验成绩统计
+import CourseSet from '@/pages/CourseSet'    // 课后安排设置
 
 Vue.use(Router)
 export default new Router({
@@ -201,6 +202,11 @@ export default new Router({
       path: '/afterexptotal',
       name: 'AfterExpTotal',
       component: AfterExpTotal
+    },
+    {
+      path: '/courseset',
+      name: 'CourseSet',
+      component: CourseSet
     },
 
     // {
