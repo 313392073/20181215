@@ -15,7 +15,7 @@ export default {
     
   },
   created(){
-      // this.$router.push('/sideareaformula')
+      // this.$router.push('/reg')
   }
 };
 </script>

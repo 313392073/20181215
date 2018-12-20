@@ -5,6 +5,7 @@
         <div class="right-wrapper">
             <!--注册 -->
             <div class="info-box">
+                 <button @click="getLogins">点击</button>
                 <h3 class="reg-title">新用户注册</h3>
                 <form action="" method="POST" @submit.prevent="checkForm">
                     <div class="item header-item">
@@ -29,6 +30,7 @@
                     <div class="login-btn">
                         <input type="submit" class="sbtn" value="确认注册">
                     </div>
+                   
                 </form>
             </div>
             <div class="tips" v-show="toggleTips">
@@ -48,9 +50,10 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-import defaultUrls from '../assets/images/default.png'
-import defaultUrl1 from '../assets/images/noupload.png'
+import defaultUrls from '../../static/img/default.png'
+import defaultUrl1 from '../../static/img/noupload.png'
 import common from '../assets/js/common.js'
+import base from '../router/http/base.js'
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {},
@@ -74,6 +77,9 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
+    getLogins(){
+        base.getReg();
+    },
     //选图片
     chooseImg(e){
         this.$refs.filElem.dispatchEvent(new MouseEvent('click')) 

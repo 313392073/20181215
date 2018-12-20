@@ -82,7 +82,7 @@ return {
                 list:[
                    {name:'视频分享',target:'/VideoShare'},
                     {name:'侧面积公式',target:'/SideAreaFormula' },
-                    {name:'表面积公式',target:'/RegularAreaFormula' },
+                    {name:'表面积公式',target:'/regchecktotal' },
                     {name:'计算表面积',target:'/RegularAreaFormula' },
                 ]
             },

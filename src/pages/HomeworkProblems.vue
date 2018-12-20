@@ -23,8 +23,8 @@
         </div>
     </div>
     <div class="tips">
-        <div class="main-tips" style="display: none">
-          <img class="tip-img" src="/images/default.png" alt="">
+        <div class="main-tips" >
+          <img class="tip-img" src="../assets/images/send-success.jpg" alt="send-success">
           <p class="tips-title">本轮结束</p>
           <div class="tips-msg">
               <p>恭喜你，本轮答题结束！</p>
@@ -32,8 +32,8 @@
           </div>
           <div class="tips-btn"><button class="tbtn gbtn">继续答题</button></div>
         </div>
-        <div class="main-tips">
-          <img class="tip-img" src="/images/default.png" alt="">
+        <div class="main-tips" style="display: none">
+          <img class="tip-img" src="../assets/images/answer-over.jpg" alt="">
           <p class="tips-title">答题结束</p>
           <div class="tips-msg">
               <p>恭喜你，已答完所有题目！</p>
@@ -192,11 +192,14 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         width: 1240*0.02*0.4rem;
         height: 830*0.4*0.02rem;
         background-color: #ffffff;
+        background: url("../assets/images/send-tipbg.jpg") no-repeat center;
+        background-size: contain;
         box-shadow: 0px 0px 5px 3px rgba(0,0,0,.1);
-        border-top: 2px solid #6c63ff;
         text-align: center;
+        padding-top: 20*0.4*0.02rem;
         .tip-img{
-            max-width: 2rem;
+            margin-top: 30*0.4*0.02rem;
+            max-width: 2.5rem;
         }
         .tips-title{
             text-align: center;
