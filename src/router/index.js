@@ -48,15 +48,19 @@ import CourseSet from '@/pages/CourseSet'    // 课后安排设置
 Vue.use(Router)
 
 const router = new Router({
-  mode: 'history',
+  // mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
   routes: [
-    // {
-    //   path:'/', 
-    //   name:'RegPage',
-    //   component:RegPage
-    // },
     {
-      path:'/reg', 
+      path:'/', 
+      name:'SideAreaFormula',
+      component:SideAreaFormula,
+      // meta:{
+      //   title:'首页',
+      //   auth:true
+      // }
+    },
+    {
+      path:'/', 
       name:'RegPage',
       component:RegPage,
       meta:{

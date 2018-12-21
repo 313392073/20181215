@@ -50,8 +50,8 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-import defaultUrls from '../../static/img/default.png'
-import defaultUrl1 from '../../static/img/noupload.png'
+import defaultUrls from '../assets/images/default.png'
+import defaultUrl1 from '../assets/images/noupload.png'
 import common from '../assets/js/common.js'
 import base from '../router/http/base.js'
 import api from '../router/http/api.js'
