@@ -54,6 +54,7 @@ import defaultUrls from '../../static/img/default.png'
 import defaultUrl1 from '../../static/img/noupload.png'
 import common from '../assets/js/common.js'
 import base from '../router/http/base.js'
+import api from '../router/http/api.js'
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {},
@@ -78,7 +79,26 @@ watch: {},
 //方法集合
 methods: {
     getLogins(){
-        base.getReg();
+        let self = this;
+        const params =  {
+            userLoginname: 'qijing4',
+            userPassword: 'Qj123456',
+            headImage: 'default.jpg',
+            userType: 0,
+            classId: 1
+        }
+       let datas =  base.postUrl(api.allUrl.regist,params);
+       datas.then((res) => {
+           console.log(res.success)
+           if(res.success && (res.success == true)){
+               console.log(res)
+               self.$router.push('/login')
+           }else{
+               alert(res.msg)
+               console.log(res.msg)
+           }
+           
+       })
     },
     //选图片
     chooseImg(e){

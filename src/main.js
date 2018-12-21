@@ -3,6 +3,8 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import axios from 'axios';
+import vuex from 'vuex';
 import rem from '@/assets/js/rem'
 import landscape from '@/assets/js/landscape'
 import iconfont from '@/assets/style/iconfont.css'
@@ -14,6 +16,8 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  axios,
+  vuex,
   components: { App },
   template: '<App/>'
 })
