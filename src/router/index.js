@@ -13,6 +13,7 @@ import Echart5 from '@/components/Echart5'
 import Echart6 from '@/components/Echart6'
 
 // 路由start
+import SelectId from '@/pages/SelectId'//注册
 import RegPage from '@/pages/RegPage'//注册
 import Login from '@/pages/Login'//登录
 import FindPwd from '@/pages/FindPwd'//找回密码
@@ -48,16 +49,24 @@ import CourseSet from '@/pages/CourseSet'    // 课后安排设置
 Vue.use(Router)
 
 const router = new Router({
-  // mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
+  mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
   routes: [
+    // {
+    //   path:'/', 
+    //   name:'SideAreaFormula',
+    //   component:SideAreaFormula,
+    //   // meta:{
+    //   //   title:'首页',
+    //   //   auth:true
+    //   // }
+    // },
     {
-      path:'/', 
-      name:'SideAreaFormula',
-      component:SideAreaFormula,
-      // meta:{
-      //   title:'首页',
-      //   auth:true
-      // }
+      path:'/selectid', 
+      name:'SelectId',
+      component:SelectId,
+      meta:{
+        title:'选择身份'
+      }
     },
     {
       path:'/', 
