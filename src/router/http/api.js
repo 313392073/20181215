@@ -5,7 +5,7 @@ const allUrl = {
     login:'/v1/api/user/login',//登陆
     find:'/v1/api/user/pswd/find',//登陆
     batch:'/v1/api/course/batch',//批次（学生）
-    course_m_info:'/v1/api/tea/course_m_info',//批次（学生）
+    course_m_info:'/v1/api/comm/course_m_info',//批次（学生）
     
 }
 export default {
