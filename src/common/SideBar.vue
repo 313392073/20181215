@@ -12,8 +12,8 @@
     <div class="list" style="margin-top:0.4rem;">
         <p class="side-title">{{beforetab.title}}</p>
         <ul class="before-class menu">
-            <li v-for="item in beforetab.list" :key="item.name" >
-                <a @click="goRoute(item.url)">{{ item.name}}</a>
+            <li v-for="(item,index) in beforetab.list" :key="item.name" >
+                <a @click="goRoute(item.url)" :class="index == beforetab.list.length-1?'tabborder-bottom':''">{{ item.name}}</a>
             </li>
         </ul>
     </div>
@@ -37,6 +37,7 @@
                      </ul>
                 </template>
             </li>
+            <li><a class="tabborder-bottom">课堂总结</a></li>
         </ul>
     </div>
 
@@ -102,7 +103,6 @@ return {
                 list:[
                    {name:'分组讨论',target:'/PracticReport' },
                     {name:'小组汇报',target:'/JobResults' },
-                    {name:'课堂总结',target:'ClassTotalResult' },
                 ]
             },
          ]

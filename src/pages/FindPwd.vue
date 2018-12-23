@@ -46,6 +46,10 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
+import base from '../router/http/base.js'
+import API from '../router/http/api.js';
+import store from '../store/store.js';
+import * as types from '../store/types.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {},
@@ -84,7 +88,19 @@ methods: {
             self.toggleTips = true;
             return false;
         }
+        let params = {
+            userLoginname:self.dataObj.username
+        }
+        base.getUrl(API.allUrl.find,params).then(res => {
+            console.log(res)
+            if(res.code == 200 && res.success == 1) {
 
+            }else{
+                self.tipsMsg = res.msg;
+                self.toggleTips = true;
+                return
+            }
+        })
         
     }
 },
@@ -177,7 +193,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 
                 .desc{
                     display: inline-block;
-                    min-width: 24%;
+                    width: 30%;
                     font-size: 16px;
                     margin-bottom: 45*0.4px;
                 }
@@ -218,6 +234,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                     border: none;
                     color: #ffffff;
                     font-size: 16px;
+                    width: 60%;
                 }
                 &.header-item{
                     border-bottom: none;

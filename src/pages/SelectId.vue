@@ -8,27 +8,44 @@
                 <h3 class="reg-title">选择身份</h3>
                     <div class="item">
                         <label class="desc">选择身份</label>
-                        <label class="choose" @click="getIdentity($event)">
+                        <label class="choose">
                             <input type="radio" name="identity" value="1" v-model="checkedValue">
                             <span></span>
                             教师
                         </label>
-                        <label class="choose" @click="getIdentity($event)">
+                        <label class="choose">
                             <input type="radio" name="identity" value="0" v-model="checkedValue">
                             <span></span>
                             学生
                         </label>
                     </div>
                     <div class="item">
-                        <label class="desc">选择班级</label>
-                        <!-- <input type="text" class="info" name="username" id="username" v-model="dataObj.username"> -->
+                        <label class="desc" >选择班级</label>
+                        <select name="majorId" class="majorId" @change="majorIdSelect($event)">
+                            <option v-for="item in majorIds" :key="item.id" :value="item.id">{{item.name}}</option>
+                        </select>
+                        <i class="iconfont icon-icon_sanjiaoxing"></i>
                     </div>
-                    <!-- <div class="item">
-                        <label class="desc">密码</label>
-                        <input type="text" class="info" name="pwd" id="pwd" v-model="dataObj.pwd">
-                    </div> -->
+                    <div class="item" v-if="(checkedValue == 0) && courseIds.length > 0">
+                        <label class="desc" >选择课程</label>
+                        <select name="courseId" class="majorId" @change="courseIdSelect($event)">
+                            <option value="no">请选择课程</option>
+                            <option v-for="item in courseIds" :key="item.sys_class_id" :value="item.sys_class_id">{{item.classname}}</option>
+                        </select>
+                        <i class="iconfont icon-icon_sanjiaoxing"></i>
+                    </div>
+
+                    <div class="item" v-if="(checkedValue == 1) && courseIds.length > 0">
+                        <label class="desc" >选择课程</label>
+                        <select name="courseId" class="majorId" @change="courseIdSelect($event)">
+                            <option value="no">请选择课程</option>
+                            <option v-for="item in courseIds" :key="item.schoolId" :value="item.schoolId">{{item.schoolName}}</option>
+                        </select>
+                        <i class="iconfont icon-icon_sanjiaoxing"></i>
+                    </div>
+
                     <div class="login-btn">
-                        <input type="submit" class="sbtn" value="去注册">
+                        <input type="submit" @click="goLogin" class="sbtn" :value="btnMsg">
                     </div>
             </div>
             <div class="tips" v-show="toggleTips">
@@ -51,29 +68,86 @@
 import common from '../assets/js/common.js'
 import base from '../router/http/base.js'
 import API from '../router/http/api.js';
+import store from '../store/store.js';
+import * as types from '../store/types.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {},
 data() {
 //这里存放数据
 return {
+    btnMsg:'去选课',
     tipsMsg:'验证邮箱已发送到你的邮箱，请注意查收验证邮箱已发送到你的',
     toggleTips:false,
-    checkedValue:''
+    checkedValue:'',
+    majorId:'',
+    majorIds:[
+        {
+            name:'英语',
+            id:1
+        },
+        {
+            name:'化学',
+            id:2
+        },
+        {
+            name:'数学',
+            id:3
+        }
+    ],
+    courseId:'',
+    courseIds:[]
 };
 },
 //监听属性 类似于data概念
-computed: {},
+computed: {
+},
 //监控data中的数据变化
-watch: {},
+watch: {
+    
+},
 //方法集合
 methods: {
-    getIdentity(e){
-        console.log(e)
-        let userType = e.currentTarget.querySelector('input').value
-        base.getUrl(API.allUrl.registInfo,userType).then((res) => {
-            console.log(res)
-        })
+    majorIdSelect(e){
+        this.majorId = e.target.value
+    },
+    courseIdSelect(e){
+        this.courseId = e.target.value
+    },
+    goLogin(){
+        let self = this;
+        if(self.courseId) {
+            if(self.courseId == 'no') {
+                self.tipsMsg = '请选择您的选课信息';
+                self.toggleTips = true;
+                return
+            }else{
+                store.commit(types.CHOOSECOURSE,this.courseId)
+                store.commit(types.USERTYTPE,this.checkedValue)
+                self.$router.push('/reg');
+            }
+        }else{
+            if(self.checkedValue == '' || self.majorId == '') {
+                self.tipsMsg = '请选择您的选课信息';
+                self.toggleTips = true;
+                return
+            }else{
+                let params = {
+                    userType:self.checkedValue*1,
+                    majorId:self.majorId*1
+                }
+                base.getUrl(API.allUrl.registInfo,params).then((res) => {
+                    if(res.code == 200 && res.success == 1){
+                        self.courseIds = res.obj;
+                        self.btnMsg = '去注册';
+                    }else{
+                        self.tipsMsg = res.msg;
+                        self.toggleTips = true;
+                        return
+                    }
+                })
+            }
+        }
     },
     hideTip(){
         this.toggleTips = false;
@@ -81,7 +155,7 @@ methods: {
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    this.majorId = this.majorIds[0].id
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
@@ -183,21 +257,26 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         background-color: #ffffff;
                     }
                 }
-                .info{
+                .majorId{
                     display: inline-block;
-                    min-height: 90*0.4px;
+                    margin-left: 20*0.4*0.02rem;
+                    width: 50%;
+                    height: 90*0.4px;
                     line-height: 90*0.4px;
                     background-color: transparent;
                     outline: none;
                     border: none;
                     color: #ffffff;
                     font-size: 16px;
-                }
-                &.header-item{
-                    border-bottom: none;
-                    .desc{
-                        margin-bottom: 0;
+                    margin-bottom:15*0.4*0.02rem;
+                    appearance:none;-moz-appearance:none;-webkit-appearance:none;
+                    &::-ms-expand { display: none; }
+                    option{
+                        color: #333333;
                     }
+                }
+                .icon-icon_sanjiaoxing{
+                    font-size: 48*0.4*0.02rem;
                 }
             }
             .login-btn{

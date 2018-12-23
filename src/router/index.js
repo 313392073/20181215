@@ -69,7 +69,7 @@ const router = new Router({
       }
     },
     {
-      path:'/', 
+      path:'/reg', 
       name:'RegPage',
       component:RegPage,
       meta:{
@@ -389,34 +389,34 @@ const router = new Router({
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  document.title = to.meta.title?to.meta.title:'棱锥'
-  if(to.matched.some( r => r.meta.auth)){
-    if(store.state.token){ //toke存在  还需要判断user 登录没有
-      if(store.state.user) {
-        next()
-      }else{
-        next({
-          path:'/login',
-          query:{redirect:to.fullPath}
-        })
-      }
-    }else{ 
-      if(to.name == '/login' || to.name == 'reg' || to.name == 'findpwd'){
-        next();
-        return;
-      }else{
-        //token 不存在  直接重新登录
-        next({
-          path:'/login',
-          query:{redirect:to.fullPath}
-        })
-      }
-    }
-  }else{
-    next()
-  }
+// router.beforeEach((to, from, next) => {
+//   document.title = to.meta.title?to.meta.title:'棱锥'
+//   if(to.matched.some( r => r.meta.auth)){
+//     if(store.state.token){ //toke存在  还需要判断user 登录没有
+//       if(store.state.user) {
+//         next()
+//       }else{
+//         next({
+//           path:'/login',
+//           query:{redirect:to.fullPath}
+//         })
+//       }
+//     }else{ 
+//       if(to.name == '/login' || to.name == 'reg' || to.name == 'findpwd'){
+//         next();
+//         return;
+//       }else{
+//         //token 不存在  直接重新登录
+//         next({
+//           path:'/login',
+//           query:{redirect:to.fullPath}
+//         })
+//       }
+//     }
+//   }else{
+//     next()
+//   }
   
-})
+// })
 
 export default router

@@ -56,6 +56,10 @@
 //例如：import 《组件名称》 from '《组件路径》';
 import defaultUrls from '../assets/images/default.png'
 import common from '../assets/js/common.js'
+import base from '../router/http/base'
+import API from '../router/http/api'
+import * as types from '../store/types'
+import store from '../store/store'
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {},
@@ -80,8 +84,7 @@ watch: {},
 methods: {
     checkForm(){
         let self = this;
-
-        if(self.dataObj.checkedValue == '' || self.dataObj.username == '' || self.dataObj.pwd == '') {
+        if(self.dataObj.username == '' || self.dataObj.pwd == '') {
             self.tipsMsg = '请将信息输入完整后才能提交'
             self.toggleTips = true;
             return false;
@@ -93,17 +96,29 @@ methods: {
             return false;
         }
 
-         if(self.dataObj.username.length < 2 || self.dataObj.username.length > 20) {
+        if(self.dataObj.username.length < 2 || self.dataObj.username.length > 20) {
             self.tipsMsg = '请注意输入合法长度的用户名'
             self.toggleTips = true;
             return false;
         }
-        console.log(this.dataObj.checkedValue)
-        console.log(this.dataObj.username)
-        console.log(this.dataObj.pwd)
-        localStorage.setItem('loginInfo',false);
-        this.$router.push('/sideareaformula')
-        
+        let params = {
+            userLoginname:self.dataObj.username,
+            userPassword:self.dataObj.pwd
+        }
+        base.getUrl(API.allUrl.login,params).then((res) => {
+            if(res.code == 200 && res.success == 1){
+                let obj = {
+                    userInfo:res.obj.user,
+                    token:res.obj.token
+                }
+                store.commit(types.LOGIN,obj)
+                this.$router.push('/sideareaformula')
+            }else{
+                self.tipsMsg = res.msg;
+                self.toggleTips = true;
+                return false;
+            }
+        })
     },
     hideTip(){
         this.toggleTips = false;
@@ -238,6 +253,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                     border: none;
                     color: #ffffff;
                     font-size: 16px;
+                    width: 60%;
                 }
                 &.header-item{
                     border-bottom: none;

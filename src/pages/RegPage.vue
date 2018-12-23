@@ -5,7 +5,6 @@
         <div class="right-wrapper">
             <!--注册 -->
             <div class="info-box">
-                 <button @click="getLogins">点击</button>
                 <h3 class="reg-title">新用户注册</h3>
                 <form action="" method="POST" @submit.prevent="checkForm">
                     <div class="item header-item">
@@ -55,6 +54,7 @@ import defaultUrl1 from '../assets/images/noupload.png'
 import common from '../assets/js/common.js'
 import base from '../router/http/base.js'
 import API from '../router/http/api.js'
+import store from '../store/store';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {},
@@ -78,28 +78,28 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
-    getLogins(){
-        let self = this;
-        const params =  {
-            userLoginname: 'qijing5',
-            userPassword: 'Qj123456',
-            headImage: 'default.jpg',
-            userType: 0,
-            classId: ''
-        }
-       let datas =  base.postUrl(API.allUrl.regist,params);
-       datas.then((res) => {
-           console.log(res.success)
-           if(res.success && (res.success == true)){
-               console.log(res)
-               self.$router.push('/login')
-           }else{
-               alert(res.msg)
-               console.log(res.msg)
-           }
+    // getLogins(){
+    //     let self = this;
+    //     const params =  {
+    //         userLoginname: 'qijing5',
+    //         userPassword: 'Qj123456',
+    //         headImage: 'default.jpg',
+    //         userType: 0,
+    //         classId: ''
+    //     }
+    //    let datas =  base.postUrl(API.allUrl.regist,params);
+    //    datas.then((res) => {
+    //        console.log(res.success)
+    //        if(res.success && (res.success == true)){
+    //            console.log(res)
+    //            self.$router.push('/login')
+    //        }else{
+    //            alert(res.msg)
+    //            console.log(res.msg)
+    //        }
            
-       })
-    },
+    //    })
+    // },
     //选图片
     chooseImg(e){
         this.$refs.filElem.dispatchEvent(new MouseEvent('click')) 
@@ -127,14 +127,12 @@ methods: {
     },
     checkForm(){
         let self = this;
-        self.dataObj.filePath = self.$refs.filElem.files[0];
+        self.dataObj.filePath = self.$refs.filElem.files[0]?self.$refs.filElem.files[0].name:'';
         if(self.dataObj.filePat == '' || self.dataObj.username == '' || self.dataObj.pwd == '' || self.dataObj.repwd == '') {
             self.tipsMsg = '请将信息输入完整后才能提交'
             self.toggleTips = true;
             return false;
         }
-        console.log(this.dataObj.pwd)
-        console.log(this.dataObj.repwd)
         if(!common.checkStrong(self.dataObj.pwd) || !common.checkStrong(self.dataObj.repwd)){
             self.tipsMsg = '6-20位数字、大小写字'
             self.toggleTips = true;
@@ -150,11 +148,28 @@ methods: {
             self.toggleTips = true;
             return false;
         }
-        console.log(common.checkStrong(123))
-        console.log(this.dataObj.username)
-        console.log(this.dataObj.pwd)
-        console.log(this.dataObj.repwd)
-        self.$router.push('/login')
+        let params = {
+            userLoginname : self.dataObj.username,
+            userPassword : self.dataObj.pwd,
+            headImage : self.dataObj.filePath,
+            userType : store.state.userType*1?store.state.userType*1:'0',
+            classId : store.state.chooseCourse*1?1:'1'
+        }
+        console.log(params)
+        base.postUrl(API.allUrl.regist,params).then((res) => {
+            if(res.code == 200 && res.success == 1){
+                self.tipsMsg = '注册成功，立即去登陆';
+                self.toggleTips = true;
+                setTimeout(function(){
+                    self.$router.push('/login')
+                },2000)
+            }else{
+                self.tipsMsg = res.msg;
+                self.toggleTips = true;
+                return false;
+            }
+        })
+  
     },
     hideTip(){
         this.toggleTips = false;
@@ -250,7 +265,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 
                 .desc{
                     display: inline-block;
-                    min-width: 24%;
+                    width: 33%;
                     font-size: 16px;
                     margin-bottom: 45*0.4px;
                 }
@@ -287,6 +302,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 }
                 .info{
                     display: inline-block;
+                    width: 60%;
                     height: 90*0.4px;
                     line-height: 90*0.4px;
                     background-color: transparent;
@@ -294,6 +310,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                     border: none;
                     color: #ffffff;
                     font-size: 16px;
+                    margin-bottom: 12*0.54*0.02rem;
                 }
                 &.header-item{
                     border-bottom: none;

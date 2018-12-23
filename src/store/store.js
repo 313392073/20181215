@@ -5,14 +5,21 @@ Vue.use(Vuex);
 
 const kuser = 'user';
 const kauth = 'auth';
-
 const store = new Vuex.Store({
     state:{
         user:null,
         token:null,
-        title:''
+        title:'',
+        userType:'', //0 学生  1老师
+        chooseCourse:''
     },
     mutations:{
+        [types.USERTYTPE]:(state,data) => {
+            state.userType = data;
+        },
+        [types.CHOOSECOURSE]:(state,data) => {
+            state.chooseCourse = data;
+        },
         [types.LOGIN]:(state,data) => {
             localStorage.setItem(kuser,data.userInfo)
             localStorage.setItem(kauth,data.token)
