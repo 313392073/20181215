@@ -1,45 +1,43 @@
 <!--  -->
 <template>
-<div class="login-wrapper clearfix">
+ <div class="login-wrapper clearfix">
         <div class="left-wrapper"></div>
         <div class="right-wrapper">
-            <!--注册 -->
+            <!--登录 -->
             <div class="info-box">
-                 <button @click="getLogins">点击</button>
-                <h3 class="reg-title">新用户注册</h3>
-                <form action="" method="POST" @submit.prevent="checkForm">
-                    <div class="item header-item">
-                        <label class="desc">上传头像</label>
-                        <div class="header-box">
-                            <img class="upload-pic" :src="defaultUrl" alt="default" @click="chooseImg">
-                            <input type="file" name="file" accept="image/png,image/jpg,image/jepg,image/gif" ref="filElem" class="upload-file" @change="uploadImg">
-                        </div>
+                <h3 class="reg-title">选择身份</h3>
+                    <div class="item">
+                        <label class="desc">选择身份</label>
+                        <label class="choose" @click="getIdentity($event)">
+                            <input type="radio" name="identity" value="1" v-model="checkedValue">
+                            <span></span>
+                            教师
+                        </label>
+                        <label class="choose" @click="getIdentity($event)">
+                            <input type="radio" name="identity" value="0" v-model="checkedValue">
+                            <span></span>
+                            学生
+                        </label>
                     </div>
                     <div class="item">
-                        <label class="desc">姓名</label>
-                        <input type="text" class="info" name="username" id="username" v-model="dataObj.username">
+                        <label class="desc">选择班级</label>
+                        <!-- <input type="text" class="info" name="username" id="username" v-model="dataObj.username"> -->
                     </div>
-                    <div class="item">
+                    <!-- <div class="item">
                         <label class="desc">密码</label>
-                        <input type="password" class="info" name="pwd" id="pwd" v-model="dataObj.pwd">
-                    </div>
-                    <div class="item">
-                        <label class="desc">确认密码</label>
-                        <input type="password" class="info" name="repwd" id="repwd" v-model="dataObj.repwd">
-                    </div>
+                        <input type="text" class="info" name="pwd" id="pwd" v-model="dataObj.pwd">
+                    </div> -->
                     <div class="login-btn">
-                        <input type="submit" class="sbtn" value="确认注册">
+                        <input type="submit" class="sbtn" value="去注册">
                     </div>
-                   
-                </form>
             </div>
             <div class="tips" v-show="toggleTips">
                 <div class="tips-wrapper">
                     <p class="tips-title">温馨提示</p>
                     <p class="tips-msg">{{tipsMsg}}</p>
                     <div class="btn-box">
-                        <a href="javascript:void(0)" class="go-msg" @click="hideTip">确定</a>
-                        <a href="javascript:void(0)" class="closed" @click="hideTip">关闭</a>
+                        <a href="javascript:void(0)" class="go-msg"  @click="hideTip">确定</a>
+                        <a href="javascript:void(0)" class="closed"  @click="hideTip">关闭</a>
                     </div>
                 </div>
             </div>
@@ -50,11 +48,9 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-import defaultUrls from '../assets/images/default.png'
-import defaultUrl1 from '../assets/images/noupload.png'
 import common from '../assets/js/common.js'
 import base from '../router/http/base.js'
-import API from '../router/http/api.js'
+import API from '../router/http/api.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {},
@@ -63,13 +59,7 @@ data() {
 return {
     tipsMsg:'验证邮箱已发送到你的邮箱，请注意查收验证邮箱已发送到你的',
     toggleTips:false,
-    defaultUrl:defaultUrls,
-    dataObj:{
-        filePath:'',
-        username:'',
-        pwd:'',
-        repwd:''
-    },
+    checkedValue:''
 };
 },
 //监听属性 类似于data概念
@@ -78,83 +68,12 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
-    getLogins(){
-        let self = this;
-        const params =  {
-            userLoginname: 'qijing5',
-            userPassword: 'Qj123456',
-            headImage: 'default.jpg',
-            userType: 0,
-            classId: ''
-        }
-       let datas =  base.postUrl(API.allUrl.regist,params);
-       datas.then((res) => {
-           console.log(res.success)
-           if(res.success && (res.success == true)){
-               console.log(res)
-               self.$router.push('/login')
-           }else{
-               alert(res.msg)
-               console.log(res.msg)
-           }
-           
-       })
-    },
-    //选图片
-    chooseImg(e){
-        this.$refs.filElem.dispatchEvent(new MouseEvent('click')) 
-    },
-    //图片上传的跟新头像
-    uploadImg(){
-        let self = this;
-        let fileMaxSize = 1024;//1M
-        let file = self.$refs.filElem.files[0];
-        if(file.size/fileMaxSize > fileMaxSize){
-            self.tipsMsg = '图片过大 不能上传'
-            self.toggleTips = true;
-            return false;
-        }
-        if (!/image\/\w+/.test(file.type)) {
-            self.tipsMsg = '请注意上传图片的格式！'
-            self.toggleTips = true;
-            return false;
-        }
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function(){
-            self.defaultUrl = reader.result
-        }
-    },
-    checkForm(){
-        let self = this;
-        self.dataObj.filePath = self.$refs.filElem.files[0];
-        if(self.dataObj.filePat == '' || self.dataObj.username == '' || self.dataObj.pwd == '' || self.dataObj.repwd == '') {
-            self.tipsMsg = '请将信息输入完整后才能提交'
-            self.toggleTips = true;
-            return false;
-        }
-        console.log(this.dataObj.pwd)
-        console.log(this.dataObj.repwd)
-        if(!common.checkStrong(self.dataObj.pwd) || !common.checkStrong(self.dataObj.repwd)){
-            self.tipsMsg = '6-20位数字、大小写字'
-            self.toggleTips = true;
-            return false;
-        }
-        if(self.dataObj.pwd != self.dataObj.repwd){
-            self.tipsMsg = '输入的密码不一致'
-            self.toggleTips = true;
-            return false;
-        }
-        if(self.dataObj.username.length < 2 || self.dataObj.username.length > 20) {
-            self.tipsMsg = '请注意输入合法长度的用户名'
-            self.toggleTips = true;
-            return false;
-        }
-        console.log(common.checkStrong(123))
-        console.log(this.dataObj.username)
-        console.log(this.dataObj.pwd)
-        console.log(this.dataObj.repwd)
-        self.$router.push('/login')
+    getIdentity(e){
+        console.log(e)
+        let userType = e.currentTarget.querySelector('input').value
+        base.getUrl(API.allUrl.registInfo,userType).then((res) => {
+            console.log(res)
+        })
     },
     hideTip(){
         this.toggleTips = false;
@@ -206,28 +125,11 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 font-size: 60*0.4px;
                 font-weight: normal;
             }
-            .find-pwd{
-                width: 100%;
-                text-align: center;
-                margin: 39.7% auto 17.15%;
-                color: #ffffff;
-                font-size: 60*0.4px;
-                font-weight: normal;
-            }
-            .headpic{
-                width: 100%;
-                margin: 15.49% auto;
-                text-align: center;
-                img{
-                    width: 255*0.4px;
-                    height: 255*0.4px;
-                }
-            }
+           
             .item{
-                min-height: 90*0.4px;
-                line-height: 90*0.4px;
-                padding-left: 0;
-                margin-bottom: 75*0.4px;
+                min-height: 45*0.4px;
+                line-height: 45*0.4px;
+                margin-top: 85*0.4px;
                 color: #ffffff;
                 border-bottom: 1px solid #ffffff;
                 padding-left: 8px;
@@ -247,7 +149,6 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         display: none;
                     }
                 }
-                
                 .desc{
                     display: inline-block;
                     min-width: 24%;
@@ -257,12 +158,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 .choose{
                     display: inline-block;
                     margin-bottom: 45*0.4px;
-                    margin-left: 1rem;
+                    margin-left: 50*0.4*0.02rem;
                     font-size: 16px;
                     cursor: pointer;
-                    &:last-child{
-                        margin-left: 1.8rem;
-                    }
                     input[type="radio"] {
                         appearance: none;
                         -webkit-appearance: none;
@@ -275,8 +173,8 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         vertical-align: middle;
                     }
                     input[type="radio"]+span {
-                        width: 1rem;
-                        height: 1rem;
+                        width: 40*0.4*0.02rem;
+                        height: 40*0.4*0.02rem;
                         display: inline-block;
                         background-color: transparent;
                         border: 1px solid #ffffff;
@@ -287,7 +185,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 }
                 .info{
                     display: inline-block;
-                    height: 90*0.4px;
+                    min-height: 90*0.4px;
                     line-height: 90*0.4px;
                     background-color: transparent;
                     outline: none;
@@ -303,7 +201,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 }
             }
             .login-btn{
-                margin: 95*0.4px auto;
+                margin: 95*0.4*0.02rem auto;
                 .sbtn{
                     display: block;
                     width: 100%;
@@ -319,21 +217,6 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                     &:active{
                         background-color: #19ca55;
                     }
-                }
-            }
-            .forget-pwd{
-                margin-top: 1.2rem;
-                text-align: right;
-                a{
-                    font-size: 16px;
-                    color: #ffffff;
-                }
-            }
-            .user-reg{
-                text-align: center;
-                a{
-                    font-size: 16px;
-                    color: #ffffff;
                 }
             }
         }

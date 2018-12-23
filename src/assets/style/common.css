@@ -20,8 +20,9 @@ html {
      /* letter-spacing: 2px; */
      font-size: 12px;
   }
+  /*竖屏样式*/
   @media screen and (orientation:portrait) {
-    /*竖屏样式*/
+    
     body {
       transform-origin: 0 0;
       transform: rotateZ(90deg) translateY(-100%);
