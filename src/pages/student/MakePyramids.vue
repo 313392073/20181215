@@ -2,29 +2,43 @@
 <template>
 <div class="wrapper">
 <div class="left-wrapper">
-  <div class="left-box">
-    <div class="desc-menu">课后习题</div>
+<div class="left-box">
+    <div class="desc-menu">制作棱锥</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
-        <h3 class="title">表面积公式</h3>
+        <h3 class="title">任务详情</h3>
         <div class="list-box">
-        <p class="list-req" v-for="(item,index) in 5" :key="item"><span>题目0{{index+1}}</span>：正三棱锥的高为6,底面边长为4,求它的侧面积应该用什么公式？</p>
-     
+            <div class="info-box clearfix">
+                <div class="info-left">
+                    <p class="desc">任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情</p>
+                    <p class="info-list">任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情</p>
+                    <p class="info-list">任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情</p>
+                </div>
+                <div class="info-right">
+                    <img src="../../assets/images/group-pic.png" alt="group-pic">
+                </div>
+            </div>
           <p class="list-req answerd-req"><span>答案：</span></p>
           <div class="answerd clearfix">
-              <div class="item" v-for="(item,index) in 5" :key="item">
-                    <p class="order"><span>0{{index+1}}</span></p>
+              <div class="item">
+                    <p class="order"><span>(2)</span></p>
                     <div class="answerd-box">
                         <input type="text" name="req2" placeholder="请输入答案" class="req2">
                     </div>
+              </div>
+              <div class="item">
+                  <p class="order"><span>(3)</span></p>
+                  <div class="answerd-box">
+                      <input type="text" name="req2" placeholder="请输入答案" class="req2">
+                  </div>
               </div>
           </div>
           <div class="ansowerd-btn"><button class="btn">提交答案</button></div>
         </div>
     </div>
     <div class="tips">
-        <div class="main-tips" >
-          <img class="tip-img" src="../assets/images/send-success.jpg" alt="send-success">
+        <div class="main-tips" style="display: none">
+          <img class="tip-img" src="../../assets/images/default.png" alt="">
           <p class="tips-title">本轮结束</p>
           <div class="tips-msg">
               <p>恭喜你，本轮答题结束！</p>
@@ -32,8 +46,8 @@
           </div>
           <div class="tips-btn"><button class="tbtn gbtn">继续答题</button></div>
         </div>
-        <div class="main-tips" style="display: none">
-          <img class="tip-img" src="../assets/images/answer-over.jpg" alt="">
+        <div class="main-tips">
+          <img class="tip-img" src="../../assets/images/default.png" alt="">
           <p class="tips-title">答题结束</p>
           <div class="tips-msg">
               <p>恭喜你，已答完所有题目！</p>
@@ -91,7 +105,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 @fcolor:#5c5a5a;
 .left-box{
     height: 100%;
-    width: 100%; 
+    width: 100%;
     .title{
         height: 106*0.4*0.02rem;
         line-height: 106*0.4*0.02rem;
@@ -104,11 +118,27 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         margin: 0 auto 70*0.4*0.02rem; 
         font-size: 0.26rem;
         color: @fcolor;
-        .list-req{
-            min-width: 80*0.4*0.02rem;
-            line-height: 80*0.4*0.02rem;
-            color: @fcolor;
-            font-size: 34*0.4*0.02rem;
+        .info-box{
+            width: 100%;
+            .info-left{
+                float: left;
+                width: 60%;
+                margin-right: 3%;
+                p{
+                    font-size: 0.26rem;
+                    color: @fcolor;
+                    line-height: 0.52rem;
+                }
+            }
+            .info-right{
+                float: right;
+                width: 37%;
+                padding-top: 0.1rem;
+                img{
+                    width: 100%;
+                    height: auto;
+                }
+            }
         }
         .answerd-req{
             margin: 0.2rem 0;
@@ -118,12 +148,14 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
             margin: 0 auto;
             .item{
                 float: left;
-                width: calc(~"20% - 80*0.4*0.02rem");
+                width: 47.8%;
                 min-height: 0.21rem;
-                margin-left: 40*0.4*0.02rem;
-                margin-right: 40*0.4*0.02rem;
+                margin-right: 4.4%;
                 border-radius: 4px;
                 box-shadow: 0 2px 5px 3px rgba(0,0,0,.1);
+                &:nth-child(2n){
+                    margin-right: 0;
+                }
                 .order{
                     margin-top: 0.2rem;
                     text-align: center;
@@ -178,8 +210,8 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 
 .tips{
     position: absolute;
-    // z-index: -1;
-    // opacity: 0;
+    z-index: -1;
+    opacity: 0;
     top: 0;
     right: 0;
     width: 100%;
@@ -192,14 +224,11 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         width: 1240*0.02*0.4rem;
         height: 830*0.4*0.02rem;
         background-color: #ffffff;
-        background: url("../assets/images/send-tipbg.jpg") no-repeat center;
-        background-size: contain;
         box-shadow: 0px 0px 5px 3px rgba(0,0,0,.1);
+        border-top: 2px solid #6c63ff;
         text-align: center;
-        padding-top: 20*0.4*0.02rem;
         .tip-img{
-            margin-top: 30*0.4*0.02rem;
-            max-width: 2.5rem;
+            max-width: 2rem;
         }
         .tips-title{
             text-align: center;

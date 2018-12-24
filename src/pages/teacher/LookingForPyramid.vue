@@ -58,13 +58,13 @@
                     </form>
                 </div>
                 <div class="main-right">
-                    <div class="refresh-box"><a href=""><img src="../assets/images/refresh.png" alt="refresh.png"></a></div>
+                    <div class="refresh-box"><a href=""><img src="../../assets/images/refresh.png" alt="refresh.png"></a></div>
                     <div class="group-wrapper clearfix">
                         <div class="item clearfix" v-for="item in 4" :key="item">
                             <div class="item-left">A组</div>
                             <div class="item-right">
                                 <div class="sub-item" v-for="subitem in 4" :key="subitem">
-                                    <img src="../assets/images/default.png" alt="default">
+                                    <img src="../../assets/images/default.png" alt="default">
                                     <p>流星雨</p>
                                 </div>
                             </div>
@@ -76,7 +76,7 @@
 
         <div class="tips">
             <div class="main-tips">
-                <img class="tip-img" src="../assets/images/default.png" alt="">
+                <img class="tip-img" src="../../assets/images/default.png" alt="">
                 <p class="tips-title">确认分组</p>
                 <div class="tips-msg">
                     <p>已完成小组分配，每组4人，共4组！</p>
@@ -175,7 +175,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         -moz-appearance:none;
                         -webkit-appearance:none;
                         &::-ms-expand { display: none; }
-                        background: url("../assets/images/downsj.png") no-repeat scroll 95% center transparent;
+                        background: url("../../assets/images/downsj.png") no-repeat scroll 95% center transparent;
                     }
                 }
                 .group-type-box{
@@ -203,11 +203,11 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                             display: inline-block;
                             width: 24*0.6*0.02rem;
                             height: 24*0.6*0.02rem;
-                            background:url("../assets/images/uncheck.png") no-repeat center;
+                            background:url("../../assets/images/uncheck.png") no-repeat center;
                             background-size: cover;
                         }
                         input[type="radio"]:checked+span {
-                            background:url("../assets/images/checked.png") no-repeat center;
+                            background:url("../../assets/images/checked.png") no-repeat center;
                             background-size: cover;
                         }
     

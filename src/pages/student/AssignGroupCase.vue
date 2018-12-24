@@ -13,13 +13,13 @@
                         <div class="item-left">A组</div>
                         <div class="item-right">
                             <div class="grouper">
-                                <img src="../assets/images/default.png" alt="default">
+                                <img src="../../assets/images/default.png" alt="default">
                                 <p><span>组长</span>流星雨</p>
                             </div>
                         
                             <div class="groupers-box clearfix">
                                 <div class="sub-item" v-for="subitem in 3" :key="subitem">
-                                    <img src="../assets/images/default.png" alt="default">
+                                    <img src="../../assets/images/default.png" alt="default">
                                     <p>流星雨</p>
                                 </div>
                             </div>

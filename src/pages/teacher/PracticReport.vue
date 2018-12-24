@@ -39,7 +39,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(item,index) in 5" :key="item">
-                                <td><i>{{index+1}}</i><img src="../assets/images/default.png" class="head-pic" alt="default"><span>流星雨</span></td>
+                                <td><i>{{index+1}}</i><img src="../../assets/images/default.png" class="head-pic" alt="default"><span>流星雨</span></td>
                                 <td>100分</td>
                                 <td class="use-time">09分45秒</td>
                             </tr>

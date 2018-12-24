@@ -15,19 +15,19 @@
                         <p class="item-title first">第一名 A组</p>
                         <div class="detail-box clearfix">
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                         </div>
@@ -37,19 +37,19 @@
                         <p class="item-title second">第二名 B组</p>
                         <div class="detail-box clearfix">
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                         </div>
@@ -58,19 +58,19 @@
                         <p class="item-title third">第三名 C组</p>
                         <div class="detail-box clearfix">
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                         </div>
@@ -79,19 +79,19 @@
                         <p class="item-title fouth">第四名 D组</p>
                         <div class="detail-box clearfix">
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                             <div>
-                                <img src="../assets/images/default.png" alt="default.png">
+                                <img src="../../assets/images/default.png" alt="default.png">
                                 <p>流星雨</p>
                             </div>
                         </div>

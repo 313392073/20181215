@@ -3,19 +3,19 @@
 <div class="wrapper">
 <div class="left-wrapper">
 <div class="left-box">
-    <div class="desc-menu">寻找棱锥</div>
+    <div class="desc-menu">视频分享</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
-        <h3 class="title">图片上传</h3>
+        <h3 class="title">视频上传</h3>
         <div class="main-box">
             <p class="main-title">美美的包装盒做好啦~上传属于你的包装盒制作过程的视频，和同学们一起探讨棱锥的奥秘吧！</p>
-            <div class="upload-box"><img src="../assets/images/upload-pic.png" alt="upload" class="default-bg"></div>
-            <div class="btn-box"><a href="javascript:void(0)">保存并上传图片</a></div>
+            <div class="upload-box"><img src="../../assets/images/upload.png" alt="upload" class="default-bg"></div>
+            <div class="btn-box"><a href="javascript:void(0)">保存并上传</a></div>
         </div>
         
     </div>
   </div>
-  </div>
+    </div>
 <side-bar></side-bar>
 </div>
 </template>
@@ -63,7 +63,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 @fcolor:#5c5a5a;
 .left-box{
     height: 100%;
-    height: 100%;
+    width: 100%;
     .title{
         height: 160*0.4*0.02rem;
         line-height: 160*0.4*0.02rem;

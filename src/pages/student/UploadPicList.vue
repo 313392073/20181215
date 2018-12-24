@@ -6,33 +6,24 @@
     <div class="desc-menu">寻找棱锥</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
+         <h3 class="title">视频上传列表</h3>
         <div class="main-box">
             <div class="group-wrapper clearfix">
-                <div class="item clearfix" v-for="item in 4" :key="item">
+                <div class="item" v-for="item in 4" :key="item">
                     <p class="group-name">A组</p>
-                    <div class="sub-item" v-for="subitem in 4" :key="subitem">
-                        <div class="not-upload"><img src="../assets/images/noupload.png" alt="noupload"></div>
-                        <div class="detail-desc clearfix">
-                            <div class="desc-left">
-                                <img src="../assets/images/default.png" alt="default">
-                                <p>流星雨</p>
-                            </div>
-                            <div class="desc-right">
-                                <p class="desc-text">整体为三棱锥形结构，其外观简洁、别致，并且周向侧面均具有展示孔，起到了展示作用</p>
-                            </div>
+                    <div class="sub-item clearfix" v-for="subitem in 4" :key="subitem">
+                        <div class="left-img">
+                            <img src="../../assets/images/group-pic.png" alt="">
                         </div>
-                        <div class="detail-btns">
-                            <a href="" class="share">查看分享</a>
-                            <a href=""><i class="iconfont icon-xin"></i>2</a>
-                            <a href=""><i class="iconfont icon-xuanzhong"></i>2</a>
-                        </div>
-                        <div class="detail-imgs">
-                            <img src="../assets/images/group-pic.png" alt="group-pic">
-                            <img src="../assets/images/group-pic.png" alt="group-pic">
-                            <img src="../assets/images/group-pic.png" alt="group-pic">
-                            <img src="../assets/images/group-pic.png" alt="group-pic">
+                        <div class="right-desc">
+                            <div class="header-box"><img src="../../assets/images/default.png" alt="" srcset=""></div>
+                            <p class="desc-name">流星雨</p>
+                            <div class="go-detail">
+                                <span><i class="iconfont icon-xin"></i> 45</span>
+                            </div>
                         </div>
                     </div>
+                    <div class="desc">共获得 <span>47</span>个赞</div>
                 </div>
             </div>
         </div>
@@ -87,11 +78,18 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 .left-box{
     height: 100%;
     width: 100%;
+    .title{
+        height: 160*0.4*0.02rem;
+        line-height: 160*0.4*0.02rem;
+        text-align: center;
+        font-size: 44*0.4*0.02rem;
+        color: @fcolor;
+    }
     .main-box{
         width: 92.165%;
         margin: 0 auto 70*0.4*0.02rem;
         .group-wrapper{
-            padding-top: 230*0.4*0.02rem;
+            padding-top: 80*0.4*0.02rem;
             width: 100%;
             .item{
                 float: left;
@@ -101,6 +99,13 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 box-shadow: 0 0 5px 3px rgba(0,0, 0,0.1);
                 padding: 100*0.4*0.02rem 20*0.4*0.02rem 20*0.4*0.02rem;
                 position: relative;
+                .desc{
+                    text-align: center;
+                    span{
+                        font-size: 40*0.4*0.02rem;
+                        color: #6c63ff;
+                    }
+                }
                 .group-name{
                     position: absolute;
                     top: -75*0.4*0.02rem;
@@ -122,12 +127,22 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         color: #39cc6c;
                         border-color: #39cc6c;
                     }
+                    .desc{
+                        span{
+                            color: #39cc6c;
+                        }
+                    }
                 }
                 &:nth-child(3){
                     border-color: #eb1e1e;
                     p{
                         color: #eb1e1e;
                         border-color: #eb1e1e;
+                    }
+                    .desc{
+                        span{
+                            color: #eb1e1e;
+                        }
                     }
                 }
                 &:last-child{
@@ -137,79 +152,54 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         color: #f37d7d;
                         border-color: #f37d7d;
                     }
+                    .desc{
+                        span{
+                            color: #f37d7d;
+                        }
+                    }
                 }
                 .sub-item{
                     width: 100%;
                     border: 1px solid #dddddd;
                     border-radius: 4px;
-                    min-height: 2.2rem;
+                    min-height: 200*0.4*0.02rem;
                     margin-bottom: 20*0.4*0.02rem;
-                    padding: 10*0.4*0.02rem;
-                    .not-upload{
-                        width: 100%;
-                        height: 100%;
-                        position: relative;
-                        display: none;
+                    .left-img{
+                        padding: 10*0.4*0.02rem;
+                        float: left;
+                        border-right: 1px solid #dddddd;
+                        width: calc(~"60% - 1px");
                         img{
-                            width: 90*0.4*0.02rem;
-                            height: 90*0.4*0.02rem;
-                            position: absolute;
-                            left: 0;
-                            top: 0;
-                            right: 0;
-                            bottom: 0;
-                            margin: auto;
+                            min-height: 180*0.4*0.02rem;
                         }
                     }
-                    .detail-desc{
-                        p{
+                    .right-desc{
+                        float: right;
+                        width: 40%;
+                        text-align: center;
+                        padding: 10*0.4*0.02rem;
+                        .header-box{
+                            img{
+                                width: 60*0.4*0.02rem;
+                                height: 60*0.4*0.02rem;
+                            }
+                        }
+                        .desc-name{
                             font-size: 12px!important;
                             color: @fcolor;
-                            overflow : hidden;
-                            text-overflow: ellipsis;
-                            display: -webkit-box;
-                            -webkit-line-clamp: 3;
-                            -webkit-box-orient: vertical;
+                            margin: 10*0.4*0.02rem auto;
                         }
-                        .desc-left{
-                            width: 30%;
-                            float: left;
-                            margin-right: 2%;
+                        .go-detail{
                             text-align: center;
-                            img{
-                                width: 64*0.4*0.02rem;
-                                height: 64*0.4*0.02rem;
-                                margin: 6*0.4*0.02rem auto;
-                            }
-                        }
-                        .desc-right{
-                            float: left;
-                            width: 68%;
-                            padding-right: 7.24%;
-                            
-                        }
-                    }
-                    .detail-btns{
-                        margin: 5*0.4*0.02rem 0;
-                        text-align: center;
-                        display: flex;
-                        a{
-                            flex: 1;
-                            font-size: 12px!important;
-                            color: #6c63ff;
-                            &.share{
-                                flex: 1.5;
+                            span{
+                                i{
+                                    color: #fc4d3e;
+                                    font-size: 34*0.4*0.02rem;
+                                    margin-right: 5*0.4*0.02rem;
+                                }
                             }
                         }
                     }
-                    .detail-imgs{
-                        text-align: center;
-                        img{
-                            width: 62*0.4*0.02rem;
-                            height: 62*0.4*0.02rem;
-                        }
-                    }
-                    
                 }
                 
             }

@@ -16,7 +16,7 @@
                     <p class="info-list">任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情</p>
                 </div>
                 <div class="info-right">
-                    <img src="../assets/images/group-pic.png" alt="group-pic">
+                    <img src="../../assets/images/group-pic.png" alt="group-pic">
                 </div>
             </div>
             <h3 class="title">任务分组</h3>
@@ -26,7 +26,7 @@
                     <div class="item-member clearfix">
                         <div class="tips-item" v-for="subitem in 10" :key="subitem">
                             <i class="iconfont icon-close_icon"></i>
-                            <img src="../assets/images/default.png" alt="">
+                            <img src="../../assets/images/default.png" alt="">
                             <p>流星雨</p>
                         </div>
                     </div>
@@ -41,7 +41,7 @@
                 <div class="tips-main clearfix">
                     <div class="tips-item" v-for="item in 10" :key="item">
                         <i class="iconfont icon-close_icon"></i>
-                        <img src="../assets/images/default.png" alt="">
+                        <img src="../../assets/images/default.png" alt="">
                         <p>流星雨</p>
                     </div>
                 </div>
@@ -188,7 +188,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                     left: 50%;
                     margin-left: -95*0.4*0.01rem;
                     border-radius: 50%;
-                    background: url("../assets/images/add-meb.png") no-repeat center;
+                    background: url("../../assets/images/add-meb.png") no-repeat center;
                     background-size: contain;
                 }
             }

@@ -1,33 +1,52 @@
-<!--  -->
 <template>
 <div class="wrapper">
 <div class="left-wrapper">
-<div class="left-box">
-    <div class="desc-menu">制作棱锥</div>
+ <div class="left-box">
+    <div class="desc-menu">寻找棱锥</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
-        <h3 class="title">任务详情</h3>
+        <h3 class="title">侧面积公式</h3>
         <div class="list-box">
-            <div class="info-box clearfix">
-                <div class="info-left">
-                    <p class="desc">任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情</p>
-                    <p class="info-list">任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情</p>
-                    <p class="info-list">任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情</p>
-                </div>
-                <div class="info-right">
-                    <img src="../assets/images/group-pic.png" alt="group-pic">
+              <div class="list" v-for="(item,index) in 2" :key="item">
+                <p class="list-req"><span>题目0{{index}}</span>：正三棱锥的高为6,底面边长为4,求它的侧面积应该用什么公式？</p>
+                <div class="answer-box clearfix">
+                    <div class="answerlist-box">
+                        <div class="answerlist">(A):</div>
+                        <div class="answerlist">(B):</div>
+                        <div class="answerlist">(C):</div>
+                        <div class="answerlist">(D):</div>
+                    </div>
+                    <div>
+                    <img src="" alt="">
+                    </div>
                 </div>
             </div>
+       
           <p class="list-req answerd-req"><span>答案：</span></p>
           <div class="answerd clearfix">
               <div class="item">
-                    <p class="order"><span>(2)</span></p>
-                    <div class="answerd-box">
-                        <input type="text" name="req2" placeholder="请输入答案" class="req2">
-                    </div>
+                  <p class="order"><span>01</span></p>
+                  <div class="answerd-box clearfix">
+                      <label class="choose">
+                          <input type="radio" name="req1" value="A" checked>
+                          <span></span>A
+                        </label>
+                        <label class="choose">
+                          <input type="radio" name="req1" value="B">
+                          <span></span>B
+                        </label>
+                        <label class="choose">
+                          <input type="radio" name="req1" value="C">
+                          <span></span>C
+                        </label>
+                        <label class="choose">
+                          <input type="radio" name="req1" value="D">
+                          <span></span>D
+                        </label>
+                  </div>
               </div>
               <div class="item">
-                  <p class="order"><span>(3)</span></p>
+                  <p class="order"><span>02</span></p>
                   <div class="answerd-box">
                       <input type="text" name="req2" placeholder="请输入答案" class="req2">
                   </div>
@@ -38,7 +57,7 @@
     </div>
     <div class="tips">
         <div class="main-tips" style="display: none">
-          <img class="tip-img" src="../assets/images/default.png" alt="">
+          <img class="tip-img" src="/images/default.png" alt="">
           <p class="tips-title">本轮结束</p>
           <div class="tips-msg">
               <p>恭喜你，本轮答题结束！</p>
@@ -47,7 +66,7 @@
           <div class="tips-btn"><button class="tbtn gbtn">继续答题</button></div>
         </div>
         <div class="main-tips">
-          <img class="tip-img" src="../assets/images/default.png" alt="">
+          <img class="tip-img" src="/images/default.png" alt="">
           <p class="tips-title">答题结束</p>
           <div class="tips-msg">
               <p>恭喜你，已答完所有题目！</p>
@@ -66,13 +85,17 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
+import base from '../../router/http/base.js'
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
+import * as types from '../../store/types.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
-
+    bath:'',
 };
 },
 //监听属性 类似于data概念
@@ -85,7 +108,25 @@ methods: {
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    let params = {
+        token:store.state.token
+    }
+    console.log(store.state.token)
+    base.getUrl(API.allUrl.batch,params).then(res => {
+        console.log(res)
+        if(res.code == 200 && res.success == 1){
+            let params = {
+                token:store.state.token,
+                batch:res.obj
+            }
+            console.log(params)
+            base.getUrl(API.allUrl.course_m_info,params).then(res => {
+                console.log(res)
+            })
+        }
+    })
+    
+    
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
@@ -101,11 +142,11 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 }
 </script>
 <style lang='less' scoped>
-//@import url(); 引入公共css类
 @fcolor:#5c5a5a;
+//@import url(); 引入公共css类
 .left-box{
-    height: 100%;
     width: 100%;
+    height: 100%;
     .title{
         height: 106*0.4*0.02rem;
         line-height: 106*0.4*0.02rem;
@@ -118,26 +159,10 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         margin: 0 auto 70*0.4*0.02rem; 
         font-size: 0.26rem;
         color: @fcolor;
-        .info-box{
-            width: 100%;
-            .info-left{
-                float: left;
-                width: 60%;
-                margin-right: 3%;
-                p{
-                    font-size: 0.26rem;
-                    color: @fcolor;
-                    line-height: 0.52rem;
-                }
-            }
-            .info-right{
-                float: right;
-                width: 37%;
-                padding-top: 0.1rem;
-                img{
-                    width: 100%;
-                    height: auto;
-                }
+        .list{
+            .answerlist{
+                text-indent: 0.8rem;
+                line-height: 0.8rem;
             }
         }
         .answerd-req{
@@ -183,6 +208,41 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         text-align: center;
                         color: @fcolor;
                         border-bottom: 1px solid #676767;
+                    }
+                    .choose{
+                        float: left;
+                        width: 50%;
+                        min-height: 15*0.02rem;
+                        line-height: 15*0.02rem;
+                        vertical-align: middle;
+                        font-size: 16px;
+                        cursor: pointer;
+                        text-align: center;
+                        margin-top: 0.2rem;
+                        input[type="radio"] {
+                            appearance: none;
+                            -webkit-appearance: none;
+                            outline: none;
+                            display: none;
+                        }
+                        span{
+                            border-radius: 50%;
+                            margin-right: 0.2rem;
+                            vertical-align: middle;
+                        }
+                        input[type="radio"]+span {
+                            width: 0.3rem;
+                            height: 0.3rem;
+                            display: inline-block;
+                            background-color: transparent;
+                            border: 1px solid #dddddd;
+                        }
+    
+                        input[type="radio"]:checked+span {
+                            background-color: #6c63ff;
+                            border: 1px solid #6c63ff;
+                        }
+    
                     }
                 }
             }

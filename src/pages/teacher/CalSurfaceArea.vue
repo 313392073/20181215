@@ -8,7 +8,7 @@
             <div class="main-wrapper">
                 <h3 class="title"></h3>
                 <div class="main-box">
-                    <div class="upload-box"><img src="../assets/images/upload.png" alt="upload" class="default-bg"></div>
+                    <div class="upload-box"><img src="../../assets/images/upload.png" alt="upload" class="default-bg"></div>
                     <div class="btn-box"><a href="javascript:void(0)">保存并推送</a></div>
                 </div>
             </div>

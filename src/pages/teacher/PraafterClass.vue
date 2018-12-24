@@ -14,7 +14,7 @@
                 <div class="next-btn"><button class="nbtn">浏览文件</button></div>
             </div>
             <div class="item clearfix" v-for="item in 3" :key="item">
-                <div class="item-icon"><img src="../assets/images/group-pic.png" alt="group-pic"></div>
+                <div class="item-icon"><img src="../../assets/images/group-pic.png" alt="group-pic"></div>
                 <div class="item-desc">
                     <p class="item-name">选择需要上传的课件</p>
                     <p class="item-process">6.5/12.8M <span class="item-num">258K/S</span></p>

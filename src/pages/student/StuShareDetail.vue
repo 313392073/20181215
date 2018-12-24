@@ -9,7 +9,7 @@
         <div class="main-box">
             <div class="desc-box clearfix">
                 <div class="desc-left">
-                    <img src="../assets/images/default.png" alt="default">
+                    <img src="../../assets/images/default.png" alt="default">
                     <p class="desc-name">流星雨</p>
                 </div>
                 <div class="desc-right">
@@ -18,11 +18,11 @@
                         古代有锥形漏斗和锥形容器、量器。
                     </p>
                     <div class="desc-images clearfix">
-                        <img src="../assets/images/group-pic.png" alt="group-pic">
-                        <img src="../assets/images/group-pic.png" alt="group-pic">
-                        <img src="../assets/images/group-pic.png" alt="group-pic">
-                        <img src="../assets/images/group-pic.png" alt="group-pic">
-                        <img src="../assets/images/group-pic.png" alt="group-pic">
+                        <img src="../../assets/images/group-pic.png" alt="group-pic">
+                        <img src="../../assets/images/group-pic.png" alt="group-pic">
+                        <img src="../../assets/images/group-pic.png" alt="group-pic">
+                        <img src="../../assets/images/group-pic.png" alt="group-pic">
+                        <img src="../../assets/images/group-pic.png" alt="group-pic">
                     </div>
                     <div class="desc-btns">
                         <a href=""><i class="iconfont icon-xin"></i>赞</a>
@@ -35,9 +35,9 @@
                     <div class="icon-box clearfix">
                         <p class="left-icon"><i class="iconfont icon-xin"></i></p>
                         <div class="zan-wrapper">
-                            <img src="../assets/images/default.png" alt="default">
-                            <img src="../assets/images/default.png" alt="default">
-                            <img src="../assets/images/default.png" alt="default">
+                            <img src="../../assets/images/default.png" alt="default">
+                            <img src="../../assets/images/default.png" alt="default">
+                            <img src="../../assets/images/default.png" alt="default">
                         </div>
                     </div>
                 </div>
@@ -47,14 +47,14 @@
                         <div class="comment-wrapper">
                             <div class="list clearfix">
                                 <div class="left-icon">
-                                    <img src="../assets/images/default.png" alt="default">
+                                    <img src="../../assets/images/default.png" alt="default">
                                     <p class="comment-name">叶小雨</p>
                                 </div>
                                 <p class="comment-detail">回复 <span>叶小雨：</span> 很不错的分享，学习了！</p>
                             </div>
                             <div class="list clearfix" v-for="item in 3" :key="item">
                                 <div class="left-icon">
-                                     <img src="../assets/images/default.png" alt="default">
+                                     <img src="../../assets/images/default.png" alt="default">
                                      <p class="comment-name">叶小雨</p>
                                 </div>
                                 <p class="comment-detail">很不错的分享，学习了！</p>
