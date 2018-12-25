@@ -8,16 +8,12 @@
         <h3 class="title">侧面积公式</h3>
         <div class="list-box">
               <div class="list" v-for="(item,index) in questList" :key="item.course_id">
-                <p class="list-req"><span>题目0{{index}}</span>： 正三棱锥的高为6,底面边长为4,求它的侧面积应该用什么公式？</p>
+                <p class="list-req"><span>题目0{{index+1}}</span>： <i v-for="req in JSON.parse(item.course_item).q" :key="req">{{req}}</i></p>
                 <div class="answer-box clearfix">
                     <div class="answerlist-box">
-                        <div class="answerlist">(A):</div>
-                        <div class="answerlist">(B):</div>
-                        <div class="answerlist">(C):</div>
-                        <div class="answerlist">(D):</div>
+                        <div class="answerlist" v-for="(answer,aindex) in JSON.parse(item.course_item).c" :key="aindex" @click="checkAnswer(aindex,JSON.parse(item.course_item).q.length,item.course_id,item.item_score,item.answer)" > <span class="answer-num">{{aindex+1}}</span> :{{answer}}</div>
                     </div>
                     <div>
-                    <img src="" alt="">
                     </div>
                 </div>
             </div>
@@ -99,11 +95,15 @@ return {
     toggleTips:false,
     tipsMsg:'我们根据你的作答情况，智能为你推送了以下联系，请继续答题以巩固所学知识',
     bath:'',
-    questList:[]
+    batch:'',
+    questList:[],
+    list:[]
 };
 },
 //监听属性 类似于data概念
-computed: {},
+computed: {
+    
+},
 //监控data中的数据变化
 watch: {},
 //方法集合
@@ -116,20 +116,47 @@ methods: {
     getCourseList(params){ //获取题型
         base.getUrl(API.allUrl.course_list,params).then(res => {
              console.log(res)
-            console.log(res.obj[0].course_item)
+            //  res.obj.forEach(function(item,index) {
+            //      console.log(item.course_item)
+            //  })
+            console.log(JSON.parse(res.obj[0].course_item).q)
             if(res.code == 200 && res.success == 1){
-                this.questList = res.obj
+                res.obj.forEach((item,index) => {
+                    if(index < 3) {
+                        this.questList.push(item)
+                    }
+                })
+                // this.questList = res.obj;
+                // console.log(this.list)
             }else{
                 self.tipsMsg = '网络错误，请稍后再试'
                 self.toggleTips = true;
                 return false;
             }
         })
+    },
+    checkAnswer(index,total,course_id,score){
+         var len = 0;
+         let param = {
+             token:store.state.token,
+             batch:this.batch,
+             exams:{
+                 answer:'',
+                 classBath:this.bath,
+                 courseItemId:course_id,
+                 isRight:0,
+                 score:score,
+                 userTime:0,
+                 userLoginname:'user'
+             }
+         }
     }
 
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
+    // let str = '{"q":["正棱锥必须具备的两个条件为（）；","（）。"],"c":["底面是多边形","底面是正多边形","其余各面是全等的等腰三角形","有一个面是等腰三角形的棱锥"],"num":"1(2)"}';
+    // console.log(JSON.parse(str))
     let self = this;
     let params = {
         token:store.state.token
@@ -186,6 +213,21 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
             .answerlist{
                 text-indent: 0.8rem;
                 line-height: 0.8rem;
+                .answer-num{
+                    text-indent: 0;
+                    display: inline-block;
+                    width: 40*0.4*0.02rem;
+                    height: 40*0.4*0.02rem;
+                    line-height: 40*0.4*0.02rem;
+                    border-radius: 50%;
+                    text-align: center;
+                    font-size: 12px!important;
+                    border: 1px solid #6c63ff;
+                    &.active{
+                        color: #ffffff;
+                        background-color: #6c63ff;
+                    }
+                }
             }
         }
         .answerd-req{
