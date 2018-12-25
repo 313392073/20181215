@@ -7,8 +7,8 @@
     <div class="main-wrapper">
         <h3 class="title">侧面积公式</h3>
         <div class="list-box">
-              <div class="list" v-for="(item,index) in 2" :key="item">
-                <p class="list-req"><span>题目0{{index}}</span>：正三棱锥的高为6,底面边长为4,求它的侧面积应该用什么公式？</p>
+              <div class="list" v-for="(item,index) in questList" :key="item.course_id">
+                <p class="list-req"><span>题目0{{index}}</span>： 正三棱锥的高为6,底面边长为4,求它的侧面积应该用什么公式？</p>
                 <div class="answer-box clearfix">
                     <div class="answerlist-box">
                         <div class="answerlist">(A):</div>
@@ -55,13 +55,12 @@
           <div class="ansowerd-btn"><button class="btn">提交答案</button></div>
         </div>
     </div>
-    <div class="tips">
+    <div class="tips" v-show="toggleTips">
         <div class="main-tips" style="display: none">
           <img class="tip-img" src="/images/default.png" alt="">
           <p class="tips-title">本轮结束</p>
           <div class="tips-msg">
-              <p>恭喜你，本轮答题结束！</p>
-              <p>我们根据你的作答情况，智能为你推送了以下联系，请继续答题以巩固所学知识</p>
+              {{tipsMsg}}
           </div>
           <div class="tips-btn"><button class="tbtn gbtn">继续答题</button></div>
         </div>
@@ -69,8 +68,9 @@
           <img class="tip-img" src="/images/default.png" alt="">
           <p class="tips-title">答题结束</p>
           <div class="tips-msg">
-              <p>恭喜你，已答完所有题目！</p>
-              <p>系统已自动帮你计算好分数，快快点击查看吧！</p>
+              {{tipsMsg}}
+              <!-- <p>恭喜你，已答完所有题目！</p>
+              <p>系统已自动帮你计算好分数，快快点击查看吧！</p> -->
           </div>
           <div class="tips-btn"><button class="cbtn tbtn">查看成绩</button></div>
         </div>
@@ -89,13 +89,17 @@ import base from '../../router/http/base.js'
 import API from '../../router/http/api.js';
 import store from '../../store/store.js';
 import * as types from '../../store/types.js';
+import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
+    toggleTips:false,
+    tipsMsg:'我们根据你的作答情况，智能为你推送了以下联系，请继续答题以巩固所学知识',
     bath:'',
+    questList:[]
 };
 },
 //监听属性 类似于data概念
@@ -104,10 +108,29 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
+    getMenu(params) { //获取menu
+        base.getUrl(API.allUrl.course_m_info,params).then(res => {
+            console.log(res)
+        })
+    },
+    getCourseList(params){ //获取题型
+        base.getUrl(API.allUrl.course_list,params).then(res => {
+             console.log(res)
+            console.log(res.obj[0].course_item)
+            if(res.code == 200 && res.success == 1){
+                this.questList = res.obj
+            }else{
+                self.tipsMsg = '网络错误，请稍后再试'
+                self.toggleTips = true;
+                return false;
+            }
+        })
+    }
 
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
+    let self = this;
     let params = {
         token:store.state.token
     }
@@ -115,22 +138,22 @@ created() {
     base.getUrl(API.allUrl.batch,params).then(res => {
         console.log(res)
         if(res.code == 200 && res.success == 1){
-            let params = {
+            let params1 = {
                 token:store.state.token,
                 batch:res.obj
             }
-            console.log(params)
-            base.getUrl(API.allUrl.course_m_info,params).then(res => {
-                console.log(res)
-            })
+            let params2 = {
+                token:store.state.token,
+                batch:res.obj,
+                type:0
+            }
+            Axios.all([self.getMenu(params1)],self.getCourseList(params2))
         }
     })
-    
-    
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
-
+    
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前
@@ -270,8 +293,6 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 
 .tips{
     position: absolute;
-    z-index: -1;
-    opacity: 0;
     top: 0;
     right: 0;
     width: 100%;

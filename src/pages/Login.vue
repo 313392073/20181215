@@ -112,7 +112,15 @@ methods: {
                     token:res.obj.token
                 }
                 store.commit(types.LOGIN,obj)
-                this.$router.push('/sideareaformula')
+                if(JSON.parse(res.obj.user).userType == 0){ //学生
+                    self.$router.push('/stuonlinetest')
+                }else if(JSON.parse(res.obj.user).userType == 1){ //老师
+                    self.$router.push('/teapracticreport')
+                }else{
+                    self.tipsMsg = '请先登录！！'
+                    self.toggleTips = true;
+                    return;
+                }
             }else{
                 self.tipsMsg = res.msg;
                 self.toggleTips = true;

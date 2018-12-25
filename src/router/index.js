@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '../store/store'
 
-import Echart from '@/components/Echart'
-import Echart2 from '@/components/Echart2'
-import Echart3 from '@/components/Echart3'
-import Echart4 from '@/components/Echart4'
-import Echart5 from '@/components/Echart5'
-import Echart6 from '@/components/Echart6'
+// import Echart from '@/components/Echart'
+// import Echart2 from '@/components/Echart2'
+// import Echart3 from '@/components/Echart3'
+// import Echart4 from '@/components/Echart4'
+// import Echart5 from '@/components/Echart5'
+// import Echart6 from '@/components/Echart6'
 
 // 路由start
 import SelectId from '@/pages/SelectId'//注册
@@ -205,15 +206,6 @@ const router = new Router({
       component: RegCheckTotal,
       meta: {
         title: '正棱锥表面积检测数据统计',
-        auth: true
-      }
-    },
-    {
-      path: '/tearegularareaformula',
-      name: 'RegularAreaFormula',
-      component: RegularAreaFormula,
-      meta: {
-        title: '计算表面积',
         auth: true
       }
     },
@@ -443,34 +435,34 @@ const router = new Router({
   ]
 })
 
-// router.beforeEach((to, from, next) => {
-//   document.title = to.meta.title?to.meta.title:'棱锥'
-//   if(to.matched.some( r => r.meta.auth)){
-//     if(store.state.token){ //toke存在  还需要判断user 登录没有
-//       if(store.state.user) {
-//         next()
-//       }else{
-//         next({
-//           path:'/login',
-//           query:{redirect:to.fullPath}
-//         })
-//       }
-//     }else{ 
-//       if(to.name == '/login' || to.name == 'reg' || to.name == 'findpwd'){
-//         next();
-//         return;
-//       }else{
-//         //token 不存在  直接重新登录
-//         next({
-//           path:'/login',
-//           query:{redirect:to.fullPath}
-//         })
-//       }
-//     }
-//   }else{
-//     next()
-//   }
+router.beforeEach((to, from, next) => {
+  document.title = to.meta.title?to.meta.title:'棱锥'
+  if(to.matched.some( r => r.meta.auth)){
+    if(store.state.token){ //toke存在  还需要判断user 登录没有
+      if(store.state.user) {
+        next()
+      }else{
+        next({
+          path:'/login',
+          query:{redirect:to.fullPath}
+        })
+      }
+    }else{ 
+      if(to.name == '/login' || to.name == 'reg' || to.name == 'findpwd'){
+        next();
+        return;
+      }else{
+        //token 不存在  直接重新登录
+        next({
+          path:'/login',
+          query:{redirect:to.fullPath}
+        })
+      }
+    }
+  }else{
+    next()
+  }
   
-// })
+})
 
 export default router
