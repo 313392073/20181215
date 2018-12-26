@@ -7,11 +7,11 @@
     <div class="main-wrapper">
         <h3 class="title">侧面积公式</h3>
         <div class="list-box">
-              <div class="list" v-for="(item,index) in questList" :key="item.course_id">
-                <p class="list-req"><span>题目0{{index+1}}</span>： <i v-for="req in JSON.parse(item.course_item).q" :key="req">{{req}}</i></p>
+              <div class="list" v-for="(item,index) in questList" :key="index">
+                <p class="list-req"><span>题目0{{index+1}}</span>： <i v-for="(req,rindex) in JSON.parse(item.course_item).q" :key="rindex">{{req}}</i></p>
                 <div class="answer-box clearfix">
                     <div class="answerlist-box">
-                        <div class="answerlist" v-for="(answer,aindex) in JSON.parse(item.course_item).c" :key="aindex" @click="checkAnswer(aindex,JSON.parse(item.course_item).q.length,item.course_id,item.item_score,item.answer)" > <span class="answer-num">{{aindex+1}}</span> :{{answer}}</div>
+                        <div class="answerlist" v-for="(answer,aindex) in JSON.parse(item.course_item).c" :key="aindex" @click="checkAnswer(aindex,JSON.parse(item.course_item).q.length,item.course_id,item.item_score,JSON.parse(item.answer).a[aindex])" ><span class="answer-num">{{aindex+1}}</span> :{{answer}}</div>
                     </div>
                     <div>
                     </div>
@@ -119,7 +119,7 @@ methods: {
             //  res.obj.forEach(function(item,index) {
             //      console.log(item.course_item)
             //  })
-            console.log(JSON.parse(res.obj[0].course_item).q)
+            console.log(JSON.parse(res.obj[0].answer).a)
             if(res.code == 200 && res.success == 1){
                 res.obj.forEach((item,index) => {
                     if(index < 3) {
