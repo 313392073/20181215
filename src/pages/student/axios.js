@@ -439,6 +439,16 @@ var params = {
 // }
 
 
+ // var obj = {};
+// for(var i = 1; i < 20; i++){
+//     var tmp = (i < 10 ? "0" + i : i);
+//     var str = "goods" + tmp;
+//     var val = "10" + tmp;
+//     obj[str] = val;
+// }
+// console.log(obj);
+
+
 /**
  * 答题记录
  * 用一个数组对象来存储
@@ -448,11 +458,23 @@ var params = {
  */
 /**
  * index 当前的答案的序号
+ * rindex 第几个问题
  * total 一共有多少个问题
  * course_id 当前课程的id  
  * score 正确的分数
  * answer 正确的答案
  */
+
+
+obj[index].alenth = 0; 
+obj[index].arr = []; 
+
+
+let objs = {
+    0: {alenth: 0, arr: Array(0)},
+    1: {alenth: 0, arr: Array(0)},
+    2: {alenth: 0, arr: Array(0)}
+}
 
  /**
   * 回答第一题：
