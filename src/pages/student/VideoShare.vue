@@ -9,8 +9,11 @@
         <h3 class="title">视频上传</h3>
         <div class="main-box">
             <p class="main-title">美美的包装盒做好啦~上传属于你的包装盒制作过程的视频，和同学们一起探讨棱锥的奥秘吧！</p>
-            <div class="upload-box"><img src="../../assets/images/upload.png" alt="upload" class="default-bg"></div>
-            <div class="btn-box"><a href="javascript:void(0)">保存并上传</a></div>
+            <div class="upload-box">
+                <input type="file" name="file" accept="video/mp4,video/ogg,video/WebM" ref="filElem" class="upload-file" @change="uploadVideo">
+                <img @click="chooseVideo" :src="defaultUrl" alt="upload" class="default-bg">
+            </div>
+            <div class="btn-box"><a href="javascript:void(0)" @click="saveVideo">保存并上传</a></div>
         </div>
         
     </div>
@@ -23,14 +26,20 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
+import defaultUrls from '../../assets/images/upload.png'
 import SideBar from "@/common/SideBar";
+import base from '../../router/http/base.js'
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
+import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
-
+    defaultUrl:defaultUrls,
+    batch:'',
 };
 },
 //监听属性 类似于data概念
@@ -39,7 +48,54 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
-
+    chooseVideo(){
+        this.$refs.filElem.dispatchEvent(new MouseEvent('click'))
+    },
+    uploadVideo(){
+        let self = this;
+        let fileMaxSize = 1024;//1M
+        let file = self.$refs.filElem.files[0];
+        if(file.size/fileMaxSize > fileMaxSize){
+            self.tipsMsg = '视频过大 不能上传'
+            self.toggleTips = true;
+            return false;
+        }
+        if (!/image\/\w+/.test(file.type)) {
+            self.tipsMsg = '请注意上传视频的格式！'
+            self.toggleTips = true;
+            return false;
+        }
+        // let reader = new FileReader();
+        // reader.readAsDataURL(file);
+        // reader.onload = function(){
+        //     self.defaultUrl = reader.result;
+        // }
+    },
+    saveVideo(){
+        let self = this;
+        var formData = new FormData();
+        console.log(self.$refs.filElem.files[0])
+            formData.append("file", self.$refs.filElem.files[0]);
+            console.log(formData.get('file'))
+            // if(formData.get('file') != 'undefined'){
+            //     Axios({
+            //         method:'post',
+            //         baseURL:base.baseURL,
+            //         url:API.allUrl.upload+'?token='+store.state.token+'&batch='+self.batch+'&fileType=6',
+            //         data:formData,
+            //     }).then((res) => {
+            //         if(res.data.code == 200 && res.data.success == 1) {
+            //             self.$router.push('/stuuploadpicList')
+            //         }else{
+            //         self.tipsMsg = '网络错误，上传头像失败'
+            //         self.toggleTips = true;
+            //         return false;
+            //         }
+            //     })
+            // }else{
+            //     alert('网络错误');
+            // }
+    }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {

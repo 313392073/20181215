@@ -36,17 +36,16 @@
           <div class="ansowerd-btn"><button class="btn">提交答案</button></div>
         </div>
     </div>
-    <div class="tips">
-        <div class="main-tips" style="display: none">
+    <div class="tips" v-show="toggleTips">
+        <div class="main-tips">
           <img class="tip-img" src="../../assets/images/default.png" alt="">
-          <p class="tips-title">本轮结束</p>
+          <p class="tips-title">{{tipsTitle}}</p>
           <div class="tips-msg">
-              <p>恭喜你，本轮答题结束！</p>
-              <p>我们根据你的作答情况，智能为你推送了以下联系，请继续答题以巩固所学知识</p>
+              {{tipsMsg}}
           </div>
           <div class="tips-btn"><button class="tbtn gbtn">继续答题</button></div>
         </div>
-        <div class="main-tips">
+        <div class="main-tips" style="display: none">
           <img class="tip-img" src="../../assets/images/default.png" alt="">
           <p class="tips-title">答题结束</p>
           <div class="tips-msg">
@@ -66,13 +65,19 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
+import base from '../../router/http/base.js'
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
-
+    toggleTips:false,
+    tipsTitle:'本轮结束',
+    tipsMsg:'恭喜你，本轮答题结束！我们根据你的作答情况，智能为你推送了以下联系，请继续答题以巩固所学知识',
+    info:[]
 };
 },
 //监听属性 类似于data概念
@@ -85,7 +90,25 @@ methods: {
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    let self = this;
+    let params = {
+        token:store.state.token
+    }
+    base.getUrl(API.allUrl.batch,params).then(res => {
+        if(res.code == 200 && res.success ==  1) {
+            let params = {
+                token:store.state.token,
+                batch:res.obj,
+                type:1*1
+            }
+            base.getUrl(API.allUrl.course_list,params).then((res) => {
+                if(res.code == 200 && res.success == 1) {
+                    console.log(res.obj)
+                    self.info = res.obj;
+                }
+            })
+        }
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
@@ -210,8 +233,6 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 
 .tips{
     position: absolute;
-    z-index: -1;
-    opacity: 0;
     top: 0;
     right: 0;
     width: 100%;

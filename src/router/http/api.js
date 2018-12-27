@@ -13,6 +13,8 @@ const allUrl = {
     findPyramid:'/v1/api/stu/group/list', //寻找棱锥
     uploadList:'/v1/api/stu/group/list/video', //上传列表
     lookSingPic:'/v1/api/comm/group/list/look', //寻找棱锥查看单个图片
+    groupCondition:'/v1/api/tea/group/repart/condition', //获取分组条件
+    // Groupconditions:'/v1/api/tea/group/repart', //获取分组条件
     
     
 }

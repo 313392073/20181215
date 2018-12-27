@@ -47,7 +47,7 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
-    chooseImg(e){
+    chooseImg(){
         this.$refs.filElem.dispatchEvent(new MouseEvent('click')) 
     },
     uploadImg(){

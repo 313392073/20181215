@@ -14,20 +14,15 @@
                             <label>班级</label>
                             <div class="group-class">
                                 <select name="classd" id="className">
-                                    <option value="">数学二组</option>
-                                    <option value="">数学二组</option>
-                                    <option value="">数学二组</option>
-                                    <option value="">数学二组</option>
+                                    <option>请选择</option>
+                                    <option v-for="(item,index) in sel_class" :key="index" :value="item.sysClassId" >{{item.classname}}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="group-item">
                             <label>分组方式</label>
                             <div class="group-type-box clearfix">
-                                <label class="choose" for="sj"><input type="radio" name="grouptype" id="sj" value="1" checked>随机分组<span></span></label>
-                                <label class="choose" for="sd" ><input type="radio" name="grouptype" id="sd"  value="2">手动分组<span></span></label>
-                                <label class="choose" for="sex"><input type="radio" name="grouptype" id="sex" value="3">性别分组<span></span></label>
-                                <label class="choose" for="yz"><input type="radio" name="grouptype" id="yz" value="4">异质分组<span></span></label>
+                                <label class="choose" v-for="(item,index) in grouptype" :key="index" @click="getGrouptype($event,item.value)" :checked="index==0?true:false"><input type="radio" name="grouptype" :value="item.value">{{item.text}}<span></span></label>
                             </div>
                         </div>
                         <div class="group-item">
@@ -36,7 +31,7 @@
                                 <div class="group-process change-process">
                                     <p><i></i></p>
                                 </div>
-                                <input type="text" readonly name="num" value="4人" id="group-num">
+                                <input type="text" readonly name="num" :value="pnum" id="group-num">
                             </div>
                         </div>
                         <div class="group-item">
@@ -45,7 +40,7 @@
                                 <div class="group-process change-process">
                                     <p><i></i></p>
                                 </div>
-                                <input type="text" readonly name="num" value="4组" id="group-num">
+                                <input type="text" readonly name="num" value="4" id="group-num">
                             </div>
                         </div>
                         <div class="group-desc">
@@ -60,10 +55,10 @@
                 <div class="main-right">
                     <div class="refresh-box"><a href=""><img src="../../assets/images/refresh.png" alt="refresh.png"></a></div>
                     <div class="group-wrapper clearfix">
-                        <div class="item clearfix" v-for="item in 4" :key="item">
+                        <div class="item" v-for="item in 4" :key="item">
                             <div class="item-left">A组</div>
                             <div class="item-right">
-                                <div class="sub-item" v-for="subitem in 4" :key="subitem">
+                                <div class="sub-item" v-for="subitem in 5" :key="subitem">
                                     <img src="../../assets/images/default.png" alt="default">
                                     <p>流星雨</p>
                                 </div>
@@ -74,14 +69,14 @@
             </div>
         </div>
 
-        <div class="tips">
+        <div class="tips" v-show="toggleTips">
             <div class="main-tips">
                 <img class="tip-img" src="../../assets/images/default.png" alt="">
                 <p class="tips-title">确认分组</p>
                 <div class="tips-msg">
-                    <p>已完成小组分配，每组4人，共4组！</p>
+                    {{tipsMsg}}
                 </div>
-                <div class="tips-btn"><button class="cbtn tbtn">确认</button></div>
+                <div class="tips-btn"><button class="cbtn tbtn" @click="HideTip">确认</button></div>
             </div>
         </div>
     </div>
@@ -94,13 +89,47 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
+import base from '../../router/http/base.js'
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
+let grouptype = [
+    {
+        text:'随机分组',
+        value:1,
+    },
+    {
+        text:'最优分组',
+        value:2,
+    },
+    {
+        text:'差异分组',
+        value:3,
+    },
+      {
+        text:'性别分组',
+        value:4,
+    },
+    {
+        text:'手动分组',
+        value:5,
+    },
+    {
+        text:'活跃分组',
+        value:6,
+    },
+]
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
-
+    toggleTips:false,
+    tipsMsg:'已完成小组分配，每组4人，共4组！',
+    grouptype:grouptype,
+    sel_class:[],
+    pnum:5, //默认分组人数
+    defaultValue:2, //默认分组方式
 };
 },
 //监听属性 类似于data概念
@@ -109,11 +138,27 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
-
+    HideTip(){
+        this.toggleTips = false
+    },
+    getGrouptype(e,value){
+        // e.preventDefault();
+        console.log(value)
+        // console.log(e)
+    }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    let self = this;
+    let params = {
+        token:store.state.token
+    }
+    base.getUrl(API.allUrl.groupCondition,params).then((res) => {
+        if(res.code == 200 && res.success == 1) {
+            self.sel_class = res.obj.sel_class;
+            console.log(res.obj)
+        }
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
@@ -181,7 +226,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 .group-type-box{
                     .choose{
                         display: inline-block;
-                        width: 49%;
+                        width: 48%;
                         vertical-align: middle;
                         font-size: 34*0.4*0.02rem;
                         min-height: 90*0.4*0.02rem;
@@ -317,30 +362,30 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         margin-right: 0;
                     }
                     .item-left{
-                        float: left;
-                        width: calc(~"26.56% - 1px");
-                        height: 100%;
+                        width: 100%;
+                        height: 120*0.4*0.02rem;
+                        line-height: 120*0.4*0.02rem;
                         border-right: 1px dashed #e6e6e6;
                         font-size: 48*0.4*0.02rem;
                         display: flex;
                         justify-content: center;
                         align-items: center;
-                        height: 490*0.4*0.02rem;
                     }
                     .item-right{
-                        float: right;
-                        width: 73.44%;
                         text-align: center;
                         font-size: 34*0.4*0.02rem;
                         padding: 40*0.4*0.02rem 20*0.4*0.02rem;
                         .sub-item{
                             float: left;
-                            width: 50%;
+                            width: 25%;
                             margin-bottom: 30*0.4*0.02rem;
                             img{
-                                width: 140*0.4*0.02rem;
-                                height: 140*0.4*0.02rem;
+                                width: 100*0.4*0.02rem;
+                                height: 100*0.4*0.02rem;
                                 margin-bottom: 15*0.4*0.02rem;
+                            }
+                            p{
+                                font-size: 30*0.4*0.02rem;
                             }
                         }
                     }
@@ -352,8 +397,6 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 
 .tips{
     position: absolute;
-    // z-index: -1;
-    // opacity: 0;
     top: 0;
     right: 0;
     width: 100%;

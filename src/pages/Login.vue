@@ -116,10 +116,10 @@ methods: {
                 store.commit(types.USERTYTPE,JSON.parse(res.obj.user).userType)
                 if(JSON.parse(res.obj.user).userType == 0){ //学生
                     // self.$router.push('/stutestreport')
-                    self.$router.push('/stuassigngroupcase')
+                    self.$router.push('/stuvideoshare')
                 }else if(JSON.parse(res.obj.user).userType == 1){ //老师
                     // self.$router.push('/teapracticreport')
-                    self.$router.push('/teapracticreport')
+                    self.$router.push('/tealookingforpyramid')
                 }else{
                     self.tipsMsg = '请先登录！！'
                     self.toggleTips = true;
