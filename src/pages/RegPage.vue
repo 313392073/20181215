@@ -55,6 +55,7 @@ import common from '../assets/js/common.js'
 import base from '../router/http/base.js'
 import API from '../router/http/api.js'
 import store from '../store/store';
+import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {},
@@ -78,28 +79,6 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
-    // getLogins(){
-    //     let self = this;
-    //     const params =  {
-    //         userLoginname: 'qijing5',
-    //         userPassword: 'Qj123456',
-    //         headImage: 'default.jpg',
-    //         userType: 0,
-    //         classId: ''
-    //     }
-    //    let datas =  base.postUrl(API.allUrl.regist,params);
-    //    datas.then((res) => {
-    //        console.log(res.success)
-    //        if(res.success && (res.success == true)){
-    //            console.log(res)
-    //            self.$router.push('/login')
-    //        }else{
-    //            alert(res.msg)
-    //            console.log(res.msg)
-    //        }
-           
-    //    })
-    // },
     //选图片
     chooseImg(e){
         this.$refs.filElem.dispatchEvent(new MouseEvent('click')) 
@@ -122,13 +101,28 @@ methods: {
         let reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = function(){
-            self.defaultUrl = reader.result
+             var formData = new FormData();
+                 formData.append("file", self.$refs.filElem.files[0]);
+                 Axios({
+                     method:'post',
+                     baseURL:base.baseURL,
+                     url:API.allUrl.uploadfile+'?token=1',
+                     data:formData,
+                 }).then((res) => {
+                     if(res.data.code == 200 && res.data.success == 1) {
+                         self.defaultUrl = res.data.obj;
+                     }else{
+                        self.tipsMsg = '网络错误，上传头像失败'
+                        self.toggleTips = true;
+                        return false;
+                     }
+                 })
         }
     },
     checkForm(){
         let self = this;
-        self.dataObj.filePath = self.$refs.filElem.files[0]?self.$refs.filElem.files[0].name:'';
-        if(self.dataObj.filePat == '' || self.dataObj.username == '' || self.dataObj.pwd == '' || self.dataObj.repwd == '') {
+        // self.dataObj.filePath = self.$refs.filElem.files[0]?self.$refs.filElem.files[0].name:'';
+        if(self.defaultUrl == '' || self.dataObj.username == '' || self.dataObj.pwd == '' || self.dataObj.repwd == '') {
             self.tipsMsg = '请将信息输入完整后才能提交'
             self.toggleTips = true;
             return false;
@@ -151,11 +145,10 @@ methods: {
         let params = {
             userLoginname : self.dataObj.username,
             userPassword : self.dataObj.pwd,
-            headImage : self.dataObj.filePath,
+            headImage : self.defaultUrl,
             userType : store.state.userType*1?store.state.userType*1:'0',
             classId : store.state.chooseCourse*1?1:'1'
         }
-        console.log(params)
         base.postUrl(API.allUrl.regist,params).then((res) => {
             if(res.code == 200 && res.success == 1){
                 self.tipsMsg = '注册成功，立即去登陆';

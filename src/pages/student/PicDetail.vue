@@ -10,21 +10,21 @@
         <div class="main-box">
             <div class="info-box clearfix">
                 <div class="info-left">
-                    <img src="/images/default.png" alt="">
-                    <span>B组</span>
+                    <img :src="info.headImage" alt="">
+                    <span>{{info.group}}组</span>
                 </div>
                 <div class="info-right">
-                    <p class="info-title">王心怡</p>
-                    <p class="info-time">上传时间：2018年09月18日 12:23:06</p>
+                    <p class="info-title">{{info.likesUserLoginname}}</p>
+                    <p class="info-time">上传时间：{{getTime(info.createTime)}}</p>
                 </div>
             </div>
             <div class="video-box">
-                <video src=""></video>
+                <img :src="info.uploadNetUrl" alt="暂无图片">
             </div>
             <div class="back-btn">
                 <div class="bg-btn">
                     <p><i class="iconfont icon-xin"></i></p>
-                    <span>20</span>
+                    <span>{{info.likesUserNum}}</span>
                 </div>
             </div>
         </div>
@@ -39,26 +39,59 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
+import share from '../../router/http/share.js'
+import base from '../../router/http/base.js'
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
-
+    info:{
+        group:'',
+        likesUserLoginname:'',
+        createTime:'',
+        likesUserNum:0,
+        uploadNetUrl:'',
+        headImage:''
+    }
 };
 },
 //监听属性 类似于data概念
-computed: {},
+computed: {
+    
+},
 //监控data中的数据变化
 watch: {},
 //方法集合
 methods: {
-
+    getTime(time){
+        return share.formatTime(time/1000)
+    }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    let attId = this.$route.params.attids;
+    this.info.group = this.$route.params.groupInfo;
+    this.info.headImage = this.$route.params.headImage;
+    let params = {
+        token:store.state.token,
+        attid:attId
+    }
+    base.getUrl(API.allUrl.lookSingPic,params).then((res) => {
+        console.log(res)
+        if(res.code == 200 && res.success == 1) {
+            this.info.likesUserLoginname = res.obj.likesUserLoginname;
+            this.info.createTime = res.obj.createTime;
+            this.info.uploadNetUrl = res.obj.uploadNetUrl;
+            this.info.likesUserNum = res.obj.likesUserNum;
+            this.info.likesUserNum = res.obj.likesUserNum;
+        }
+    })
+    console.log()
+    // console.log(this.$route.params.attid)
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
@@ -128,12 +161,12 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         }
         .video-box{
             width: 100%;
-            height: 829*0.4*0.02rem;
-            background-color: #39cc6c;
+            min-height: 700*0.4*0.02rem;
             margin-top: 40*0.4*0.02rem;
-            video{
-                width: 100%;
-                height: 100%;
+            text-align: center;
+            img{
+                max-width: 100%;
+                max-height: 100%;
             }
         }
         .back-btn{

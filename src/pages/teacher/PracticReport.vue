@@ -11,10 +11,10 @@
             <div class="situation-box">
                 <p class="main-title">测试概况:</p>
                 <div class="situation-detail clearfix">
-                    <div class="item time clearfix"><p class="desc-time">时间: </p><div class="detail-time"><p class="start-time">05-24 14:26</p><p class="end-time">05-24 14:26</p></div></div>
-                    <div class="item num">题量: <span class="order">08</span></div>
-                    <div class="item submitd">已交: <span class="rights">16/16</span></div>
-                    <div class="item score">平均分: <span class="time">14.08分</span></div>
+                    <div class="item time clearfix"><p class="desc-time">时间: </p><div class="detail-time"><p class="start-time">{{timestampToTime(resSituation.min_time)}}</p><p class="end-time">{{timestampToTime(resSituation.max_time)}}</p></div></div>
+                    <div class="item num">题量: <span class="order">{{resSituation.course_num}}</span></div>
+                    <div class="item submitd">已交: <span class="rights">{{resSituation.answered}}</span></div>
+                    <div class="item score">平均分: <span class="time">{{resSituation.average}}分</span></div>
                 </div>
             </div>
 
@@ -38,14 +38,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item,index) in 5" :key="item">
-                                <td><i>{{index+1}}</i><img src="../../assets/images/default.png" class="head-pic" alt="default"><span>流星雨</span></td>
-                                <td>100分</td>
-                                <td class="use-time">09分45秒</td>
+                            <tr v-for="(item,index) in scoreDetail" :key="index" :class="index>5?trHide:''">
+                                <td><i>{{index+1}}</i><img :src="item.user_head_image" class="head-pic" :alt="item.user_name"><span>{{item.user_name}}</span></td>
+                                <td>{{item.sum_score}}分</td>
+                                <td class="use-time">{{getMinute(item.sum_usetime)}}</td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="btn-box"><a href="javascript:void(0)" class="cbtn">查看全部</a></div>
+                    <div class="btn-box"><a href="javascript:void(0)" class="cbtn" @click="showAlltr">{{btnMsg}}</a></div>
                 </div>
             </div>
         </div>
@@ -60,7 +60,11 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
-import echarts from 'echarts'
+import echarts from 'echarts';
+import share from '../../router/http/share.js'
+import base from '../../router/http/base.js'
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
@@ -69,7 +73,17 @@ data() {
 return {
     charts:'',
     optionX:['基础知识','计算能力','建模能力'],
-    optionY:[2.6, 5.9, 9.0]
+    optionY:[2.6, 5.9, 9.0],
+    btnMsg:'查看全部',
+    trHide:'tr-hide',
+    resSituation:{
+        max_time:'',
+        min_time:'',
+        course_num:'',
+        answered:'',
+        average:''
+    },
+    scoreDetail:[]
 };
 },
 //监听属性 类似于data概念
@@ -78,6 +92,21 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
+     showAlltr(){ //查看更多
+        if(this.trHide == 'tr-hide'){
+            this.trHide = 'tag';
+            this.btnMsg = '隐藏'
+        }else{
+            this.trHide = 'tr-hide';
+            this.btnMsg = '查看全部'
+        }
+    },
+    getMinute(min){
+        return share.getMinute(min);
+    },
+    timestampToTime(time){
+        return share.timestampToTime(time/1000);
+    },
     gernerateId(index){
         return 'echart'+(index*1+1)
     },
@@ -142,7 +171,32 @@ methods: {
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    let self = this;
+    let params = {
+        token:store.state.token
+    }
+    base.getUrl(API.allUrl.batch,params).then(res => {
+        if(res.code == 200 && res.success ==  1) {
+            let params1 = {
+                token:store.state.token,
+                userType:store.state.userType*1,
+                batch:res.obj
+            }
+            base.getUrl(API.allUrl.onlineTest,params1).then((res) => {
+                console.log(res)
+                if(res.code == 200 && res.success == 1) {
+                    self.resSituation.max_time = res.obj.class_report[0]['max_time'];
+                    self.resSituation.min_time = res.obj.class_report[0]['min_time'];
+                    self.resSituation.course_num = res.obj.class_report[0]['sum_course_num'];
+                    self.resSituation.answered = res.obj.class_report[0]['test_usernum']+'/'+res.obj.score_rank.length;
+                    self.resSituation.average = res.obj.class_report[0]['sum_score']*1/res.obj.class_report[0]['test_usernum'];
+                    self.scoreDetail = res.obj.score_rank;
+                }else{
+                    console.log(res)
+                }
+            })
+        }
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
@@ -295,6 +349,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                                 &.use-time{
                                     color: #6c63ff;
                                 }
+                            }
+                            &.tr-hide{
+                                display: none;
                             }
                         }
                     }

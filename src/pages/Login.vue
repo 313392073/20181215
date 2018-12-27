@@ -106,15 +106,19 @@ methods: {
             userPassword:self.dataObj.pwd
         }
         base.getUrl(API.allUrl.login,params).then((res) => {
+            console.log(res)
             if(res.code == 200 && res.success == 1){
                 let obj = {
                     userInfo:res.obj.user,
                     token:res.obj.token
                 }
                 store.commit(types.LOGIN,obj)
+                store.commit(types.USERTYTPE,JSON.parse(res.obj.user).userType)
                 if(JSON.parse(res.obj.user).userType == 0){ //学生
-                    self.$router.push('/stuonlinetest')
+                    // self.$router.push('/stutestreport')
+                    self.$router.push('/stuassigngroupcase')
                 }else if(JSON.parse(res.obj.user).userType == 1){ //老师
+                    // self.$router.push('/teapracticreport')
                     self.$router.push('/teapracticreport')
                 }else{
                     self.tipsMsg = '请先登录！！'

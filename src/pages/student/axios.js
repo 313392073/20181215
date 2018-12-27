@@ -797,3 +797,37 @@ function scrollToadd(id){
      window.setTimeout("$('#time').html("+wait_time+");daojishi();",1000);
    }
  }
+
+
+ /**
+  * mapState 辅助函数
+  * 当一个组件需要获取多个状态的时候  将这些状态都声明为计算属性会有些重复和冗余
+  * 
+  * 为解决这个问题 我们可以使用mapState 辅助函数帮助我们生成计算属性 
+  * 
+  * 
+  */
+
+  import {mapState} from 'vuex';
+  export default {
+      computed: mapState({
+          count: state => state.count,
+          countAlisa:'count',
+          countPlusLoaccState(state) {
+              return state.count+this.localCount
+          }
+      })
+  }
+  
+  class_batch: "88"
+  course_item: "{"q":["正棱锥必须具备的两个条件为（）；","（）。"],"c":["底面是多边形","底面是正多边形","其余各面是全等的等腰三角形","有一个面是等腰三角形的棱锥"],"num":"1(2)"}"
+  create_time: 1545625249000
+  is_right: 1
+  my_answer: "{"a":["A","B"]}"
+  right_answer: "{"a":["A","B"]}"
+  score: "2"
+  sys_class_id: 6
+  user_head_image: "03.png"
+  user_loginname: "漆静01"
+  user_name: "漆静01"
+  usetime: 60

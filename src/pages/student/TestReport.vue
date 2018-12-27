@@ -11,10 +11,10 @@
             <div class="situation-box">
                 <p class="main-title">成绩概况:</p>
                 <div class="situation-detail clearfix">
-                    <div class="item">分数: <span class="score">98</span></div>
-                    <div class="item">班级排名: <span class="order">08</span></div>
-                    <div class="item">正确率: <span class="rights">80%</span></div>
-                    <div class="item">用时: <span class="time">14分08秒</span></div>
+                    <div class="item">分数: <span class="score">{{resSituation.score}}分</span></div>
+                    <div class="item">班级排名: <span class="order">{{resSituation.rank}}</span></div>
+                    <div class="item">正确率: <span class="rights">{{Math.ceil(resSituation.rightPercent/100)*100+'%'}}</span></div>
+                    <div class="item">用时: <span class="time">{{getMinute(resSituation.useTime)}}</span></div>
                 </div>
             </div>
 
@@ -30,14 +30,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item,index) in 5" :key="item">
-                                <td><i>{{index+1}}</i><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span></td>
-                                <td><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span></td>
-                                <td class="use-time">+5分</td>
+                            <tr v-for="(item,index) in scoreDetail" :key="index">
+                                <td class="td-left"><i>{{index+1}}</i><span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).a" :key="subIndex">{{subItem}}</span></td>
+                                <td><span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).a" :key="rsubIndex">{{rsubItem}}</span></td>
+                                <td class="use-time">{{item.score}}分</td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="total">总得分: <span>14</span>分</div>
+                    <div class="total">总得分: <span>{{totalScore}}</span>分</div>
                 </div>
                 <div class="detail-right">
                     <p class="main-title">成绩排行榜:</p>
@@ -50,14 +50,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item,index) in 5" :key="item">
-                                <td><i>{{index+1}}</i><img src="../../assets/images/default.png" class="head-pic" alt="default"><span>流星雨</span></td>
-                                <td>100分</td>
-                                <td class="use-time">09分45秒</td>
+                            <tr v-for="(item,index) in scoreDetail" :key="index" :class="index>5?trHide:''">
+                                <td><i>{{index+1}}</i><img :src="item.user_head_image" class="head-pic" :alt="item.user_name"><span>{{item.user_name}}</span></td>
+                                <td>{{item.score}}分</td>
+                                <td class="use-time">{{getMinute(item.usetime)}}</td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="btn-box"><a href="javascript:void(0)" class="cbtn">查看全部</a></div>
+                    <div class="btn-box"><a href="javascript:void(0)" class="cbtn" @click="showAlltr">{{btnMsg}}</a></div>
                 </div>
             </div>
         </div>
@@ -72,30 +72,87 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
+import base from '../../router/http/base.js'
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
+import share from '../../router/http/share.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
-
+    resSituation:{
+        score:'',
+        rank:'',
+        rightPercent:'',
+        useTime:''
+    },
+    btnMsg:'查看全部',
+    trHide:'tr-hide',
+    scoreDetail:[]
 };
 },
 //监听属性 类似于data概念
-computed: {},
+computed: {
+    totalScore:function(){
+        var score = 0;
+        this.scoreDetail.forEach((item,index) => {
+            score += item.score*1;
+        })
+        return score;
+    }
+},
 //监控data中的数据变化
 watch: {},
 //方法集合
 methods: {
-
+    showAlltr(){ //查看更多
+        if(this.trHide == 'tr-hide'){
+            this.trHide = 'tag';
+            this.btnMsg = '隐藏'
+        }else{
+            this.trHide = 'tr-hide';
+            this.btnMsg = '查看全部'
+        }
+    },
+    getMinute(min){
+        return share.getMinute(min);
+    }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    let self = this;
+    let params = {
+        token:store.state.token
+    }
+    base.getUrl(API.allUrl.batch,params).then(res => {
+        console.log(res)
+        if(res.code == 200 && res.success ==  1) {
+            let params1 = {
+                token:store.state.token,
+                userType:store.state.userType*1,
+                batch:res.obj
+            }
+            base.getUrl(API.allUrl.onlineTest,params1).then((res) => {
+                if(res.code == 200 && res.success == 1) {
+                    this.resSituation.score = res.obj.score_rank[0]['sum_score']
+                    this.resSituation.rank = res.obj.score_rank[0]['sys_class_id']
+                    this.resSituation.rightPercent = res.obj.score_rank[0]['test_user_rightnum']
+                    this.resSituation.useTime = res.obj.score_rank[0]['sum_usetime']
+                    this.scoreDetail = res.obj.score_report
+                    console.log(res)
+                }else{
+                    console.log(res)
+                }
+                
+            })
+        }
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
-
+    
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前
@@ -209,12 +266,20 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                                     background-color: #fc8628;
                                     color: #ffffff;
                                     margin-right: 10*0.4*0.02rem; 
+                                    text-align: center;
                                 }
                                 &.use-time{
                                     color: #6c63ff;
                                 }
                                 span{
                                     margin-left: 5*0.4*0.02rem;
+                                }
+                                &.td-left{
+                                    padding-left: 50*0.4*0.02rem;
+                                    text-align: left;
+                                    i{
+                                        text-align: center;
+                                    }
                                 }
                             }
                         }
@@ -269,6 +334,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                                 &.use-time{
                                     color: #6c63ff;
                                 }
+                            }
+                            &.tr-hide{
+                                display: none;
                             }
                         }
                     }

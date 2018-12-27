@@ -102,6 +102,7 @@ function getUrl(url,params){
     })
 }
 export default  {
+    baseURL,
     getUrl,
     postUrl 
 }

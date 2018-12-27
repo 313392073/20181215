@@ -9,21 +9,21 @@
          <h3 class="title">视频上传列表</h3>
         <div class="main-box">
             <div class="group-wrapper clearfix">
-                <div class="item" v-for="item in 4" :key="item">
-                    <p class="group-name">A组</p>
-                    <div class="sub-item clearfix" v-for="subitem in 4" :key="subitem">
+                <div class="item" v-for="(item, key, index) in setItem" :key="index">
+                    <p class="group-name">{{key}}组</p>
+                    <div class="sub-item clearfix" v-for="(subitem,subIndex) in item" :key="subIndex" @click="goDetail(subitem['attid'],key,subitem['user_head_image'])">
                         <div class="left-img">
-                            <img src="../../assets/images/group-pic.png" alt="">
+                            <img :src="subitem.upload_net_url" :alt="subitem.user_name">
                         </div>
                         <div class="right-desc">
-                            <div class="header-box"><img src="../../assets/images/default.png" alt="" srcset=""></div>
-                            <p class="desc-name">流星雨</p>
+                            <div class="header-box"><img :src="subitem.user_head_image" :alt="subitem.user_name"></div>
+                            <p class="desc-name">{{subitem.user_name}}</p>
                             <div class="go-detail">
-                                <span><i class="iconfont icon-xin"></i> 45</span>
+                                <span><i class="iconfont icon-xin"></i>{{subitem.likes_user_num}} <input type="hidden" :value="sumZan(subitem.likes_user_num)"/></span>
                             </div>
                         </div>
                     </div>
-                    <div class="desc">共获得 <span>47</span>个赞</div>
+                    <div class="desc">共获得 <span>{{totalZan}}</span>个赞</div>
                 </div>
             </div>
         </div>
@@ -38,26 +38,78 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
+import share from '../../router/http/share.js'
+import base from '../../router/http/base.js'
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
-
+    groupList:[],
+    totalZan:0
 };
 },
 //监听属性 类似于data概念
-computed: {},
+computed: {
+    setItem(){
+        let obj = this.getAllkey();
+        this.groupList.forEach((item,index) => {
+            obj[item['groupname']].push(item)
+        })
+        return obj;
+    }
+},
 //监控data中的数据变化
 watch: {},
 //方法集合
 methods: {
-
+    getAllkey(){
+        let arr = [];
+        for(var i=0;i<this.groupList.length;i++){
+            arr.push(this.groupList[i]['groupname'])
+        }
+        let brr = share.uniqArr(arr);
+        let obj = {};
+        brr.forEach((item,index)  => {
+            obj[item] = [];
+        })
+        console.log(obj)
+        return obj;
+    },
+    sumZan(num){
+        let sum = 0;
+            sum += num;
+            this.totalZan = sum;
+            return sum;
+    },
+    goDetail(attid,group,headImage){
+        let attId = attid; 
+        this.$router.push({name:'PicDetail',params:{attids:attId,groupInfo:group,headImage:headImage}})
+    }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    let self = this;
+    let params = {
+        token:store.state.token
+    }
+    base.getUrl(API.allUrl.batch,params).then(res => {
+        if(res.code == 200 && res.success ==  1) {
+            let params = {
+                token:store.state.token,
+                batch:res.obj,
+                listtype:1*1
+            }
+            base.getUrl(API.allUrl.uploadList,params).then((res) => {
+                if(res.code == 200 && res.success == 1) {
+                    self.groupList = res.obj;
+                }
+            })
+        }
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
