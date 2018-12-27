@@ -164,19 +164,19 @@ methods: {
     },
     subForm(){ //提交数据
         let answerlist = [];
-        this.list.keys.forEach((item,index) => {
-            console.log(item)
+        Object.keys(this.list).forEach((item,index) => {
+            var obj = {};
+            obj.answer = [];
+            let answers = {a:[]};
+            let answerscore = 0;
+            let isRight = false;
+            this.list[item].arr.forEach((subitem,subindex) => {
+                answers.a.push(subitem.answer);
+                answerscore += subitem.score;
+            })
+           console.log(obj)
         })
-        // this.list.forEach((item,index) => {
-        //     console.log(item.arr)
-        // })
-        // let paramd = {
-        //     token:store.state.token,
-        //     batch:this.batch,
-        //     exams:{
-
-        //     }
-        // }
+       
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
