@@ -8,16 +8,16 @@
         <h3 class="title">侧面积公式</h3>
         <div class="list-box">
               <div class="list" v-for="(item,index) in questList" :key="index">
-                <p class="list-req"><span>题目0{{index+1}}</span>： <i v-for="(req,rindex) in JSON.parse(item.course_item).q" :key="rindex">{{req}}<input type="text" class="answer-input" maxlength='1'
- @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; </i></p>
+                <p class="list-req"><span>题目0{{index+1}}</span>： <i v-for="(req,rindex) in JSON.parse(item.course_item).q" :key="rindex">{{req}}<input type="text" class="answer-input" :id="getItem(index,rindex+1)" :ref="getItem(index,rindex)" />; </i></p>
                 <div class="answer-box clearfix">
                     <div class="answerlist-box">
-                        <div class="answerlist" v-for="(answer,aindex) in JSON.parse(item.course_item).c" :key="aindex" ><span class="answer-num">{{order[aindex]}}</span> :{{answer}}</div>
+                        <div class="answerlist" v-for="(answer,aindex) in JSON.parse(item.course_item).c" :key="aindex" @click="checkAnswer(aindex,index,JSON.parse(item.course_item).q.length,item.course_id,item.item_score,JSON.parse(item.answer).a[aindex])" ><span class="answer-num">{{order[aindex]}}</span> :{{answer}}</div>
                     </div>
                     <div>
                     </div>
                 </div>
             </div>
+       
           <p class="list-req answerd-req"><span>答案：</span></p>
           <div class="answerd clearfix">
               <div class="item">
@@ -48,7 +48,7 @@
                   </div>
               </div>
           </div>
-          <div class="ansowerd-btn"><button class="btn" @click="subForm">提交答案</button></div>
+          <div class="ansowerd-btn"><button class="btn">提交答案</button></div>
         </div>
     </div>
     <div class="tips" v-show="toggleTips">
@@ -99,22 +99,18 @@ return {
     bath:'',
     batch:'',
     order:share.order,
-    questList:[]
+    questList:[],
+    arr:[]
 };
 },
 //监听属性 类似于data概念
 computed: {
-    value1:function(){
-        // if(this.value1.length>1){
-        //     return;
-        // }
-        return this.value1.toUpperCase();
-    },
     list:function() {
         var obj = {};
         this.questList.forEach((item,index) => {
             obj[index] = {};
-            obj[index].arr = [];  //具体的答案和得分情况
+            obj[index].alenth = 0;  //已经作答的数量
+            obj[index].arr = [];  //具体的答案
         })
         return obj;
     },
@@ -125,18 +121,8 @@ watch: {
 },
 //方法集合
 methods: {
-    getValue(e,index,nowIndex,rightAnswer,rightScore,courseItemId){
-        let rAnswer = rightAnswer;
-        let rScore = rightScore;
-        let nowValue = e.currentTarget.value;
-        let obj = {
-            answer:nowValue.toUpperCase(),
-            isRight:rightAnswer == nowValue.toUpperCase()?true:false,
-            score:rightAnswer == nowValue.toUpperCase()?rightScore:0,
-            courseItemId : courseItemId
-        }
-        this.list[index].arr[nowIndex] = obj;
-        console.log(this.list)
+    getItem(index,total){
+        return 'c_'+index+'_'+total;
     },
     HideTip(){
         this.toggleTips = false
@@ -151,9 +137,9 @@ methods: {
             console.log(res)
             if(res.code == 200 && res.success == 1){
                 res.obj.forEach((item,index) => {
-                    // if(index < 3) {
+                    if(index < 3) {
                         this.questList.push(item)
-                    // }
+                    }
                 })
             }else{
                 self.tipsMsg = '网络错误，请稍后再试'
@@ -162,28 +148,28 @@ methods: {
             }
         })
     },
-    subForm(){ //提交数据
-        let answerlist = [];
-        Object.keys(this.list).forEach((item,index) => {
-            var obj = {};
-            obj.answer = [];
-            let answers = {a:[]};
-            let answerscore = 0;
-            let isRight = false;
-            this.list[item].arr.forEach((subitem,subindex) => {
-                answers.a.push(subitem.answer);
-                answerscore += subitem.score;
-            })
-            obj.answer.push(answers);
-            obj.score = answerscore;
-           console.log(obj)
-           console.log(answerscore)
-        })
+    checkAnswer(index,rindex,total,course_id,score){
+        if(this.list[rindex].alenth >= total) {
+            this.tipsMsg = '此题已经作答'
+            this.toggleTips = true;
+            return;
+        }
+        let obj = {
+            num: ++this.list[rindex].alenth,
+            rnum:rindex,
+            answer:index,
+            courseId:course_id
+        }
+       this.list[rindex].arr.push(obj)
        
+       var str = 'c_'+[rindex]+'_'+this.list[rindex].alenth;
+       document.getElementById(str).value = this.order[this.list[rindex].arr[this.list[rindex].alenth - 1].answer]
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
+    // let str = '{"q":["正棱锥必须具备的两个条件为（）；","（）。"],"c":["底面是多边形","底面是正多边形","其余各面是全等的等腰三角形","有一个面是等腰三角形的棱锥"],"num":"1(2)"}';
+    // console.log(JSON.parse(str))
     let self = this;
     let params = {
         token:store.state.token
@@ -261,8 +247,6 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 border:none;
                 border-bottom: 1px solid @fcolor;
                 text-align: center;
-                font-size: 40*0.40*0.02rem;
-                color: #333;
             }
         }
         .answerd-req{

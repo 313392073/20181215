@@ -439,6 +439,26 @@ var params = {
 // }
 
 
+// [
+//     {
+//       "answer": "string",
+//       "classBatch": "string",
+//       "courseItemId": 0,
+//       "createTime": "2018-12-28T05:16:31.203Z",
+//       "id": 0,
+//       "isRight": 0,
+//       "score": "string",
+//       "useTime": 0,
+//       "userLoginname": "string"
+//     }
+//   ]
+
+// answer: "A"
+// courseItemId: 3
+// isRight: true
+// score: 1
+
+
  // var obj = {};
 // for(var i = 1; i < 20; i++){
 //     var tmp = (i < 10 ? "0" + i : i);
@@ -494,3 +514,70 @@ state: 0
     answer.push(index); //回答题目的时候  就记录到answer 里面
     if(index)
  }
+
+
+
+
+
+
+
+
+
+
+
+
+ $(function(){
+    var tag = false;
+    var startx = 0;
+    var left = 0;
+    var bgleft = 0;
+    var len = $(".change-process").width();
+    $(".change-process").on("mousedown",'i',function(e){
+        processDown(e);
+    })
+    $(".change-process").on('mousemove',function(e){
+        proressmove(e)
+    })
+
+    $(".change-process").on("touchstart",'i',function(e){
+        processDown(e);
+    })
+    $(".change-process").on('touchmove',function(e){
+        proressmove(e)
+    })
+    $(document).mouseup(function() {
+        proressend()
+    });
+
+    function processDown(e){
+        tag = true;
+        if(e.originalEvent.touches){
+            startx = e.originalEvent.targetTouches[0].pageX - left;
+        }else{
+            startx = e.pageX - left;
+        }
+    }
+
+    function proressend(){
+        flag = false;
+    }
+    function proressmove(e){
+        if(tag) {
+            if(e.originalEvent.touches){
+                left = e.originalEvent.targetTouches[0].pageX - startx;
+            }else{
+                left = e.pageX - startx;
+            }
+            
+            if(left <= 0) {
+                left = 0;
+            }else if(left > len) {
+                left = len;
+            }
+            $(".change-process p").width(left)
+            var num = Math.floor((left*16)/len)
+            $("#group-num").val(num)
+        }
+        e.preventDefault();
+    }
+})

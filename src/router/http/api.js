@@ -9,12 +9,13 @@ const allUrl = {
     batch:'/v1/api/course/batch',//批次（学生）
     course_m_info:'/v1/api/comm/course_m_info',//批次（学生）
     course_list:'/v1/api/course/list',//获取题型(学生)
+    courseSubmit:'/v1/api/course/submit', //提交答案
     onlineTest:'/v1/api/comm/scorereport/onlineTest',//在线测试成绩单
     findPyramid:'/v1/api/stu/group/list', //寻找棱锥
     uploadList:'/v1/api/stu/group/list/video', //上传列表
     lookSingPic:'/v1/api/comm/group/list/look', //寻找棱锥查看单个图片
     groupCondition:'/v1/api/tea/group/repart/condition', //获取分组条件
-    // Groupconditions:'/v1/api/tea/group/repart', //获取分组条件
+    getAssignTeam:'/v1/api/tea/group/repart', //获取分配小组
     
     
 }

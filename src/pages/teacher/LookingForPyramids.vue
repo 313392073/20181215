@@ -50,42 +50,36 @@
                             <p>2、“分组人数”和“小组数量”中确顶一个参数，另外一个参数会自动调整</p>
                             <p>3、点击学生头像即可指定组长</p>
                         </div>
-                        <div class="group-submit"><a href="javascript:void(0)" class="sbtn" @click="makeGroup">确认分组</a></div>
+                        <div class="group-submit"><a href="javascript:void(0)" class="sbtn">确认分组</a></div>
                     </form>
                 </div>
                 <div class="main-right">
-                    <div class="refresh-box"><a href="javascript:void(0)"><img @click="getrefresh" src="../../assets/images/refresh.png" alt="refresh.png"></a></div>
+                    <div class="refresh-box"><a href=""><img src="../../assets/images/refresh.png" alt="refresh.png"></a></div>
                     <div class="group-wrapper clearfix">
-                        <div v-if="checkValue != 4" class="item" v-for="(item,index) in groupList" :key="getZm(index)">
+                        <div  v-if="checkValue != 4" class="item" v-for="(item,index) in groupList" :key="getZm(index)">
                             <div class="item-left">{{getZm(index)}}组</div>
-                            <div class="box-item">
-                                <div class="item-right clearfix">
-                                    <div class="sub-item" v-for="(subItem,subIndex) in item" :key="getZm(subIndex)" @mousedown="dragdown($event)" @touchstart="dragdown($event)" @mousemove="dragmove($event)"  @touchmove="dragmove($event)" @mouseup="dragend" @touchend="dragend">
-                                        <img :src="subItem.userHeadImage" :alt="subIndex">
-                                        <p>{{subItem.userName}}</p>
-                                    </div>
+                            <div class="item-right clearfix">
+                                <div class="sub-item" v-for="(subItem,subIndex) in item" :key="getZm(subIndex)">
+                                    <img :src="subItem.userHeadImage" :alt="subIndex">
+                                    <p>{{subItem.userName}}</p>
                                 </div>
                             </div>
                         </div>
                         <div class="item" v-for="(item,menIndex) in groupList.men" :key="getZm(menIndex)" v-if="checkValue == 4 && groupList.men.length > 0">
                             <div class="item-left">男{{getZm(menIndex)}}组</div>
-                            <div class="box-item">
-                                <div class="item-right clearfix">
-                                    <div class="sub-item" v-for="(subItem,mesubIndex) in item" :key="getZm(mesubIndex)" @mousedown="dragdown($event)" @touchstart="dragdown($event)" @mousemove="dragmove($event)"  @touchmove="dragmove($event)" @mouseup="dragend" @touchend="dragend">
-                                        <img :src="subItem.userHeadImage" :alt="mesubIndex">
-                                        <p>{{subItem.userName}}</p>
-                                    </div>
+                            <div class="item-right clearfix">
+                                <div class="sub-item" v-for="(subItem,mesubIndex) in item" :key="getZm(mesubIndex)">
+                                    <img :src="subItem.userHeadImage" :alt="mesubIndex">
+                                    <p>{{subItem.userName}}</p>
                                 </div>
-                             </div>
+                            </div>
                         </div>
                         <div class="item" v-for="(item,womenindex) in groupList.women" :key="womenindex" v-if="checkValue == 4 && groupList.women.length > 0">
                             <div class="item-left">女{{getZm(womenindex)}}组</div>
-                            <div class="box-item">
-                                <div class="item-right clearfix">
-                                    <div class="sub-item" v-for="(subItem,wosubIndex) in item" :key="subItem.userName" @mousedown="dragdown($event)" @touchstart="dragdown($event)" @mousemove="dragmove($event)"  @touchmove="dragmove($event)" @mouseup="dragend" @touchend="dragend">
-                                        <img :src="subItem.userHeadImage" :alt="wosubIndex">
-                                        <p>{{subItem.userName}}</p>
-                                    </div>
+                            <div class="item-right clearfix">
+                                <div class="sub-item" v-for="(subItem,wosubIndex) in item" :key="subItem.userName">
+                                    <img :src="subItem.userHeadImage" :alt="wosubIndex">
+                                    <p>{{subItem.userName}}</p>
                                 </div>
                             </div>
                         </div>
@@ -95,8 +89,7 @@
         </div>
         <div class="tips" v-show="toggleTips">
             <div class="main-tips">
-                 <i class="iconfont icon-guanbi1" @click="HideTip"></i>
-                <img class="tip-img" src="../../assets/images/group.jpg" alt="">
+                <img class="tip-img" src="../../assets/images/default.png" alt="">
                 <p class="tips-title">确认分组</p>
                 <div class="tips-msg">
                     {{tipsMsg}}
@@ -164,29 +157,15 @@ return {
     grouptype:grouptype,
     sel_class:[],
     defaultValue:2, //默认分组方式
-    groupList:[],
-    flags:false, //拖拽
-    position: { x: 0, y: 0 },
+    groupList:[]
 };
 },
 //监听属性 类似于data概念
-computed: {
-    allmener(){
-        return this.groupList.men || this.groupList.women?this.groupList.men.length+this.groupList.women.length:this.groupList.length
-    }
-},
+computed: {},
 //监控data中的数据变化
 watch: {},
 //方法集合
 methods: {
-    getrefresh(){
-        let params = {
-            token:store.state.token,
-            method:this.checkValue*1,
-            gmaxPnum:this.pnum*1
-        }
-        this.getInit(params)
-    },
     getZm(num){
         return share.order[num];
     },
@@ -202,9 +181,7 @@ methods: {
             method:getGrouptype*1?getGrouptype*1:this.checkValue*1,
             gmaxPnum:this.pnum*1
         }
-        this.getInit(params)
-    },   
-    getInit(params){
+        console.log(params)
         base.postUrl(API.allUrl.getAssignTeam,params).then((res) => {
             console.log(res.obj)
             if(res.code == 200 && res.success == 1) {
@@ -242,29 +219,6 @@ methods: {
     },
     end(){
         this.move.tag = false;
-    },
-    /**拖拽开始 */
-    dragdown(e){
-        console.log(e.currentTarget.parentElement.parentElement.parentElement);
-        if(this.flags) {
-            this.flags = false;
-            let ox = e.currentTarget.offsetLeft;
-            let oy = e.currentTarget.offsetTop;
-            let disx = e.touches[0].clientX - ox;
-            let disy = e.touches[0].clientX - oy;
-            let leftd,topd;
-            e.currentTarget.parentElement
-        }
-    },
-    dragmove(e){
-
-    },
-    dragend(){
-
-    },
-    makeGroup(){ //确认分组
-        this.toggleTips = true;
-        this.tipsMsg =  `已完成小组分配，每${this.pnum}人，共${this.allmener}组！`;
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
@@ -283,12 +237,6 @@ created() {
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
     this.move.len = this.$refs.changeProcess.clientWidth;
-    let params = {
-        token:store.state.token,
-        method:this.checkValue*1,
-        gmaxPnum:this.pnum*1
-    }
-    this.getInit(params)
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前
@@ -498,29 +446,22 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         justify-content: center;
                         align-items: center;
                     }
-                    .box-item{
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
+                    .item-right{
+                        text-align: center;
+                        font-size: 34*0.4*0.02rem;
                         padding: 40*0.4*0.02rem 20*0.4*0.02rem;
-                        .item-right{
-                            width: 100%;
-                            text-align: center;
-                            font-size: 34*0.4*0.02rem;
-                            .sub-item{
-                                float: left;
-                                width: 25%;
-                                margin-bottom: 30*0.4*0.02rem;
-                                position: relative;
-                                img{
-                                    width: 100*0.4*0.02rem;
-                                    height: 100*0.4*0.02rem;
-                                    margin-bottom: 15*0.4*0.02rem;
-                                    border-radius: 50%;
-                                }
-                                p{
-                                    font-size: 30*0.4*0.02rem;
-                                }
+                        .sub-item{
+                            float: left;
+                            width: 25%;
+                            margin-bottom: 30*0.4*0.02rem;
+                            img{
+                                width: 100*0.4*0.02rem;
+                                height: 100*0.4*0.02rem;
+                                margin-bottom: 15*0.4*0.02rem;
+                                border-radius: 50%;
+                            }
+                            p{
+                                font-size: 30*0.4*0.02rem;
                             }
                         }
                     }
@@ -544,27 +485,11 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         width: 1240*0.02*0.4rem;
         height: 830*0.4*0.02rem;
         background-color: #ffffff;
-        background: url("../../assets/images/send-tipbg.jpg") no-repeat center;
-        background-size: contain;
         box-shadow: 0px 0px 5px 3px rgba(0,0,0,.1);
+        border-top: 2px solid #6c63ff;
         text-align: center;
-        padding-top: 20*0.4*0.02rem;
-        position: relative;
-        &>i{
-            position: absolute;
-            width: 80*0.4*0.02rem;
-            height: 80*0.4*0.02rem;
-            top: 60*0.4*0.02rem;
-            right: 60*0.4*0.02rem;
-            font-size: 0.4rem;
-            color: #8e8e8e;
-            border-radius: 50%;
-            box-shadow: 0 0 2px 2px rgba(0, 0, 0,0.2);
-            padding: 3px;
-        }
         .tip-img{
-            margin-top: 30*0.4*0.02rem;
-            max-width: 2.5rem;
+            max-width: 2rem;
         }
         .tips-title{
             text-align: center;

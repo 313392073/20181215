@@ -8,16 +8,34 @@
         <h3 class="title">侧面积公式</h3>
         <div class="list-box">
               <div class="list" v-for="(item,index) in questList" :key="index">
-                <p class="list-req"><span>题目0{{index+1}}</span>： <i v-for="(req,rindex) in JSON.parse(item.course_item).q" :key="rindex">{{req}}<input type="text" class="answer-input" :id="getItem(index,rindex+1)" :ref="getItem(index,rindex)" />; </i></p>
+                <div class="list-req">
+                    <span>题目{{index+1}}</span>：
+                    <!-- 有info -->
+                    <p v-if="JSON.parse(item.course_item).info">{{JSON.parse(item.course_item).info}}</p>
+                     <!-- 题目 -->
+                    <span v-if="JSON.parse(item.course_item).q" v-for="(req,rindex) in JSON.parse(item.course_item).q" :key="rindex">{{req}}
+                        <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
+                    </span>
+                    <!-- bmj -->
+                    <p v-if="JSON.parse(item.course_item).bmj">
+                        {{JSON.parse(item.course_item).bmj}}
+                        <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
+                    </p>
+                    <!-- 体积  -->
+                    <p v-if="JSON.parse(item.course_item).tj">
+                        {{JSON.parse(item.course_item).tj}}
+                        <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
+                    </p>
+                </div>
                 <div class="answer-box clearfix">
-                    <div class="answerlist-box">
-                        <div class="answerlist" v-for="(answer,aindex) in JSON.parse(item.course_item).c" :key="aindex" @click="checkAnswer(aindex,index,JSON.parse(item.course_item).q.length,item.course_id,item.item_score,JSON.parse(item.answer).a[aindex])" ><span class="answer-num">{{order[aindex]}}</span> :{{answer}}</div>
+                    <div class="answerlist-box" style="width:60%;float:left">
+                        <div class="answerlist" v-if="JSON.parse(item.course_item)" v-for="(answer,aindex) in JSON.parse(item.course_item).c" :key="aindex" ><span class="answer-num">{{order[aindex]}}</span> :{{answer}}</div>
                     </div>
-                    <div>
+                    <div class="pic" style="width:40%;float:right;text-align:right">
+                        <img :src="item.course_pic_path?item.course_pic_path:''" alt="">
                     </div>
                 </div>
             </div>
-       
           <p class="list-req answerd-req"><span>答案：</span></p>
           <div class="answerd clearfix">
               <div class="item">
@@ -48,7 +66,7 @@
                   </div>
               </div>
           </div>
-          <div class="ansowerd-btn"><button class="btn">提交答案</button></div>
+          <div class="ansowerd-btn"><button class="btn" @click="subForm">提交答案</button></div>
         </div>
     </div>
     <div class="tips" v-show="toggleTips">
@@ -96,21 +114,21 @@ data() {
 return {
     toggleTips:false,
     tipsMsg:'我们根据你的作答情况，智能为你推送了以下联系，请继续答题以巩固所学知识',
-    bath:'',
-    batch:'',
+    classBatch:'',
     order:share.order,
-    questList:[],
-    arr:[]
+    questList:[]
 };
 },
 //监听属性 类似于data概念
 computed: {
+    value1:function(){
+        return this.value1.toUpperCase();
+    },
     list:function() {
         var obj = {};
         this.questList.forEach((item,index) => {
             obj[index] = {};
-            obj[index].alenth = 0;  //已经作答的数量
-            obj[index].arr = [];  //具体的答案
+            obj[index].arr = [];  //具体的答案和得分情况
         })
         return obj;
     },
@@ -121,8 +139,18 @@ watch: {
 },
 //方法集合
 methods: {
-    getItem(index,total){
-        return 'c_'+index+'_'+total;
+    getValue(e,index,nowIndex,rightAnswer,rightScore,courseItemId){
+        let rAnswer = rightAnswer;
+        let rScore = rightScore;
+        let nowValue = e.currentTarget.value;
+        let obj = {
+            answer:nowValue.toUpperCase(),
+            isRight:rightAnswer == nowValue.toUpperCase()?true:false,
+            score:rightAnswer == nowValue.toUpperCase()?rightScore:0,
+            courseItemId : courseItemId,
+            createTime : share.formatTime(new Date()/1000)
+        }
+        this.list[index].arr[nowIndex] = obj;
     },
     HideTip(){
         this.toggleTips = false
@@ -134,12 +162,10 @@ methods: {
     },
     getCourseList(params){ //获取题型
         base.getUrl(API.allUrl.course_list,params).then(res => {
-            console.log(res)
+            console.log(res.obj)
             if(res.code == 200 && res.success == 1){
                 res.obj.forEach((item,index) => {
-                    if(index < 3) {
-                        this.questList.push(item)
-                    }
+                  this.questList.push(item)
                 })
             }else{
                 self.tipsMsg = '网络错误，请稍后再试'
@@ -148,28 +174,51 @@ methods: {
             }
         })
     },
-    checkAnswer(index,rindex,total,course_id,score){
-        if(this.list[rindex].alenth >= total) {
-            this.tipsMsg = '此题已经作答'
-            this.toggleTips = true;
-            return;
+    subForm(){ //提交数据
+        // this.list //所有的答案和得分情况
+        let arr = []
+        Object.keys(this.list).forEach((item,index) => {
+            var obj = {};
+            obj.answer = '';
+            let answers = {a:[]};
+            let answerscore = 0;
+            obj.isRight = 0;
+            obj.classBatch = this.classBatch;
+            this.list[item].arr.forEach((subitem,subindex) => {
+                answers.a.push(subitem.answer);
+                answerscore += subitem.score;
+                obj.courseItemId = subitem.courseItemId;
+                obj.createTime = subitem.createTime;
+            })
+            obj.answer=answers.a.length>0?JSON.stringify(answers):answers;
+            obj.score = answerscore;
+            obj.useTime = 0;
+            arr.push(obj)
+        })
+        for(var i=0;i<this.questList.length;++i){
+            arr[i]['user_loginname'] = this.questList[i]['user_loginname'];
+            arr[i]['courseItemId'] = this.questList[i]['course_item_id'];
+            // arr[i]['id'] = this.questList[i]['course_id'];
+            if(this.questList[i].answer == arr[i].answer){
+                arr[i].isRight = 1;
+            }
         }
-        let obj = {
-            num: ++this.list[rindex].alenth,
-            rnum:rindex,
-            answer:index,
-            courseId:course_id
-        }
-       this.list[rindex].arr.push(obj)
-       
-       var str = 'c_'+[rindex]+'_'+this.list[rindex].alenth;
-       document.getElementById(str).value = this.order[this.list[rindex].arr[this.list[rindex].alenth - 1].answer]
+        //提交数据
+        let params = {
+            exams:arr
+        } 
+        Axios({
+            method:'post',
+            baseURL:base.baseURL,
+            url:API.allUrl.upload+'?token='+store.state.token+'&batch='+this.classBatch,
+            data:params,
+        }).then((res) => {
+            console.log(res)
+        })
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-    // let str = '{"q":["正棱锥必须具备的两个条件为（）；","（）。"],"c":["底面是多边形","底面是正多边形","其余各面是全等的等腰三角形","有一个面是等腰三角形的棱锥"],"num":"1(2)"}';
-    // console.log(JSON.parse(str))
     let self = this;
     let params = {
         token:store.state.token
@@ -178,6 +227,7 @@ created() {
     base.getUrl(API.allUrl.batch,params).then(res => {
         console.log(res)
         if(res.code == 200 && res.success == 1){
+            this.classBatch = res.obj;
             let params1 = {
                 token:store.state.token,
                 batch:res.obj
@@ -247,6 +297,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 border:none;
                 border-bottom: 1px solid @fcolor;
                 text-align: center;
+                font-size: 40*0.40*0.02rem;
+                color: #333;
+                background-color: transparent;
             }
         }
         .answerd-req{
