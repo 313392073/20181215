@@ -410,6 +410,22 @@ var params = {
       ]
   }
 
+
+//   [
+//     {
+//       "answer": "string",
+//       "classBatch": "string",
+//       "courseItemId": 0,
+//       "createTime": "2018-12-28T15:59:07.815Z",
+//       "id": 0,
+//       "isRight": 0,
+//       "score": "string",
+//       "useTime": 0,
+//       "userLoginname": "string"
+//     }
+//   ]
+
+
   /**
    * 提交的答案说明
    */

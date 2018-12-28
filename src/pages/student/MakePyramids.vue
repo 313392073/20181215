@@ -1,58 +1,92 @@
-<!--  -->
 <template>
 <div class="wrapper">
 <div class="left-wrapper">
-<div class="left-box">
+ <div class="left-box">
     <div class="desc-menu">制作棱锥</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
         <h3 class="title">任务详情</h3>
         <div class="list-box">
-            <div class="info-box clearfix">
-                <div class="info-left">
-                    <p class="desc">任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情</p>
-                    <p class="info-list">任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情</p>
-                    <p class="info-list">任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情任务详情</p>
+              <div class="list" v-for="(item,index) in questList" :key="index">
+                <div class="list-req">
+                    <span>题目{{index+1}}</span>：
+                    <!-- 有info -->
+                    <p v-if="JSON.parse(item.course_item).info">{{JSON.parse(item.course_item).info}}</p>
+                     <!-- 题目 -->
+                    <span v-if="JSON.parse(item.course_item).q" v-for="(req,rindex) in JSON.parse(item.course_item).q" :key="rindex">{{req}}
+                        <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
+                    </span>
+                    <!-- bmj -->
+                    <p v-if="JSON.parse(item.course_item).bmj">
+                        {{JSON.parse(item.course_item).bmj}}
+                        <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @focus="goWriteFormula" @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
+                    </p>
+                    <!-- 体积  -->
+                    <p v-if="JSON.parse(item.course_item).tj">
+                        {{JSON.parse(item.course_item).tj}}
+                        <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @focus="goWriteFormula"  @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
+                    </p>
                 </div>
-                <div class="info-right">
-                    <img src="../../assets/images/group-pic.png" alt="group-pic">
+                <div class="answer-box clearfix">
+                    <div class="answerlist-box" style="width:60%;float:left">
+                        <div class="answerlist" v-if="JSON.parse(item.course_item)" v-for="(answer,aindex) in JSON.parse(item.course_item).c" :key="aindex" ><span class="answer-num">{{order[aindex]}}</span> :{{answer}}</div>
+                    </div>
+                    <div class="pic" style="width:40%;float:right;text-align:right">
+                        <img :src="item.course_pic_path?item.course_pic_path:''" alt="">
+                    </div>
                 </div>
             </div>
           <p class="list-req answerd-req"><span>答案：</span></p>
           <div class="answerd clearfix">
               <div class="item">
-                    <p class="order"><span>(2)</span></p>
-                    <div class="answerd-box">
-                        <input type="text" name="req2" placeholder="请输入答案" class="req2">
-                    </div>
+                  <p class="order"><span>01</span></p>
+                  <div class="answerd-box clearfix">
+                      <label class="choose">
+                          <input type="radio" name="req1" value="A" checked>
+                          <span></span>A
+                        </label>
+                        <label class="choose">
+                          <input type="radio" name="req1" value="B">
+                          <span></span>B
+                        </label>
+                        <label class="choose">
+                          <input type="radio" name="req1" value="C">
+                          <span></span>C
+                        </label>
+                        <label class="choose">
+                          <input type="radio" name="req1" value="D">
+                          <span></span>D
+                        </label>
+                  </div>
               </div>
               <div class="item">
-                  <p class="order"><span>(3)</span></p>
+                  <p class="order"><span>02</span></p>
                   <div class="answerd-box">
                       <input type="text" name="req2" placeholder="请输入答案" class="req2">
                   </div>
               </div>
           </div>
-          <div class="ansowerd-btn"><button class="btn">提交答案</button></div>
+          <div class="ansowerd-btn"><button class="btn" @click="subForm">提交答案</button></div>
         </div>
     </div>
     <div class="tips" v-show="toggleTips">
-        <div class="main-tips">
-          <img class="tip-img" src="../../assets/images/default.png" alt="">
-          <p class="tips-title">{{tipsTitle}}</p>
+        <div class="main-tips" style="display: none">
+          <img class="tip-img" src="/images/default.png" alt="">
+          <p class="tips-title">本轮结束</p>
           <div class="tips-msg">
               {{tipsMsg}}
           </div>
-          <div class="tips-btn"><button class="tbtn gbtn">继续答题</button></div>
+          <div class="tips-btn"><button class="tbtn gbtn" @click="HideTip">继续答题</button></div>
         </div>
-        <div class="main-tips" style="display: none">
-          <img class="tip-img" src="../../assets/images/default.png" alt="">
+        <div class="main-tips">
+          <img class="tip-img" src="/images/default.png" alt="">
           <p class="tips-title">答题结束</p>
           <div class="tips-msg">
-              <p>恭喜你，已答完所有题目！</p>
-              <p>系统已自动帮你计算好分数，快快点击查看吧！</p>
+              {{tipsMsg}}
+              <!-- <p>恭喜你，已答完所有题目！</p>
+              <p>系统已自动帮你计算好分数，快快点击查看吧！</p> -->
           </div>
-          <div class="tips-btn"><button class="cbtn tbtn">查看成绩</button></div>
+          <div class="tips-btn"><button class="cbtn tbtn" @click="HideTip">查看成绩</button></div>
         </div>
     </div>
   </div>
@@ -65,9 +99,13 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
+import share from '../../router/http/share.js';
 import base from '../../router/http/base.js'
 import API from '../../router/http/api.js';
 import store from '../../store/store.js';
+import * as types from '../../store/types.js';
+import Axios from 'axios';
+
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
@@ -75,18 +113,116 @@ data() {
 //这里存放数据
 return {
     toggleTips:false,
-    tipsTitle:'本轮结束',
-    tipsMsg:'恭喜你，本轮答题结束！我们根据你的作答情况，智能为你推送了以下联系，请继续答题以巩固所学知识',
-    info:[]
+    tipsMsg:'我们根据你的作答情况，智能为你推送了以下联系，请继续答题以巩固所学知识',
+    classBatch:'',
+    order:share.order,
+    questList:[]
 };
 },
 //监听属性 类似于data概念
-computed: {},
+computed: {
+    value1:function(){
+        return this.value1.toUpperCase();
+    },
+    list:function() {
+        var obj = {};
+        this.questList.forEach((item,index) => {
+            obj[index] = {};
+            obj[index].arr = [];  //具体的答案和得分情况
+        })
+        return obj;
+    },
+},
 //监控data中的数据变化
-watch: {},
+watch: {
+    
+},
 //方法集合
 methods: {
-
+    goWriteFormula(){
+        this.$router.push('/stuwriteformula')
+    },
+    getValue(e,index,nowIndex,rightAnswer,rightScore,courseItemId){
+        let rAnswer = rightAnswer;
+        let rScore = rightScore;
+        let nowValue = e.currentTarget.value;
+        let obj = {
+            answer:nowValue.toUpperCase(),
+            isRight:rightAnswer == nowValue.toUpperCase()?true:false,
+            score:rightAnswer == nowValue.toUpperCase()?rightScore:0,
+            courseItemId : courseItemId,
+            createTime : share.formatTime(new Date()/1000)
+        }
+        this.list[index].arr[nowIndex] = obj;
+    },
+    HideTip(){
+        this.toggleTips = false
+    },
+    getMenu(params) { //获取menu
+        base.getUrl(API.allUrl.course_m_info,params).then(res => {
+            console.log(res)
+        })
+    },
+    getCourseList(params){ //获取题型
+        base.getUrl(API.allUrl.course_list,params).then(res => {
+            console.log(res.obj)
+            if(res.code == 200 && res.success == 1){
+                res.obj.forEach((item,index) => {
+                  this.questList.push(item)
+                })
+            }else{
+                self.tipsMsg = '网络错误，请稍后再试'
+                self.toggleTips = true;
+                return false;
+            }
+        })
+    },
+    subForm(){ //提交数据
+        // this.list //所有的答案和得分情况
+        let arr = []
+        Object.keys(this.list).forEach((item,index) => {
+            var obj = {};
+            obj.answer = '';
+            let answers = {a:[]};
+            let answerscore = 0;
+            obj.isRight = 0;
+            obj.classBatch = this.classBatch;
+            this.list[item].arr.forEach((subitem,subindex) => {
+                answers.a.push(subitem.answer);
+                answerscore += subitem.score;
+                obj.courseItemId = subitem.courseItemId;
+                obj.createTime = subitem.createTime;
+            })
+            // obj.answer=answers.a.length>0?JSON.stringify(answers):answers;
+            obj.answer=JSON.stringify(answers);
+            obj.score = JSON.stringify(answerscore);
+            obj.useTime = 0;
+            arr.push(obj)
+        })
+        for(var i=0;i<this.questList.length;++i){
+            arr[i]['user_loginname'] = this.questList[i]['user_loginname'];
+            arr[i]['courseItemId'] = this.questList[i]['course_item_id'];
+            // arr[i]['id'] = this.questList[i]['course_id'];
+            if(this.questList[i].answer == arr[i].answer){
+                arr[i].isRight = 1;
+            }
+        }
+        //提交数据
+        let params = {
+            exams:arr
+        } 
+        console.log(params)
+        console.log(store.state.token)
+        console.log(this.classBatch)
+        Axios({
+            method:'post',
+            baseURL:base.baseURL,
+            url:API.allUrl.upload+'?token='+store.state.token+'&batch='+this.classBatch,
+            data:params,
+        }).then((res) => {
+            console.log(res)
+        })
+    }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
@@ -94,25 +230,28 @@ created() {
     let params = {
         token:store.state.token
     }
+    console.log(store.state.token)
     base.getUrl(API.allUrl.batch,params).then(res => {
-        if(res.code == 200 && res.success ==  1) {
-            let params = {
+        console.log(res)
+        if(res.code == 200 && res.success == 1){
+            this.classBatch = res.obj;
+            let params1 = {
+                token:store.state.token,
+                batch:res.obj
+            }
+            console.log(params1)
+            let params2 = {
                 token:store.state.token,
                 batch:res.obj,
                 type:1*1
             }
-            base.getUrl(API.allUrl.course_list,params).then((res) => {
-                if(res.code == 200 && res.success == 1) {
-                    console.log(res.obj)
-                    self.info = res.obj;
-                }
-            })
+            Axios.all([self.getMenu(params1)],self.getCourseList(params2))
         }
     })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
-
+    
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前
@@ -124,11 +263,11 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 }
 </script>
 <style lang='less' scoped>
-//@import url(); 引入公共css类
 @fcolor:#5c5a5a;
+//@import url(); 引入公共css类
 .left-box{
-    height: 100%;
     width: 100%;
+    height: 100%;
     .title{
         height: 106*0.4*0.02rem;
         line-height: 106*0.4*0.02rem;
@@ -141,30 +280,39 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         margin: 0 auto 70*0.4*0.02rem; 
         font-size: 0.26rem;
         color: @fcolor;
-        .info-box{
-            width: 100%;
-            .info-left{
-                float: left;
-                width: 60%;
-                margin-right: 3%;
-                p{
-                    font-size: 0.26rem;
-                    color: @fcolor;
-                    line-height: 0.52rem;
+        .list{
+            .answerlist{
+                text-indent: 0.8rem;
+                line-height: 0.8rem;
+                .answer-num{
+                    text-indent: 0;
+                    display: inline-block;
+                    width: 40*0.4*0.02rem;
+                    height: 40*0.4*0.02rem;
+                    line-height: 40*0.4*0.02rem;
+                    border-radius: 50%;
+                    text-align: center;
+                    font-size: 12px!important;
+                    border: 1px solid #6c63ff;
+                    &.active{
+                        color: #ffffff;
+                        background-color: #6c63ff;
+                    }
                 }
             }
-            .info-right{
-                float: right;
-                width: 37%;
-                padding-top: 0.1rem;
-                img{
-                    width: 100%;
-                    height: auto;
-                }
+            .answer-input{
+                width: 80px;
+                border:none;
+                border-bottom: 1px solid @fcolor;
+                text-align: center;
+                font-size: 40*0.40*0.02rem;
+                color: #333;
+                background-color: transparent;
             }
         }
         .answerd-req{
             margin: 0.2rem 0;
+            
         }
         .answerd{
             width: 100%;
@@ -206,6 +354,41 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         text-align: center;
                         color: @fcolor;
                         border-bottom: 1px solid #676767;
+                    }
+                    .choose{
+                        float: left;
+                        width: 50%;
+                        min-height: 15*0.02rem;
+                        line-height: 15*0.02rem;
+                        vertical-align: middle;
+                        font-size: 16px;
+                        cursor: pointer;
+                        text-align: center;
+                        margin-top: 0.2rem;
+                        input[type="radio"] {
+                            appearance: none;
+                            -webkit-appearance: none;
+                            outline: none;
+                            display: none;
+                        }
+                        span{
+                            border-radius: 50%;
+                            margin-right: 0.2rem;
+                            vertical-align: middle;
+                        }
+                        input[type="radio"]+span {
+                            width: 0.3rem;
+                            height: 0.3rem;
+                            display: inline-block;
+                            background-color: transparent;
+                            border: 1px solid #dddddd;
+                        }
+    
+                        input[type="radio"]:checked+span {
+                            background-color: #6c63ff;
+                            border: 1px solid #6c63ff;
+                        }
+    
                     }
                 }
             }

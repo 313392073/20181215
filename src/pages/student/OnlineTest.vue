@@ -19,12 +19,12 @@
                     <!-- bmj -->
                     <p v-if="JSON.parse(item.course_item).bmj">
                         {{JSON.parse(item.course_item).bmj}}
-                        <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
+                        <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @focus="goWriteFormula" @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
                     </p>
                     <!-- 体积  -->
                     <p v-if="JSON.parse(item.course_item).tj">
                         {{JSON.parse(item.course_item).tj}}
-                        <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
+                        <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @focus="goWriteFormula"  @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
                     </p>
                 </div>
                 <div class="answer-box clearfix">
@@ -139,6 +139,9 @@ watch: {
 },
 //方法集合
 methods: {
+    goWriteFormula(){
+        this.$router.push('/stuwriteformula')
+    },
     getValue(e,index,nowIndex,rightAnswer,rightScore,courseItemId){
         let rAnswer = rightAnswer;
         let rScore = rightScore;
@@ -162,7 +165,6 @@ methods: {
     },
     getCourseList(params){ //获取题型
         base.getUrl(API.allUrl.course_list,params).then(res => {
-            console.log(res.obj)
             if(res.code == 200 && res.success == 1){
                 res.obj.forEach((item,index) => {
                   this.questList.push(item)
@@ -190,8 +192,9 @@ methods: {
                 obj.courseItemId = subitem.courseItemId;
                 obj.createTime = subitem.createTime;
             })
-            obj.answer=answers.a.length>0?JSON.stringify(answers):answers;
-            obj.score = answerscore;
+            // obj.answer=answers.a.length>0?JSON.stringify(answers):answers;
+            obj.answer=JSON.stringify(answers);
+            obj.score = JSON.stringify(answerscore);
             obj.useTime = 0;
             arr.push(obj)
         })
@@ -207,6 +210,9 @@ methods: {
         let params = {
             exams:arr
         } 
+        console.log(params)
+        console.log(store.state.token)
+        console.log(this.classBatch)
         Axios({
             method:'post',
             baseURL:base.baseURL,

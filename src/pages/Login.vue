@@ -115,11 +115,11 @@ methods: {
                 store.commit(types.LOGIN,obj)
                 store.commit(types.USERTYTPE,JSON.parse(res.obj.user).userType)
                 if(JSON.parse(res.obj.user).userType == 0){ //学生
-                    self.$router.push('/stuonlinetest')
+                    self.$router.push('/stuvideoshare')
                     // self.$router.push('/stuvideoshare')
                 }else if(JSON.parse(res.obj.user).userType == 1){ //老师
                     // self.$router.push('/teapracticreport')
-                    self.$router.push('/tealookingforpyramid')
+                    self.$router.push('/teapraafterclass')
                 }else{
                     self.tipsMsg = '请先登录！！'
                     self.toggleTips = true;

@@ -8,12 +8,13 @@ import store from '../store/store'
 // import Echart4 from '@/components/Echart4'
 // import Echart5 from '@/components/Echart5'
 // import Echart6 from '@/components/Echart6'
-
+import Draw from '@/components/Draw'//找回密码
 // 路由start
 import SelectId from '@/pages/SelectId'//注册
 import RegPage from '@/pages/RegPage'//注册
 import Login from '@/pages/Login'//登录
 import FindPwd from '@/pages/FindPwd'//找回密码
+
 //老师 start
 import PracticReport from '@/pages/teacher/PracticReport'// 在线测试(学生)
 import LookingForPyramid from '@/pages/teacher/lookingforpyramid'    // 寻找棱锥
@@ -70,6 +71,14 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
   routes: [
+    {
+      path: '/draw',
+      name: 'Draw',
+      component: Draw,
+      meta: {
+        title: '11注册页面'
+      }
+    },
     {
       path: '/selectid',
       name: 'SelectId',

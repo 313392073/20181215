@@ -98,13 +98,18 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
+import base from '../../router/http/base.js'
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
+import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
-
+    batch:'',
+    list:[]
 };
 },
 //监听属性 类似于data概念
@@ -117,7 +122,25 @@ methods: {
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    let self = this;
+    let params = {
+        token:store.state.token
+    }
+    base.getUrl(API.allUrl.batch,params).then(res => {
+        if(res.code == 200 && res.success ==  1) {
+            self.batch = res.obj;
+        }
+        let params = {
+            token:store.state.token,
+            batch:res.obj
+        }
+        base.getUrl(API.allUrl.courseList,params).then((res) => {
+            console.log(res)
+            if(res.code == 200 && res.success == 1) {
+                this.list = res.obj;
+            }
+        })
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

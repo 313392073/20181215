@@ -11,7 +11,8 @@
             <div class="upload-box">
                 <p class="icon-upload"><i class="iconfont icon-shangchuan"></i></p>
                 <p class="upload-desc">选择需要上传的课件,支持PDF,PPTX,DOCX,JPG,MP4等常见文档 图片 视频格式</p>
-                <div class="next-btn"><button class="nbtn">浏览文件</button></div>
+                <input type="file" name="file" accept="*" ref="filElem" class="upload-file" @change="upload">
+                <div class="next-btn"><button class="nbtn" @click="choose">浏览文件</button></div>
             </div>
             <div class="item clearfix" v-for="item in 3" :key="item">
                 <div class="item-icon"><img src="../../assets/images/group-pic.png" alt="group-pic"></div>
@@ -22,7 +23,7 @@
                 </div>
                 <div class="item-tag"><i class="iconfont icon-xuanzhong"></i></div>
             </div>
-            <div class="back-btn"><button class="btn">下一步</button></div>
+            <div class="back-btn"><button class="btn" @click="save">下一步</button></div>
         </div>
     </div>
   </div>
@@ -35,13 +36,17 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
+import base from '../../router/http/base.js'
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
+import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
-
+    batch:'',
 };
 },
 //监听属性 类似于data概念
@@ -50,11 +55,65 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
-
+    choose(){
+        this.$refs.filElem.dispatchEvent(new MouseEvent('click')) 
+    },
+    upload(){
+        let self = this;
+        let fileMaxSize = 1024;//1M
+        let file = self.$refs.filElem.files[0];
+        console.log(file)
+        if(file.size/fileMaxSize > fileMaxSize){
+            self.tipsMsg = '图片过大 不能上传'
+            self.toggleTips = true;
+            return false;
+        }
+        if (!/image\/\w+/.test(file.type)) {
+            self.tipsMsg = '请注意上传图片的格式！'
+            self.toggleTips = true;
+            return false;
+        }
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(){
+            self.defaultUrl = reader.result;
+        }
+    },
+    save(){
+        let self = this;
+        var formData = new FormData();
+            formData.append("file", self.$refs.filElem.files[0]);
+            if(formData.get('file') != 'undefined'){
+                Axios({
+                    method:'post',
+                    baseURL:base.baseURL,
+                    url:API.allUrl.upload+'?token='+store.state.token+'&batch='+self.batch+'&fileType=12',
+                    data:formData,
+                }).then((res) => {
+                    if(res.data.code == 200 && res.data.success == 1) {
+                        self.$router.push('/teacoursemanagement')
+                    }else{
+                    self.tipsMsg = '网络错误，上传头像失败'
+                    self.toggleTips = true;
+                    return false;
+                    }
+                })
+            }else{
+                alert('网络错误');
+            }
+    }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    let self = this;
+    let params = {
+        token:store.state.token
+    }
+    base.getUrl(API.allUrl.batch,params).then(res => {
+        if(res.code == 200 && res.success ==  1) {
+            self.batch = res.obj;
+        }
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
@@ -95,6 +154,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
             padding: 0 110*0.4*0.02rem 50*0.4*0.02rem;
             font-size: 34*0.4*0.02rem;
             color: @fcolor;
+            .upload-file{
+                display: none;
+            }
             .icon-upload{
                 text-align: center;
                 i{

@@ -15,7 +15,6 @@
             </div>
             <div class="btn-box"><a href="javascript:void(0)" @click="saveVideo">保存并上传</a></div>
         </div>
-        
     </div>
   </div>
     </div>
@@ -53,48 +52,42 @@ methods: {
     },
     uploadVideo(){
         let self = this;
-        let fileMaxSize = 1024;//1M
+        let fileMaxSize = 1024*500;//1M
         let file = self.$refs.filElem.files[0];
         if(file.size/fileMaxSize > fileMaxSize){
             self.tipsMsg = '视频过大 不能上传'
             self.toggleTips = true;
             return false;
         }
-        if (!/image\/\w+/.test(file.type)) {
+        if (!/video\/\w+/.test(file.type)) {
             self.tipsMsg = '请注意上传视频的格式！'
             self.toggleTips = true;
             return false;
         }
-        // let reader = new FileReader();
-        // reader.readAsDataURL(file);
-        // reader.onload = function(){
-        //     self.defaultUrl = reader.result;
-        // }
     },
     saveVideo(){
         let self = this;
         var formData = new FormData();
-        console.log(self.$refs.filElem.files[0])
             formData.append("file", self.$refs.filElem.files[0]);
-            console.log(formData.get('file'))
-            // if(formData.get('file') != 'undefined'){
-            //     Axios({
-            //         method:'post',
-            //         baseURL:base.baseURL,
-            //         url:API.allUrl.upload+'?token='+store.state.token+'&batch='+self.batch+'&fileType=6',
-            //         data:formData,
-            //     }).then((res) => {
-            //         if(res.data.code == 200 && res.data.success == 1) {
-            //             self.$router.push('/stuuploadpicList')
-            //         }else{
-            //         self.tipsMsg = '网络错误，上传头像失败'
-            //         self.toggleTips = true;
-            //         return false;
-            //         }
-            //     })
-            // }else{
-            //     alert('网络错误');
-            // }
+            if(formData.get('file') != 'undefined'){
+                Axios({
+                    method:'post',
+                    baseURL:base.baseURL,
+                    url:API.allUrl.upload+'?token='+store.state.token+'&batch='+self.batch+'&fileType=6',
+                    data:formData,
+                }).then((res) => {
+                    console.log(res)
+                    if(res.data.code == 200 && res.data.success == 1) {
+                        self.$router.push('/stuuploadpicList')
+                    }else{
+                    self.tipsMsg = '网络错误，上传头像失败'
+                    self.toggleTips = true;
+                    return false;
+                    }
+                })
+            }else{
+                alert('网络错误');
+            }
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
@@ -145,6 +138,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
             .default-bg{
                 width: 1140*0.4*0.02rem;
                 height: auto;
+            }
+            .upload-file{
+                display: none;
             }
         }
       

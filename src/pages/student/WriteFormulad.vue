@@ -9,10 +9,9 @@
         <h3 class="title">请写出您的答案</h3>
         <div class="main-box">
             <div class="canvas-box">
-                <canvas class="canvas" id="canvas" width="800" height="400"></canvas>
+                <canvas class="canvas" id="canvas"></canvas>
             </div>
         </div>
-        <div class="btn-box"><button class="btn" @click="resetAnswer">重置</button><button class="btn" @click="submitAnswer">提交答案</button></div>
     </div>
   </div>
   </div>
@@ -59,17 +58,6 @@ computed: {
 watch: {},
 //方法集合
 methods: {
-    resetAnswer(){
-        this.retArr = [],
-		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height),
-		this.preDrawAry = [],
-		this.nextDrawAry = [],
-		this.middleAry = [this.middleAry[0]]
-    },
-    submitAnswer(){ //提交绘制的答案
-        
-        console.log(this.arrToStr(this.retArr))
-    },
     initDraw() { //初始化画布
 		var t = this.context.getImageData(0, 0, 800, 400);
 		this.middleAry.push(t)
@@ -95,7 +83,6 @@ methods: {
         this.context.moveTo(e, r);
         var n = this.context.getImageData(0, 0, 800, 400);
         this.preDrawAry.push(n)
-        document.getElementById('canvas').addEventListener('mousemove',this.onMouseMove,false);
     },
     onMouseMove(t){
         if (this.canvasMoveUse) {
@@ -141,20 +128,7 @@ methods: {
         this.trashArr = [],
         this.nextDrawAry.length ? (this.middleAry = [], this.middleAry = this.middleAry.concat(this.preDrawAry), this.middleAry.push(e), this.nextDrawAry = []) : this.middleAry.push(e),
         this.canvasMoveUse = !1
-    },
-    arrToStr(t) {
-		var e = "";
-		e += "[";
-		for (var r = 0,
-		n = t.length; r < n; r++) if (t[r].length > 0) {
-			e += "[";
-			for (var i = 0,
-			o = t[r].length; i < o; i++) t[r][i].length > 0 && (e += "[" + t[r][i][0] + "," + t[r][i][1] + "]", i < o - 1 && (e += ","));
-			e += "]",
-			r < n - 1 && (e += ",")
-		}
-		return e += "]"
-	}
+    }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
@@ -176,12 +150,14 @@ created() {
 mounted() {
     this.canvas = document.getElementById('canvas');
     this.context = this.canvas.getContext('2d');
+    this.context.shadowBlur=1;
 	this.context.lineWidth=1;	
+	this.context.shadowColor="#000000";
     this.context.strokeStyle="#000000";
     this.initDraw();
     if(this.IsPC()){
         document.getElementById('canvas').addEventListener('mousedown',this.onMouseStart,false);
-		
+		document.getElementById('canvas').addEventListener('mousemove',this.onMouseMove,false);
 		document.getElementById('canvas').addEventListener('mouseup',this.onMouseEnd,false);
     }else{
         document.getElementById('canvas').addEventListener('touchstart',this.onTouchStart,false);
@@ -215,32 +191,13 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         width: 100%;
         margin: 0 auto 70*0.4*0.02rem;
         .canvas-box{
-            width: 802px;
-            min-width: 402px;
-            margin: 0 auto;
+            width: 100%;
+            min-width: 80%;
             .canvas{
                 width: 800px;
                 height: 400px;
-                border:1px solid #6c63ff;
+                border:1px solid red;
             }
-        }
-    }
-    .btn-box{
-        width: 100%;
-        margin: 0.6rem auto 0;
-        text-align: center;
-        .btn{
-            display: inline-block;
-            width: 320*0.4*0.02rem;
-            height: 90*0.4*0.02rem;
-            margin: 0 50*0.4*0.02rem;
-            line-height: 90*0.4*0.02rem;
-            background-color: #6c63ff;
-            color: #ffffff;
-            font-size: 0.36rem;
-            border-radius: 90*0.4*0.02rem;
-            border: none;
-            outline: none;
         }
     }
 }
