@@ -115,7 +115,7 @@ methods: {
                 store.commit(types.LOGIN,obj)
                 store.commit(types.USERTYTPE,JSON.parse(res.obj.user).userType)
                 if(JSON.parse(res.obj.user).userType == 0){ //学生
-                    self.$router.push('/stuvideoshare')
+                    self.$router.push('/stuonlinetest')
                     // self.$router.push('/stuvideoshare')
                 }else if(JSON.parse(res.obj.user).userType == 1){ //老师
                     // self.$router.push('/teapracticreport')

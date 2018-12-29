@@ -17,13 +17,18 @@
                         <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
                     </span>
                     <!-- bmj -->
-                    <p v-if="JSON.parse(item.course_item).bmj">
+                    <p v-if="JSON.parse(item.course_item).bmj" v-for="(breq,bindex) in JSON.parse(item.course_item).bmj" :key="bindex">
                         {{JSON.parse(item.course_item).bmj}}
                         <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @focus="goWriteFormula" @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
                     </p>
                     <!-- 体积  -->
-                    <p v-if="JSON.parse(item.course_item).tj">
-                        {{JSON.parse(item.course_item).tj}}
+                    <p v-if="JSON.parse(item.course_item).tj" v-for="(treq,tindex) in JSON.parse(item.course_item).tj" :key="tindex">
+                        {{treq}}
+                        <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @focus="goWriteFormula"  @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
+                    </p>
+
+                     <!-- 公式  -->
+                    <p v-if="JSON.parse(item.course_item).gs" v-for="(greq,gindex) in JSON.parse(item.course_item).gs" :class="getChangeClass" :key="gindex" v-html="greq">  
                         <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @focus="goWriteFormula"  @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
                     </p>
                 </div>
@@ -105,6 +110,7 @@ import API from '../../router/http/api.js';
 import store from '../../store/store.js';
 import * as types from '../../store/types.js';
 import Axios from 'axios';
+import fs from 'fs';
 
 export default {
 //import引入的组件需要注入到对象中才能使用
@@ -116,7 +122,8 @@ return {
     tipsMsg:'我们根据你的作答情况，智能为你推送了以下联系，请继续答题以巩固所学知识',
     classBatch:'',
     order:share.order,
-    questList:[]
+    questList:[],
+    classNames:'gs-box'
 };
 },
 //监听属性 类似于data概念
@@ -132,6 +139,9 @@ computed: {
         })
         return obj;
     },
+    getChangeClass(){
+        return this.classNames;
+    }
 },
 //监控data中的数据变化
 watch: {
@@ -150,8 +160,7 @@ methods: {
             answer:nowValue.toUpperCase(),
             isRight:rightAnswer == nowValue.toUpperCase()?true:false,
             score:rightAnswer == nowValue.toUpperCase()?rightScore:0,
-            courseItemId : courseItemId,
-            createTime : share.formatTime(new Date()/1000)
+            courseItemId : courseItemId
         }
         this.list[index].arr[nowIndex] = obj;
     },
@@ -165,6 +174,7 @@ methods: {
     },
     getCourseList(params){ //获取题型
         base.getUrl(API.allUrl.course_list,params).then(res => {
+            console.log(res)
             if(res.code == 200 && res.success == 1){
                 res.obj.forEach((item,index) => {
                   this.questList.push(item)
@@ -190,34 +200,30 @@ methods: {
                 answers.a.push(subitem.answer);
                 answerscore += subitem.score;
                 obj.courseItemId = subitem.courseItemId;
-                obj.createTime = subitem.createTime;
             })
-            // obj.answer=answers.a.length>0?JSON.stringify(answers):answers;
-            obj.answer=JSON.stringify(answers);
+            obj.answer=JSON.stringify(answers)
             obj.score = JSON.stringify(answerscore);
             obj.useTime = 0;
+            JSON.stringify(obj)
             arr.push(obj)
         })
         for(var i=0;i<this.questList.length;++i){
-            arr[i]['user_loginname'] = this.questList[i]['user_loginname'];
+            let user_loginname = this.questList[i]['user_loginname']
+            arr[i]['userLoginname'] = JSON.parse(store.state.user).userLoginname;
             arr[i]['courseItemId'] = this.questList[i]['course_item_id'];
-            // arr[i]['id'] = this.questList[i]['course_id'];
             if(this.questList[i].answer == arr[i].answer){
                 arr[i].isRight = 1;
             }
         }
-        //提交数据
-        let params = {
-            exams:arr
-        } 
-        console.log(params)
-        console.log(store.state.token)
-        console.log(this.classBatch)
         Axios({
             method:'post',
+            headers:{
+                'Content-Type': 'application/json',
+                'Accept':'application/json'
+            },
             baseURL:base.baseURL,
-            url:API.allUrl.upload+'?token='+store.state.token+'&batch='+this.classBatch,
-            data:params,
+            url:API.allUrl.courseSubmit+'?token='+store.state.token+'&batch='+this.classBatch,
+            data:JSON.stringify(arr),
         }).then((res) => {
             console.log(res)
         })
@@ -225,13 +231,14 @@ methods: {
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
+    if (share.isMathjaxConfig === false) { // 如果：没有配置MathJax
+        share.initMathjaxConfig();
+    }
     let self = this;
     let params = {
         token:store.state.token
     }
-    console.log(store.state.token)
     base.getUrl(API.allUrl.batch,params).then(res => {
-        console.log(res)
         if(res.code == 200 && res.success == 1){
             this.classBatch = res.obj;
             let params1 = {
@@ -241,7 +248,7 @@ created() {
             let params2 = {
                 token:store.state.token,
                 batch:res.obj,
-                type:0
+                type:7*1
             }
             Axios.all([self.getMenu(params1)],self.getCourseList(params2))
         }
@@ -249,11 +256,13 @@ created() {
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
-    
+  window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前
-beforeUpdate() {}, //生命周期 - 更新之前
+beforeUpdate() {
+    window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
+}, //生命周期 - 更新之前
 updated() {}, //生命周期 - 更新之后
 beforeDestroy() {}, //生命周期 - 销毁之前
 destroyed() {}, //生命周期 - 销毁完成

@@ -1,132 +1,81 @@
+<!--  -->
 <template>
-  <div class="hello">
-<!--touchstart,touchmove,touchend,touchcancel 这-->
-  <button type="" v-on:click="clear">清除</button>
-  <button v-on:click="save">保存</button>
-    <canvas id="canvas" width="300" height="600" style="border:1px solid black">Canvas画板</canvas>
-   <img v-bind:src="url" alt="">
-  </div>
- 
+<div id='box'>
+  <span class="gs-box">$v = \frac{1}{3}sh$</span>
+
+
+  <!-- $\frac{1}{3}sh$
+$v = \frac{1}{3}sh$   
+$\alpha+\beta=\gamma$
+$$\alpha+\beta=\gamma$$ -->
+</div>
 </template>
 
 <script>
-var draw;
-var preHandler = function(e) {
-  e.preventDefault();
-};
-class Draw {
-  constructor(el) {
-    this.el = el;
-    this.canvas = document.getElementById(this.el);
-    this.cxt = this.canvas.getContext("2d");
-    this.stage_info = canvas.getBoundingClientRect();
-    this.path = {
-      beginX: 0,
-      beginY: 0,
-      endX: 0,
-      endY: 0
-    };
-  }
-  init(btn) {
-    var that = this;
-    this.canvas.addEventListener("touchstart", function(event) {
-      document.addEventListener("touchstart", preHandler, false);
-      that.drawBegin(event);
-    });
-    this.canvas.addEventListener("touchend", function(event) {
-      document.addEventListener("touchend", preHandler, false);
-      that.drawEnd();
-    });
-    this.clear(btn);
-  }
-  drawBegin(e) {
-    var that = this;
-    window.getSelection()
-      ? window.getSelection().removeAllRanges()
-      : document.selection.empty();
-    this.cxt.strokeStyle = "#000";
-    this.cxt.beginPath();
-    this.cxt.moveTo(
-      e.changedTouches[0].clientX - this.stage_info.left,
-      e.changedTouches[0].clientY - this.stage_info.top
-    );
-    this.path.beginX = e.changedTouches[0].clientX - this.stage_info.left;
-    this.path.beginY = e.changedTouches[0].clientY - this.stage_info.top;
-    canvas.addEventListener("touchmove", function() {
-      that.drawing(event);
-    });
-  }
-  drawing(e) {
-    this.cxt.lineTo(
-      e.changedTouches[0].clientX - this.stage_info.left,
-      e.changedTouches[0].clientY - this.stage_info.top
-    );
-    this.path.endX = e.changedTouches[0].clientX - this.stage_info.left;
-    this.path.endY = e.changedTouches[0].clientY - this.stage_info.top;
-    this.cxt.stroke();
-  }
-  drawEnd() {
-    document.removeEventListener("touchstart", preHandler, false);
-    document.removeEventListener("touchend", preHandler, false);
-    document.removeEventListener("touchmove", preHandler, false);
-    //canvas.ontouchmove = canvas.ontouchend = null
-  }
-  clear(btn) {
-    this.cxt.clearRect(0, 0, 300, 600);
-  }
-  save() {
-    return canvas.toDataURL("image/png");
-  }
-}
-
+//这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
+//例如：import 《组件名称》 from '《组件路径》';
+import share from '../router/http/share.js';
 export default {
-  data() {
-    return {
-      msg: "Welcome to Your Vue.js App",
-      val: true,
-      url: ""
-    };
-  },
-  mounted() {
-    draw = new Draw("canvas");
-    draw.init();
-  },
-  methods: {
-    clear: function() {
-      draw.clear();
-    },
-    save: function() {
-      var data = draw.save();
-      this.url = data;
-      console.log(data);
-    },
-
-    mutate(word) {
-      this.$emit("input", word);
-    }
-  }
+//import引入的组件需要注入到对象中才能使用
+components: {},
+data() {
+//这里存放数据
+return {
+  str:'',
+  aa:'$v = \frac{1}{3}sh$'
 };
-</script> <!-- Add "scoped" attribute to limit CSS to this component only --> <style scoped>
-h1,
-h2 {
-  font-weight: normal;
+},
+//监听属性 类似于data概念
+computed: {
+  strs(){
+    return this.str = '<span class="gs-box">$v = \frac{1}{3}sh$</span>'
+  }
+},
+//监控data中的数据变化
+watch: {},
+//方法集合
+methods: {
+
+},
+//生命周期 - 创建完成（可以访问当前this实例）
+created() {
+  if (share.isMathjaxConfig === false) { // 如果：没有配置MathJax
+    share.initMathjaxConfig();
+  }
+  // let s = "经过本堂课的学习，<gs>s = \frac{1}{2} a h *9</gs>我们认识了棱锥，学习了正三棱锥的侧面积、表面积及提交的计算公式，那斜棱锥的体积该怎么计算呢？请根据正三棱锥提交的计算公式结合应用GGB软件探究思考斜棱锥的体积公式。<br/>正三棱锥的体积公式：<gs>v = rac{1}{3}sh</gs>";
+  // let str = "aaa<gs>jjjjj<gs>aaa";
+  // console.log(s.replace(/<gs>([\s\S]*?)<\/gs>/g,'<input />'))
+  // // console.log(s.replace(/<gs>([\s\S]*?)<\/gs>/))
+  // console.log(s.match(/<gs>([\s\S]*?)<\/gs>/g))
+  // console.log(s.match(/<gs>([\s\S]*?)<\/gs>/g)[0])
+  // console.log(s.match(/<gs>([\s\S]*?)<\/gs>/g)[1])
+},
+//生命周期 - 挂载完成（可以访问DOM元素）
+mounted() {
+  window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementById('box')]);
+},
+beforeCreate() {}, //生命周期 - 创建之前
+beforeMount() {}, //生命周期 - 挂载之前
+beforeUpdate() {}, //生命周期 - 更新之前
+updated() {}, //生命周期 - 更新之后
+beforeDestroy() {}, //生命周期 - 销毁之前
+destroyed() {}, //生命周期 - 销毁完成
+activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+</script>
+<style lang='less' scoped>
+//@import url(); 引入公共css类
+#box{
+  width: 800px;
+  height: 400px;
+  border: 1px solid red;
+  margin: 0 auto;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+.mjx-chtml {
+  outline: 0;
 }
-a {
-  color: #42b983;
-}
-#canvas {
-  background: pink;
-  cursor: default;
-}
-#keyword-box {
-  margin: 10px 0;
+.MJXc-display {
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 </style>

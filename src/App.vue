@@ -51,5 +51,12 @@ export default {
           }
       }
   }
+  .mjx-chtml {
+    outline: 0;
+  }
+  .MJXc-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
 }
 </style>
