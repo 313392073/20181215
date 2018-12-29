@@ -77,10 +77,10 @@
             <div class="tips-btn"><button class="sbtn">确认发送</button></div>
        </div>
     </div>
-    <div class="tips">
+    <div class="tips" v-show="toggleTips">
         <div class="main-tips">
-            <i class="iconfont icon-guanbi1"></i>
-          <img class="tip-img" src="/images/default.png" alt="">
+            <i class="iconfont icon-guanbi1" @click="HideTip"></i>
+            <img class="tip-img" src="../../assets/images/teaupload.png" alt="send-success">
           <p class="tips-title">推送成功</p>
           <div class="tips-msg">
               <p>你已成功推送 <span>2</span>个文件！</p>
@@ -108,6 +108,8 @@ components: {SideBar},
 data() {
 //这里存放数据
 return {
+    toggleTips:false,
+    tipsMsg:'推送成功',
     batch:'',
     list:[]
 };
@@ -118,7 +120,9 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
-
+    HideTip(){
+        this.toggleTips = false
+    },
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
@@ -342,8 +346,6 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 
 .tips{
     position: absolute;
-    // z-index: -1;
-    // opacity: 0;
     top: 0;
     right: 0;
     width: 100%;
@@ -352,13 +354,15 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
     display: flex;
     justify-content: center;
     align-items: center;
-    .main-tips{
+   .main-tips{
         width: 1240*0.02*0.4rem;
         height: 830*0.4*0.02rem;
         background-color: #ffffff;
+        background: url("../../assets/images/send-tipbg.jpg") no-repeat center;
+        background-size: contain;
         box-shadow: 0px 0px 5px 3px rgba(0,0,0,.1);
-        border-top: 2px solid #6c63ff;
         text-align: center;
+        padding-top: 20*0.4*0.02rem;
         position: relative;
         &>i{
             position: absolute;
@@ -371,9 +375,11 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
             border-radius: 50%;
             box-shadow: 0 0 2px 2px rgba(0, 0, 0,0.2);
             padding: 3px;
+            cursor: pointer;
         }
         .tip-img{
-            max-width: 2rem;
+            margin-top: 30*0.4*0.02rem;
+            max-width: 2.5rem;
         }
         .tips-title{
             text-align: center;
@@ -385,10 +391,6 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
             font-size: 0.24rem;
             color: @fcolor;
             line-height: 26*0.02rem;
-            span{
-                color: #6c63ff;
-                font-size: 0.34rem;
-            }
         }
     }
     .tips-btn{

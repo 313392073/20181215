@@ -7,38 +7,34 @@
     <div class="main-wrapper">
         <h3 class="title">侧面积公式</h3>
         <div class="list-box">
-              <div class="list" v-for="(item,index) in questList" :key="index+10">
+              <div class="list" v-for="(item,index) in questList" :key="index">
                 <div class="list-req">
                     <span>题目{{index+1}}</span>：
                     <!-- 有info -->
-                    <p v-if="JSON.parse(item.course_item).info && JSON.parse(item.course_item).info.length>0">{{JSON.parse(item.course_item).info}}</p>
+                    <p v-if="JSON.parse(item.course_item).info">{{JSON.parse(item.course_item).info}}</p>
                      <!-- 题目 -->
-                    <span v-if="JSON.parse(item.course_item).q" v-for="(req,rindex) in JSON.parse(item.course_item).q" :key="rindex+30">{{req}}
-                        <input v-if="item.if_handle == 0" type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id,'a')"/>
-                        <input v-else type="text" class="answer-input" @blur="alreadySubmit" readonly>
+                    <span v-if="JSON.parse(item.course_item).q" v-for="(req,rindex) in JSON.parse(item.course_item).q" :key="rindex">{{req}}
+                        <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
                     </span>
                     <!-- bmj -->
-                    <p class="bmj" v-if="JSON.parse(item.course_item).bmj" v-for="(breq,bindex) in JSON.parse(item.course_item).bmj" :key="bindex+50">
-                        {{breq}}
-                        <input v-if="item.if_handle == 0" type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @keyup="getValue($event,index,bindex,JSON.parse(item.answer).bmj[bindex],item.item_score,item.course_id,'bmj')"/>
-                        <input v-else type="text" class="answer-input" @blur="alreadySubmit" readonly>
+                    <p v-if="JSON.parse(item.course_item).bmj" v-for="(breq,bindex) in JSON.parse(item.course_item).bmj" :key="bindex">
+                        {{JSON.parse(item.course_item).bmj}}
+                        <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @focus="goWriteFormula" @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
                     </p>
                     <!-- 体积  -->
-                    <p class="tj" v-if="JSON.parse(item.course_item).tj" v-for="(treq,tindex) in JSON.parse(item.course_item).tj" :key="tindex">
+                    <p v-if="JSON.parse(item.course_item).tj" v-for="(treq,tindex) in JSON.parse(item.course_item).tj" :key="tindex">
                         {{treq}}
-                        <input v-if="item.if_handle == 0" type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20"  @keyup="getValue($event,index,tindex,JSON.parse(item.answer).tj[tindex],item.item_score,item.course_id,'tj')"/>
-                        <input v-else type="text" class="answer-input" @blur="alreadySubmit" readonly>
+                        <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @focus="goWriteFormula"  @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
                     </p>
 
                      <!-- 公式  -->
-                    <p class="gs" v-if="JSON.parse(item.course_item).gs" v-for="(greq,gindex) in JSON.parse(item.course_item).gs" :class="getChangeClass" :key="gindex+80" v-html="greq">  
-                        <input v-if="item.if_handle == 0" type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @focus="goWriteFormula"  @keyup="getValue($event,index,gindex,JSON.parse(item.answer).a[gindex],item.item_score,item.course_id)"/>
-                        <input v-else type="text" class="answer-input" @blur="alreadySubmit" readonly>
+                    <p v-if="JSON.parse(item.course_item).gs" v-for="(greq,gindex) in JSON.parse(item.course_item).gs" :class="getChangeClass" :key="gindex" v-html="greq">  
+                        <input type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @focus="goWriteFormula"  @keyup="getValue($event,index,rindex,JSON.parse(item.answer).a[rindex],item.item_score,item.course_id)"/>; 
                     </p>
                 </div>
                 <div class="answer-box clearfix">
                     <div class="answerlist-box" style="width:60%;float:left">
-                        <div class="answerlist" v-if="JSON.parse(item.course_item)" v-for="(answer,aindex) in JSON.parse(item.course_item).c" :key="aindex+100" ><span class="answer-num">{{order[aindex]}}</span> :{{answer}}</div>
+                        <div class="answerlist" v-if="JSON.parse(item.course_item)" v-for="(answer,aindex) in JSON.parse(item.course_item).c" :key="aindex" ><span class="answer-num">{{order[aindex]}}</span> :{{answer}}</div>
                     </div>
                     <div class="pic" style="width:40%;float:right;text-align:right">
                         <img :src="item.course_pic_path?item.course_pic_path:''" alt="">
@@ -79,25 +75,23 @@
         </div>
     </div>
     <div class="tips" v-show="toggleTips">
-        <!-- <div class="main-tips" style="display: none">
-        <i class="iconfont icon-guanbi1" @click="HideTip"></i>  
+        <div class="main-tips" style="display: none">
           <img class="tip-img" src="/images/default.png" alt="">
           <p class="tips-title">本轮结束</p>
           <div class="tips-msg">
               {{tipsMsg}}
           </div>
           <div class="tips-btn"><button class="tbtn gbtn" @click="HideTip">继续答题</button></div>
-        </div> -->
+        </div>
         <div class="main-tips">
-            <i class="iconfont icon-guanbi1" @click="HideTip"></i> 
-            <img class="tip-img" src="../../assets/images/teaupload.png" alt="send-success">
-            <p class="tips-title">答题结束</p>
-            <div class="tips-msg">
-                {{tipsMsg}}
-                <!-- <p>恭喜你，已答完所有题目！</p>
-                <p>系统已自动帮你计算好分数，快快点击查看吧！</p> -->
-            </div>
-            <div class="tips-btn"><button class="cbtn tbtn" @click="HideTip">查看成绩</button></div>
+          <img class="tip-img" src="/images/default.png" alt="">
+          <p class="tips-title">答题结束</p>
+          <div class="tips-msg">
+              {{tipsMsg}}
+              <!-- <p>恭喜你，已答完所有题目！</p>
+              <p>系统已自动帮你计算好分数，快快点击查看吧！</p> -->
+          </div>
+          <div class="tips-btn"><button class="cbtn tbtn" @click="HideTip">查看成绩</button></div>
         </div>
     </div>
   </div>
@@ -114,7 +108,9 @@ import share from '../../router/http/share.js';
 import base from '../../router/http/base.js'
 import API from '../../router/http/api.js';
 import store from '../../store/store.js';
+import * as types from '../../store/types.js';
 import Axios from 'axios';
+import fs from 'fs';
 
 export default {
 //import引入的组件需要注入到对象中才能使用
@@ -138,16 +134,8 @@ computed: {
     list:function() {
         var obj = {};
         this.questList.forEach((item,index) => {
-            obj[index] = {
-                a:{},
-                bmj:{},
-                tj:{},
-                gs:{},
-            };
-            obj[index]['a'].arr = [];  //具体的答案和得分情况
-            obj[index]['bmj'].arr = [];  //具体的答案和得分情况
-            obj[index]['tj'].arr = [];  //具体的答案和得分情况
-            obj[index]['gs'].arr = [];  //具体的答案和得分情况
+            obj[index] = {};
+            obj[index].arr = [];  //具体的答案和得分情况
         })
         return obj;
     },
@@ -165,17 +153,10 @@ watch: {
 },
 //方法集合
 methods: {
-    HideTip(){
-        this.toggleTips = false
-    },
-    alreadySubmit(){
-        this.tipsMsg = '此题目已经做过了';
-        this.toggleTips = true
-    },
     goWriteFormula(){
         this.$router.push('/stuwriteformula')
     },
-    getValue(e,index,nowIndex,rightAnswer,rightScore,courseItemId,type){
+    getValue(e,index,nowIndex,rightAnswer,rightScore,courseItemId){
         let rAnswer = rightAnswer;
         let rScore = rightScore;
         let nowValue = e.currentTarget.value;
@@ -185,23 +166,10 @@ methods: {
             score:rightAnswer == nowValue.toUpperCase()?rightScore:0,
             courseItemId : courseItemId
         }
-        switch(type) {
-            case 'a':
-                this.list[index].a.arr[nowIndex] = obj;
-                break;
-             case 'bmj':
-                this.list[index].bmj.arr[nowIndex] = obj;
-                break;
-            case 'tj':
-                this.list[index].tj.arr[nowIndex] = obj;
-                break;
-            case 'gs':
-                this.list[index].gs.arr[nowIndex] = obj;
-                break;
-            default:
-                return;
-        }
-        console.log(this.list)
+        this.list[index].arr[nowIndex] = obj;
+    },
+    HideTip(){
+        this.toggleTips = false
     },
     getMenu(params) { //获取menu
         base.getUrl(API.allUrl.course_m_info,params).then(res => {
@@ -209,9 +177,8 @@ methods: {
         })
     },
     getCourseList(params){ //获取题型
-        console.log(params)
         base.getUrl(API.allUrl.course_list,params).then(res => {
-            console.log(res.obj)
+            console.log(res)
             if(res.code == 200 && res.success == 1){
                 res.obj.forEach((item,index) => {
                   this.questList.push(item)
@@ -224,55 +191,24 @@ methods: {
         })
     },
     subForm(){ //提交数据
-    console.log(this.list)
         // this.list //所有的答案和得分情况
         let arr = []
         Object.keys(this.list).forEach((item,index) => {
             var obj = {};
             obj.answer = '';
-            let type = item['type'];
-            let answers = {};
-            answers['a'] = [];
-            answers['tj'] = [];
-            answers['bmj'] = [];
-            answers['gs'] = [];
+            let answers = {a:[]};
             let answerscore = 0;
             obj.isRight = 0;
             obj.classBatch = this.classBatch;
-            if(this.list[item].a.arr.length>0){
-                this.list[item].a.arr.forEach((subitem,subindex) => {
-                    answers['a'].push(subitem.answer);
-                    answerscore += subitem.score;
-                    obj.courseItemId = subitem.courseItemId;
-                })
-                console.log(answers)
-                obj.answer=JSON.stringify(answers)
-                obj.score = JSON.stringify(answerscore);
-                obj.useTime = 0;
-                JSON.stringify(obj)
-            }
-            if(this.list[item].bmj.arr.length>0){
-                this.list[item].bmj.arr.forEach((subitem,subindex) => {
-                    answers['bmj'].push(subitem.answer);
-                    answerscore += subitem.score;
-                    obj.courseItemId = subitem.courseItemId;
-                })
-                obj.answer=JSON.stringify(answers)
-                obj.score = JSON.stringify(answerscore);
-                obj.useTime = 0;
-                JSON.stringify(obj)
-            }
-            if(this.list[item].tj.arr.length>0){
-                this.list[item].tj.arr.forEach((subitem,subindex) => {
-                    answers['tj'].push(subitem.answer);
-                    answerscore += subitem.score;
-                    obj.courseItemId = subitem.courseItemId;
-                })
-                obj.answer=JSON.stringify(answers)
-                obj.score = JSON.stringify(answerscore);
-                obj.useTime = 0;
-                JSON.stringify(obj)
-            }
+            this.list[item].arr.forEach((subitem,subindex) => {
+                answers.a.push(subitem.answer);
+                answerscore += subitem.score;
+                obj.courseItemId = subitem.courseItemId;
+            })
+            obj.answer=JSON.stringify(answers)
+            obj.score = JSON.stringify(answerscore);
+            obj.useTime = 0;
+            JSON.stringify(obj)
             arr.push(obj)
         })
         for(var i=0;i<this.questList.length;++i){
@@ -294,9 +230,6 @@ methods: {
             data:JSON.stringify(arr),
         }).then((res) => {
             console.log(res)
-            if(res.code = 200 && res.success == 1){
-                window.reload()
-            }
         })
     }
 },
@@ -319,7 +252,7 @@ created() {
             let params2 = {
                 token:store.state.token,
                 batch:res.obj,
-                type:1
+                type:7*1
             }
             Axios.all([self.getMenu(params1)],self.getCourseList(params2))
         }
@@ -509,28 +442,11 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         width: 1240*0.02*0.4rem;
         height: 830*0.4*0.02rem;
         background-color: #ffffff;
-        background: url("../../assets/images/send-tipbg.jpg") no-repeat center;
-        background-size: contain;
         box-shadow: 0px 0px 5px 3px rgba(0,0,0,.1);
+        border-top: 2px solid #6c63ff;
         text-align: center;
-        padding-top: 20*0.4*0.02rem;
-        position: relative;
-        &>i{
-            position: absolute;
-            width: 80*0.4*0.02rem;
-            height: 80*0.4*0.02rem;
-            top: 60*0.4*0.02rem;
-            right: 60*0.4*0.02rem;
-            font-size: 0.4rem;
-            color: #8e8e8e;
-            border-radius: 50%;
-            box-shadow: 0 0 2px 2px rgba(0, 0, 0,0.2);
-            padding: 3px;
-            cursor: pointer;
-        }
         .tip-img{
-            margin-top: 30*0.4*0.02rem;
-            max-width: 2.5rem;
+            max-width: 2rem;
         }
         .tips-title{
             text-align: center;

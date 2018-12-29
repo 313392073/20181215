@@ -28,6 +28,7 @@ import base from '../../router/http/base.js'
 import API from '../../router/http/api.js';
 import store from '../../store/store.js';
 import share from '../../router/http/share.js';
+import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
@@ -67,8 +68,21 @@ methods: {
 		this.middleAry = [this.middleAry[0]]
     },
     submitAnswer(){ //提交绘制的答案
-        
-        console.log(this.arrToStr(this.retArr))
+          Axios({
+            method:'post',
+            headers:{
+                Origin: "http://www.charmbox.cn"
+            },
+            baseURL:'http://www.charmbox.cn',
+            url:'/api/formula/get_dot',
+            data:JSON.stringify(this.arrToStr(this.retArr)),
+        }).then((res) => {
+            console.log(res)
+            // if(res.code = 200 && res.success == 1){
+            //     window.reload()
+            // }
+        })
+        // console.log(this.arrToStr(this.retArr))
     },
     initDraw() { //初始化画布
 		var t = this.context.getImageData(0, 0, 800, 400);
