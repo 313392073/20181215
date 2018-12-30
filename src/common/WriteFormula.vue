@@ -1,37 +1,34 @@
 <!--  -->
 <template>
-<div class="wrapper">
-<div class="left-wrapper">
- <div class="left-box">
-    <div class="desc-menu">在线测试</div>
-    <!-- 主要内容 -->
+<div class="write-wrapper">
     <div class="main-wrapper">
-        <h3 class="title">请写出您的答案</h3>
+        <h3 class="title">注意：请在白色框内书写您的答案</h3>
         <div class="main-box">
             <div class="canvas-box">
                 <canvas class="canvas" id="canvas" width="800" height="400"></canvas>
             </div>
         </div>
-        <div class="btn-box"><button class="btn" @click="resetAnswer">重置</button><button class="btn" @click="submitAnswer">提交答案</button></div>
+        <div class="btn-box">
+            <button class="btn" @click="closeTap">关闭画板</button>
+            <button class="btn" @click="resetAnswer">重置画板</button>
+            <button class="btn" @click="submitAnswer">解析答案</button>
+        </div>
     </div>
-  </div>
-  </div>
-<side-bar></side-bar>
 </div>
 </template>
 
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-import SideBar from "@/common/SideBar";
-import base from '../../router/http/base.js'
-import API from '../../router/http/api.js';
-import store from '../../store/store.js';
-import share from '../../router/http/share.js';
+import base from '../router/http/base.js'
+import API from '../router/http/api.js';
+import store from '../store/store.js';
+import share from '../router/http/share.js';
 import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
-components: {SideBar},
+components: {},
+props:['msg'],
 data() {
 //这里存放数据
 return {
@@ -54,10 +51,15 @@ computed: {
             score += item.score*1;
         })
         return score;
+    },
+    gsMsg(){
+        console.log(this.msg)
+        return this.msg;
     }
 },
 //监控data中的数据变化
-watch: {},
+watch: {
+},
 //方法集合
 methods: {
     resetAnswer(){
@@ -68,21 +70,30 @@ methods: {
 		this.middleAry = [this.middleAry[0]]
     },
     submitAnswer(){ //提交绘制的答案
-          Axios({
-            method:'post',
-            headers:{
-                Origin: "http://www.charmbox.cn"
-            },
-            baseURL:'http://www.charmbox.cn',
-            url:'/api/formula/get_dot',
-            data:JSON.stringify(this.arrToStr(this.retArr)),
+        let self = this;
+        Axios({
+            method:'POST',
+            baseURL:base.baseURL,
+            url:API.allUrl.gsAnalysis+'?token='+store.state.token,
+            data:JSON.parse(self.arrToStr(self.retArr)),
         }).then((res) => {
-            console.log(res)
-            // if(res.code = 200 && res.success == 1){
-            //     window.reload()
-            // }
+            // 写了公式返回上一步的页面  每个返回上一步的页面都有可能接受到数据
+            if(res.data.success == 1 && res.data.code == 200){
+                let obj = {
+                    datas:res.data.obj,
+                    isWrite:false,
+                    gsMsg:self.gsMsg
+                }
+                self.asyncResult(obj);
+                // this.$router.push({name:this.urlName,params:{datas:res.data.obj}})
+            }
         })
-        // console.log(this.arrToStr(this.retArr))
+    },
+    asyncResult(res){
+        this.$emit('onsub',res)
+    },
+    closeTap(){
+        this.$emit('closeTap')
     },
     initDraw() { //初始化画布
 		var t = this.context.getImageData(0, 0, 800, 400);
@@ -202,40 +213,39 @@ mounted() {
 		document.getElementById('canvas').addEventListener('touchmove',this.onTouchMove,false);
 		document.getElementById('canvas').addEventListener('touchend',this.onTouchEnd,false);
     }
-},
-beforeCreate() {}, //生命周期 - 创建之前
-beforeMount() {}, //生命周期 - 挂载之前
-beforeUpdate() {}, //生命周期 - 更新之前
-updated() {}, //生命周期 - 更新之后
-beforeDestroy() {}, //生命周期 - 销毁之前
-destroyed() {}, //生命周期 - 销毁完成
-activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
+}
 }
 </script>
 <style lang='less' scoped>
 //@import url(); 引入公共css类
 @fcolor:#5c5a5a;
-.left-box{
+.write-wrapper{
     height: 100%;
     width: 100%;
-    .title{
-        height: 106*0.4*0.02rem;
-        line-height: 106*0.4*0.02rem;
-        text-align: center;
-        font-size: 44*0.4*0.02rem;
-        color: @fcolor;
-    }
-    .main-box{
+    position: fixed;
+    left: 0;
+    top:0;
+    z-index: 888;
+    background-color:rgba(0,0,0,0.7);
+    .main-wrapper{
         width: 100%;
-        margin: 0 auto 70*0.4*0.02rem;
+        margin: 8% auto 70*0.4*0.02rem;
+        .title{
+            height: 106*0.4*0.02rem;
+            line-height: 106*0.4*0.02rem;
+            text-align: center;
+            font-size:40*0.4*0.02rem;
+            color: red;
+            font-weight: bold;
+        }
         .canvas-box{
-            width: 802px;
-            min-width: 402px;
+            width: 800px;
+            min-width: 400px;
             margin: 0 auto;
+            background-color: #ffffff;
             .canvas{
                 width: 800px;
                 height: 400px;
-                border:1px solid #6c63ff;
             }
         }
     }

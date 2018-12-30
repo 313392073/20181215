@@ -464,7 +464,33 @@ var params = {
  * 课程的id
  * 问题类型
  */
-
+// switch(type) {
+//     case 'a':
+//         this.list[index].a.arr[nowIndex] = obj;
+//         break;
+//      case 'bmj':
+//         this.list[index].bmj.arr[nowIndex] = obj;
+//         break;
+//     case 'tj':
+//         this.list[index].tj.arr[nowIndex] = obj;
+//         break;
+//     case 'gs':
+//         this.list[index].gs.arr[nowIndex] = obj;
+//         break;
+//     default:
+//         return;
+// }
+// list:function() {
+//     var obj = {};
+//     this.questList.forEach((item,index) => {
+//         obj[index] = {};
+//         obj['a'][index].arr = [];  //具体的答案和得分情况
+//         obj['bmj'][index].arr = [];  //具体的答案和得分情况
+//         obj['tj'][index].arr = [];  //具体的答案和得分情况
+//         obj['gs'][index].arr = [];  //具体的答案和得分情况
+//     })
+//     return obj;
+// },
 
 
 
@@ -516,99 +542,15 @@ var params = {
  * answer 正确的答案
  */
 
-
-obj[index].alenth = 0; 
-obj[index].arr = []; 
-
-
-let objs = {
-    0: {alenth: 0, arr: Array(0)},
-    1: {alenth: 0, arr: Array(0)},
-    2: {alenth: 0, arr: Array(0)}
-}
-
-answer: "{"a":["A","C"]}"
-course_id: 3
-course_item: "{"q":["正棱柱的侧棱长都（），","侧面都是（）。"],"c":["都相等","不一定相等","全等的等腰三角形","全等的矩形"],"num":"2"}"
-course_item_id: 37
-course_type: 0
-if_handle: -1
-state: 0
+/**
+ * 项目注意的地方:
+ * 
+ */
 
  /**
-  * 回答第一题：
+  * 子传父组：
+  * 子定义事件.$emit('父组件事件',参数)
+  * 
+  * 父传子：
+  * 
   */
- var length = 0;
- var answer = [];
- function checkAnswer(index,total,course_id,score,answer){
-    total --;
-    answer.push(index); //回答题目的时候  就记录到answer 里面
-    if(index)
- }
-
-
-
-
-
-
-
-
-
-
-
-
- $(function(){
-    var tag = false;
-    var startx = 0;
-    var left = 0;
-    var bgleft = 0;
-    var len = $(".change-process").width();
-    $(".change-process").on("mousedown",'i',function(e){
-        processDown(e);
-    })
-    $(".change-process").on('mousemove',function(e){
-        proressmove(e)
-    })
-
-    $(".change-process").on("touchstart",'i',function(e){
-        processDown(e);
-    })
-    $(".change-process").on('touchmove',function(e){
-        proressmove(e)
-    })
-    $(document).mouseup(function() {
-        proressend()
-    });
-
-    function processDown(e){
-        tag = true;
-        if(e.originalEvent.touches){
-            startx = e.originalEvent.targetTouches[0].pageX - left;
-        }else{
-            startx = e.pageX - left;
-        }
-    }
-
-    function proressend(){
-        flag = false;
-    }
-    function proressmove(e){
-        if(tag) {
-            if(e.originalEvent.touches){
-                left = e.originalEvent.targetTouches[0].pageX - startx;
-            }else{
-                left = e.pageX - startx;
-            }
-            
-            if(left <= 0) {
-                left = 0;
-            }else if(left > len) {
-                left = len;
-            }
-            $(".change-process p").width(left)
-            var num = Math.floor((left*16)/len)
-            $("#group-num").val(num)
-        }
-        e.preventDefault();
-    }
-})

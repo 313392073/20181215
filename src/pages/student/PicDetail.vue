@@ -81,7 +81,6 @@ created() {
         attid:attId
     }
     base.getUrl(API.allUrl.lookSingPic,params).then((res) => {
-        console.log(res)
         if(res.code == 200 && res.success == 1) {
             this.info.likesUserLoginname = res.obj.likesUserLoginname;
             this.info.createTime = res.obj.createTime;
@@ -90,7 +89,6 @@ created() {
             this.info.likesUserNum = res.obj.likesUserNum;
         }
     })
-    console.log()
     // console.log(this.$route.params.attid)
 },
 //生命周期 - 挂载完成（可以访问DOM元素）

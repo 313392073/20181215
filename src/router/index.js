@@ -42,7 +42,6 @@ import AfterExpTotal from '@/pages/teacher/AfterExpTotal'    // 课后实验成�
 //学生start
 
 import OnlineTest from '@/pages/student/OnlineTest'//在线测试
-import WriteFormula from '@/pages/student/WriteFormula'//在线测试
 import TestReport from '@/pages/student/TestReport'//课堂学习成绩报告(学生) 
 import AssignGroupCase from '@/pages/student/AssignGroupCase'    // 寻找棱锥（学生）
 import UploadPic from '@/pages/student/UploadPic'//上传图片
@@ -277,15 +276,6 @@ const router = new Router({
       path: '/stuonlinetest',
       name: 'OnlineTest',
       component: OnlineTest,
-      meta: {
-        title: '在线测试',
-        auth: true
-      }
-    },
-    { //写公式
-      path: '/stuwriteformula',
-      name: 'WriteFormula',
-      component: WriteFormula,
       meta: {
         title: '在线测试',
         auth: true
