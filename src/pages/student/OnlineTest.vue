@@ -6,6 +6,7 @@
             <!-- 主要内容 -->
             <div class="main-wrapper">
                 <h3 class="title">侧面积公式</h3>
+                <p class="answer-desc">注：请直接在答题框内答题或者修改答案</p>
                 <div class="list-box">
                     <div class="list" v-for="(item,index) in questList" :key="index+10">
                         <div class="list-req">
@@ -54,36 +55,6 @@
                             </div>
                         </div>
                     </div>
-                <p class="list-req answerd-req"><span>答案：</span></p>
-                <div class="answerd clearfix">
-                    <div class="item">
-                        <p class="order"><span>01</span></p>
-                        <div class="answerd-box clearfix">
-                            <label class="choose">
-                                <input type="radio" name="req1" value="A" checked>
-                                <span></span>A
-                                </label>
-                                <label class="choose">
-                                <input type="radio" name="req1" value="B">
-                                <span></span>B
-                                </label>
-                                <label class="choose">
-                                <input type="radio" name="req1" value="C">
-                                <span></span>C
-                                </label>
-                                <label class="choose">
-                                <input type="radio" name="req1" value="D">
-                                <span></span>D
-                                </label>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <p class="order"><span>02</span></p>
-                        <div class="answerd-box">
-                            <input type="text" name="req2" placeholder="请输入答案" class="req2">
-                        </div>
-                    </div>
-                </div>
                 <div class="ansowerd-btn"><button class="btn" @click="subForm">提交答案</button></div>
                 </div>
             </div>
@@ -157,22 +128,6 @@ computed: {
     value1(){
         return this.value1.toUpperCase();
     },
-    // list() {
-    //     var obj = {};
-    //     this.questList.forEach((item,index) => {
-    //         obj[index] = {
-    //             q:{},
-    //             bmj:{},
-    //             tj:{},
-    //             gs:{},
-    //         };
-    //         obj[index]['q'].arr = [];  //具体的答案和得分情况
-    //         obj[index]['bmj'].arr = [];  //具体的答案和得分情况
-    //         obj[index]['tj'].arr = [];  //具体的答案和得分情况
-    //         obj[index]['gs'].arr = [];  //具体的答案和得分情况
-    //     })
-    //     return obj;
-    // },
     getChangeClass(){
         return this.classNames;
     }
@@ -287,11 +242,6 @@ methods: {
             score:rightAnswer == nowValue?rightScore:0,
             courseItemId : courseItemId
         }
-        
-        // self.list[self.gsMsg.index].gs.arr[num] = obj;
-        // this.$nextTick(() => {
-        //     window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
-        // })
     
         self.list[index].gs.arr[nowIndex] = obj
         self.$set(self.list[index].gs.arr[nowIndex],'answer',nowValue)
@@ -306,7 +256,6 @@ methods: {
         })
     },
     getCourseList(params){ //获取题型
-        console.log(params)
         base.getUrl(API.allUrl.course_list,params).then(res => {
             if(res.code == 200 && res.success == 1){
                 res.obj.forEach((item,index) => {
@@ -320,7 +269,6 @@ methods: {
         })
     },
     subForm(){ //提交数据
-        console.log(this.list)
         // this.list //所有的答案和得分情况
         let arr = []
         Object.keys(this.list).forEach((item,index) => {
@@ -389,7 +337,6 @@ methods: {
                 arr[i].isRight = 1;
             }
         }
-        console.log(arr)
         Axios({
             method:'post',
             headers:{
@@ -400,9 +347,9 @@ methods: {
             url:API.allUrl.courseSubmit+'?token='+store.state.token+'&batch='+this.classBatch,
             data:JSON.stringify(arr),
         }).then((res) => {
-            console.log(res)
-            if(res.code = 200 && res.success == 1){
-                // window.reload()
+            if(res.data.code = 200 && res.data.success == 1){
+                this.toggleTips = true;
+                this.tipsMsg = '本轮结束'
             }
         })
     }
@@ -452,6 +399,11 @@ mounted() {
         text-align: center;
         font-size: 0.352rem;
         color: @fcolor;
+    }
+    .answer-desc{
+        color: #f32d2d;
+        font-size: 30*0.4*0.02rem;
+        text-align: center;
     }
     .list-box{
         width: 90.8%;

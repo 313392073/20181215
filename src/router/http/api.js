@@ -17,7 +17,9 @@ const allUrl = {
     lookSingPic:'/v1/api/comm/group/list/look', //寻找棱锥查看单个图片
     groupCondition:'/v1/api/tea/group/repart/condition', //获取分组条件
     getAssignTeam:'/v1/api/tea/group/repart', //获取分配小组
-    courseList:'/v1/api/comm/uploadlist' //获取上传课件的列表
+    courseList:'/v1/api/comm/uploadlist', //获取上传课件的列表
+    userList:'/v1/api/tea/task/userlist', //老师分组 获取组员
+    taskSubmit:'/v1/api/tea/task/repart' //分组完成
     
     
 }

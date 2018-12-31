@@ -453,10 +453,18 @@ var params = {
 //         }
 //     ]
 // }
+// gsMgs:{
+//     index:'',
+//     rindex:'',
+//     answer:'',
+//     score:'',
+//     courseItemId:'',
+//     type:''
+// }
 
-
+"[{"answer":"","isRight":0,"classBatch":"88","userLoginname":"漆静01","courseItemId":24},{"answer":"","isRight":0,"classBatch":"88","userLoginname":"漆静01","courseItemId":25},{"answer":"","isRight":0,"classBatch":"88","userLoginname":"漆静01","courseItemId":37},{"answer":"","isRight":0,"classBatch":"88","userLoginname":"漆静01","courseItemId":38},{"answer":"","isRight":0,"classBatch":"88","userLoginname":"漆静01","courseItemId":45},{"answer":"","isRight":0,"classBatch":"88","userLoginname":"漆静01","courseItemId":46},{"answer":"","isRight":0,"classBatch":"88","userLoginname":"漆静01","courseItemId":50},{"answer":"","isRight":0,"classBatch":"88","userLoginname":"漆静01","courseItemId":51},{"answer":"","isRight":0,"classBatch":"88","userLoginname":"漆静01","courseItemId":52}]"
 /**
- * 事件对象
+ * 事件对象 记录当前题目的答案
  * 回答第几题
  * 当前问题的索引
  * 答案
@@ -544,7 +552,14 @@ var params = {
 
 /**
  * 项目注意的地方:
- * 
+ * gsMgs:{
+        index:'',
+        rindex:'',
+        total:'',
+        courseItemId:'',
+        score:'',
+        answer:''
+    }
  */
 
  /**
@@ -554,3 +569,4 @@ var params = {
   * 父传子：
   * 
   */
+[{ "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 24 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 25 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 37 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 38 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 45 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 46 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 50 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 51 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 52 }]
