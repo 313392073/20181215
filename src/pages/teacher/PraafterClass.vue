@@ -12,9 +12,9 @@
                 <p class="icon-upload"><i class="iconfont icon-shangchuan"></i></p>
                 <p class="upload-desc">选择需要上传的课件,支持PDF,PPTX,DOCX,JPG,MP4等常见文档 图片 视频格式</p>
                 <input type="file" name="file" accept="*" ref="filElem" class="upload-file" @change="upload">
-                <div class="next-btn"><button class="nbtn" @click="choose">浏览文件</button></div>
+                <div class="next-btn"><button class="nbtn" @click="choose">选择文件</button></div>
             </div>
-            <div class="item clearfix" v-for="item in 3" :key="item">
+            <div class="item clearfix" v-for="item in 3" :key="item" style="display:none">
                 <div class="item-icon"><img src="../../assets/images/group-pic.png" alt="group-pic"></div>
                 <div class="item-desc">
                     <p class="item-name">选择需要上传的课件</p>
@@ -23,7 +23,7 @@
                 </div>
                 <div class="item-tag"><i class="iconfont icon-xuanzhong"></i></div>
             </div>
-            <div class="back-btn"><button class="btn" @click="save">下一步</button></div>
+            <div class="back-btn"><button class="btn" @click="save">上传</button></div>
         </div>
     </div>
   </div>
@@ -248,7 +248,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         }
         .back-btn{
             width: 100%;
-            margin: 55*0.4*0.02rem auto 0;
+            margin: 80*0.4*0.02rem auto 0;
             text-align: center;
             .btn{
                 display: block;

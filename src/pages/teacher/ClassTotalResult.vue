@@ -86,6 +86,9 @@
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
 import echarts from 'echarts'
+import base from '../../router/http/base.js'
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
@@ -99,7 +102,8 @@ return {
         {value:20,'name':'B组'},
         {value:30,'name':'C组'},
         {value:18,'name':'D组'}
-    ]
+    ],
+    info:''
 };
 },
 //监听属性 类似于data概念
@@ -299,7 +303,25 @@ methods: {
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    let self = this;
+    let params = {
+        token:store.state.token
+    }
+    base.getUrl(API.allUrl.batch,params).then(res => {
+        if(res.code == 200 && res.success ==  1) {
+            let params = {
+                token:store.state.token,
+                batch:res.obj,
+                listtype:11*1
+            }
+            base.getUrl(API.allUrl.uploadList,params).then((res) => {
+                console.log(res)
+                if(res.code == 200 && res.success == 1) {
+                    self.info = res.obj;
+                }
+            })
+        }
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

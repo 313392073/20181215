@@ -430,18 +430,14 @@ export default {
   height: 100%;
   background-color: transparent;
   .tips-box {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 1245 * 0.4 * 0.02rem;
-    height: 685 * 0.4 * 0.02rem;
+    width: 9rem;
+    min-height: 685 * 0.4 * 0.02rem;
     background-color: #ffffff;
     box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.2);
-    margin: auto;
+    margin: 30% auto;
     padding-bottom: 155 * 0.4 * 0.02rem;
     border-radius: 4px;
+    position: relative;
     overflow: hidden;
     .tips-title {
       text-align: center;
@@ -459,8 +455,8 @@ export default {
       }
     }
     .tips-main {
-      height: 460 * 0.4 * 0.02rem;
-      padding: 40 * 0.4 * 0.02rem 40 * 0.4 * 0.02rem 120 * 0.4 * 0.02rem;
+      min-height: 460 * 0.4 * 0.02rem;
+      padding: 40 * 0.4 * 0.02rem 40 * 0.4 * 0.02rem 155 * 0.4 * 0.02rem;
       overflow: hidden;
       .tips-item {
         float: left;

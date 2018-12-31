@@ -3,25 +3,26 @@
 <div class="wrapper">
 <div class="left-wrapper">
 <div class="left-box">
-    <div class="desc-menu">寻找棱锥</div>
+    <div class="desc-menu">视频分享</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
         <h3 class="title">视频详情</h3>
         <div class="main-box">
             <div class="info-box clearfix">
                 <div class="info-left">
-                    <img src="/images/default.png" alt="">
-                    <span>B组</span>
+                    <img :src="info.headImage" alt="">
+                    <span>{{info.group}}组</span>
                 </div>
                 <div class="info-right">
-                    <p class="info-title">王心怡</p>
-                    <p class="info-time">上传时间：2018年09月18日 12:23:06</p>
+                    <p class="info-title">{{info.userLoginname}}</p>
+                    <p class="info-time">上传时间：{{getTime(info.createTime)}}</p>
                 </div>
             </div>
             <div class="video-box">
-                <video src=""></video>
+                <video v-if="info.uploadNetUrl" :src="info.uploadNetUrl"></video>
+                <div v-else class="video-desc">暂未上传视频</div>
             </div>
-            <div class="back-btn"><button class="btn">返回</button></div>
+            <div class="back-btn"><button class="btn" @click="goBack">返回</button></div>
         </div>
     </div>
   </div>
@@ -34,13 +35,24 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
+import share from '../../router/http/share.js'
+import base from '../../router/http/base.js'
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
-
+    info:{
+        group:'',
+        userLoginname:'',
+        createTime:'',
+        likesUserNum:0,
+        uploadNetUrl:'',
+        headImage:''
+    }
 };
 },
 //监听属性 类似于data概念
@@ -49,11 +61,32 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
-
+    getTime(time){
+        return share.formatTime(time/1000)
+    },
+    goBack(){
+        this.$router.go(-1)
+    }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    let attId = this.$route.params.attids;
+    this.info.group = this.$route.params.groupInfo;
+    this.info.headImage = this.$route.params.headImage;
+    let params = {
+        token:store.state.token,
+        attid:attId
+    }
+    base.getUrl(API.allUrl.lookSingPic,params).then((res) => {
+        console.log(res)
+        if(res.code == 200 && res.success == 1) {
+            this.info.userLoginname = res.obj.userLoginname;
+            this.info.createTime = res.obj.createTime;
+            this.info.uploadNetUrl = res.obj.uploadNetUrl;
+            this.info.likesUserNum = res.obj.likesUserNum;
+            this.info.likesUserNum = res.obj.likesUserNum;
+        }
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
@@ -124,11 +157,17 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         .video-box{
             width: 100%;
             height: 829*0.4*0.02rem;
-            background-color: #39cc6c;
             margin-top: 40*0.4*0.02rem;
             video{
                 width: 100%;
                 height: 100%;
+            }
+            .video-desc{
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
         }
         .back-btn{

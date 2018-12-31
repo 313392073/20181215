@@ -12,42 +12,20 @@
                 <input type="text" placeholder="搜索全部">
             </div>
             <ul class="main-menu">
-                <li class="active">
-                    <a href="">
-                        <i class="iconfont icon-xin"></i>
-                        <span>全部</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="">
-                        <i class="iconfont icon-xin"></i>
-                        <span>文档</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="">
-                        <i class="iconfont icon-xin"></i>
-                        <span>图片</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="">
-                        <i class="iconfont icon-xin"></i>
-                        <span>视频</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="">
-                        <i class="iconfont icon-xin"></i>
-                        <span>音乐</span>
+                <li :class="{active:index==isActive}"  v-for="(item,index) in tabList" :key="index" @click="changeType(index,item.type)">
+                    <a href="javascript:void(0)">
+                        <i class="iconfont" :class="item.iconName"></i>
+                        <span>{{item.name}}</span>
                     </a>
                 </li>
             </ul>
        </div>
        <div class="right-main">
             <p class="main-title"> 
-                <a href="" class="active upload-btn"><i class="iconfont icon-shangchuan1"></i>上传</a>
-                <a href=""><i class="iconfont icon-shanchu"></i>删除</a>
+                <a href="javascript:void(0)" class="active upload-btn" @click="goPraafter"> 
+                    <i class="iconfont icon-shangchuan1"></i>上传
+                </a>
+                <a href="javascript:void(0)"><i class="iconfont icon-shanchu"></i>删除</a>
             </p>
             <div class="main-info">
                 <p class="info-title">全部</p>
@@ -59,17 +37,14 @@
                             <th>大小</th>
                         </tr>
                     </thead>
-
                     <tbody>
-                        <tr v-for="item in 4" :key="item">
+                        <tr v-for="(item,index) in typeList" :key="index">
                             <td class="td-check">
                                 <label class="choose"><input type="checkbox" name="" value="student"><span>√</span> </label>
-                                <span>走进棱锥教学。ppt</span>
+                                <a :href="item.uploadNetUrl" target="_blank"><span>{{getName(item.uploadNetUrl)}}</span></a>
                             </td>
-                            <td>
-                                2018年12月16日 14：12
-                            </td>
-                            <td>12.6M</td>
+                            <td>{{formatTime(item.createTime)}}</td>
+                            <td>{{item.fileSize.toFixed(2)}}M</td>
                         </tr>
                     </tbody>
                 </table>
@@ -98,6 +73,7 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
+import share from '../../router/http/share.js'
 import base from '../../router/http/base.js'
 import API from '../../router/http/api.js';
 import store from '../../store/store.js';
@@ -108,21 +84,108 @@ components: {SideBar},
 data() {
 //这里存放数据
 return {
+    tabList:[
+        {
+            name:'全部',
+            iconName:'icon-xin',
+            type:'all'
+        },
+        {
+            name:'文档',
+            iconName:'icon-xin',
+            type:'doc'
+        },
+        {
+            name:'图片',
+            iconName:'icon-xin',
+            type:'pic'
+        },
+        {
+            name:'视频',
+            iconName:'icon-xin',
+            type:'video'
+        },
+        {
+            name:'音乐',
+            iconName:'icon-xin',
+            type:'music'
+        },
+    ],
     toggleTips:false,
     tipsMsg:'推送成功',
     batch:'',
-    list:[]
+    list:[],
+    isActive:0,
+    typeList:[]
 };
 },
 //监听属性 类似于data概念
-computed: {},
+computed: {
+},
 //监控data中的数据变化
 watch: {},
 //方法集合
 methods: {
+    formatTime(time){
+        return share.formatTime(time/1000)
+    },
+    getName(str){
+        let reg=/\/([^/]+?)$/;
+        str = str.match(reg);
+        return str[1]
+    },
+    changeType(index,type){
+        this.isActive=index;
+        let arr = {};
+        arr['doc'] = [];
+        arr['pic'] = [];
+        arr['video'] = [];
+        arr['music'] = [];
+        this.list.forEach((item,index) => {
+            let positiond = this.getName(item.uploadNetUrl).indexOf('.');
+            let type = this.getName(item.uploadNetUrl).substring(positiond).toLowerCase();
+            if(type == '.wps' || type == '.doc' || type == '.txt' || type == '.zip' || type == '.rar'){
+                arr['doc'].push(item)
+            }
+            if(type == '.png' || type == '.jpg' || type == '.jpeg' || type == '.gif' || type == '.bmp' || type == '.psd'){
+                arr['pic'].push(item)
+            }
+            if(type == '.avi' || type == '.mp4' || type == '.mpg'){
+                arr['video'].push(item)
+            }
+            if(type == '.mp3' || type == '.wav' || type == '.wma'){
+                arr['music'].push(item)
+            }
+        })
+        switch(type) {
+            case 'all':
+                this.typeList = this.list;
+                break;
+            case 'doc':
+                this.typeList = arr['doc'];
+                break;
+            case 'pic':
+                this.typeList = arr['pic'];
+                break;
+            case 'video':
+                this.typeList = arr['video'];
+                break;
+             case 'music':
+                this.typeList = arr['music'];
+                break;
+            default:
+                this.typeList = [];
+                break;
+        }
+        return this.typeList;
+    },
     HideTip(){
         this.toggleTips = false
     },
+     goPraafter(){
+         this.$router.push('/teapraafterclass') 
+    },
+   
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
@@ -145,10 +208,14 @@ created() {
             }
         })
     })
+   
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
-
+    this.$nextTick(() => {
+        this.changeType(0,'all')
+    })
+    
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前
@@ -229,6 +296,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         .main-title{
             height: 160*0.4*0.02rem;
             border: 1px solid #dbdbdb;
+            .upload-file{
+                display: none;
+            }
             a{
                 display: inline-block;
                 width: 190*0.4*0.02rem;
@@ -285,6 +355,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         font-size: 34*0.4*0.02rem;
                         border-bottom: 1px solid #dbdbdb;
                         .td-check{
+                            a{
+                                color: @fcolor;
+                            }
                             .choose{
                                 display: inline-block;
                                 vertical-align: middle;

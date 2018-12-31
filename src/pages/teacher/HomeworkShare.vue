@@ -8,23 +8,25 @@
     <div class="main-wrapper">
         <div class="main-box">
             <div class="group-wrapper clearfix">
-                <div class="item clearfix" v-for="item in 4" :key="item">
-                    <p class="group-name">A组</p>
-                    <div class="sub-item" v-for="subitem in 4" :key="subitem">
+                <div class="item clearfix" v-for="(item, key, index) in setItem" :key="index">
+                    <p class="group-name">{{key}}组</p>
+                    <div class="sub-item" v-for="(subitem,subIndex) in item" :key="subIndex">
+                        
                         <div class="not-upload"><img src="../../assets/images/noupload.png" alt="noupload"></div>
+                        
                         <div class="detail-desc clearfix">
                             <div class="desc-left">
-                                <img src="../../assets/images/default.png" alt="default">
-                                <p>流星雨</p>
+                                 <img :src="subitem.user_head_image" :alt="subitem.user_name">
+                                <p>{{subitem.user_name}}</p>
                             </div>
                             <div class="desc-right">
-                                <p class="desc-text">整体为三棱锥形结构，其外观简洁、别致，并且周向侧面均具有展示孔，起到了展示作用</p>
+                                <p class="desc-text">{{subitem.tea_comment}}</p>
                             </div>
                         </div>
                         <div class="detail-btns">
                             <a href="" class="share">查看分享</a>
-                            <a href=""><i class="iconfont icon-xin"></i>2</a>
-                            <a href=""><i class="iconfont icon-xuanzhong"></i>2</a>
+                            <a href=""><i class="iconfont icon-xin"></i>{{subitem.likes_user_num}}</a>
+                            <a href=""><i class="iconfont icon-xuanzhong"></i>{{subitem.look_num}}</a>
                         </div>
                         <div class="detail-imgs">
                             <img src="../../assets/images/group-pic.png" alt="group-pic">
@@ -47,26 +49,72 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
+import share from '../../router/http/share.js'
+import base from '../../router/http/base.js'
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
-
+    groupList:[]
 };
 },
 //监听属性 类似于data概念
-computed: {},
+computed: {
+     setItem(){
+        let obj = this.getAllkey();
+        this.groupList.forEach((item,index) => {
+            obj[item['groupname']].push(item)
+        })
+        console.log(obj)
+        return obj;
+    }
+},
 //监控data中的数据变化
 watch: {},
 //方法集合
 methods: {
-
+    HideTip(){
+        this.tipsMsg = '';
+        this.toggleTips = false;
+    },
+     getAllkey(){
+        let arr = [];
+        for(var i=0;i<this.groupList.length;i++){
+            arr.push(this.groupList[i]['groupname'])
+        }
+        let brr = share.uniqArr(arr);
+        let obj = {};
+        brr.forEach((item,index)  => {
+            obj[item] = [];
+        })
+        return obj;
+    },
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+   let self = this;
+    let params = {
+        token:store.state.token
+    }
+    base.getUrl(API.allUrl.batch,params).then(res => {
+        if(res.code == 200 && res.success ==  1) {
+            let params = {
+                token:store.state.token,
+                batch:res.obj,
+                listtype:11*1
+            }
+            base.getUrl(API.allUrl.uploadList,params).then((res) => {
+                console.log(res)
+                if(res.code == 200 && res.success == 1) {
+                    self.groupList = res.obj;
+                }
+            })
+        }
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
@@ -96,6 +144,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
             .item{
                 float: left;
                 width: calc(~"23.5% - 2px");
+                min-height: 10.44rem;
                 margin-right: 2%;
                 border: 1px solid #6c63ff;
                 box-shadow: 0 0 5px 3px rgba(0,0, 0,0.1);
@@ -180,6 +229,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                                 width: 64*0.4*0.02rem;
                                 height: 64*0.4*0.02rem;
                                 margin: 6*0.4*0.02rem auto;
+                                border-radius: 50%;
                             }
                         }
                         .desc-right{
