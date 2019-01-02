@@ -9,14 +9,11 @@
         <div class="main-box">
             <div class="desc-box clearfix">
                 <div class="desc-left">
-                    <img src="../../assets/images/default.png" alt="default">
-                    <p class="desc-name">流星雨</p>
+                    <img :src="initInfo.headImage" alt="default">
+                    <p class="desc-name">{{initInfo.useName}}</p>
                 </div>
                 <div class="desc-right">
-                    <p class="desc-detail">现实生活中的棱锥有：金字塔、三脚架、脚手架、某些特别的建筑物的锥形顶、正方体的
-                        一角、自行车反光镜的锥形突出、幸运星的一半等等；
-                        古代有锥形漏斗和锥形容器、量器。
-                    </p>
+                    <p class="desc-detail">{{info.attRemark}}</p>
                     <div class="desc-images clearfix">
                         <img src="../../assets/images/group-pic.png" alt="group-pic">
                         <img src="../../assets/images/group-pic.png" alt="group-pic">
@@ -25,8 +22,9 @@
                         <img src="../../assets/images/group-pic.png" alt="group-pic">
                     </div>
                     <div class="desc-btns">
-                        <a href=""><i class="iconfont icon-xin"></i>赞</a>
-                        <a href=""><i class="iconfont icon-guanbi"></i>评论</a>
+                        <a v-if="isZan" href="javascript:void(0)"><i style="color:red" class="iconfont icon-xin"></i>赞</a>
+                        <a v-else href="javascript:void(0)" @click="getZan"><i class="iconfont icon-xin"></i>赞</a>
+                        <a href="javascript:void(0)"><i class="iconfont icon-guanbi"></i>评论</a>
                     </div>
                 </div>
             </div>
@@ -35,9 +33,7 @@
                     <div class="icon-box clearfix">
                         <p class="left-icon"><i class="iconfont icon-xin"></i></p>
                         <div class="zan-wrapper">
-                            <img src="../../assets/images/default.png" alt="default">
-                            <img src="../../assets/images/default.png" alt="default">
-                            <img src="../../assets/images/default.png" alt="default">
+                            <img v-for="(cItem,cIndex) in info.comments" :key="cIndex" :src="cItem.userHeadImage" alt="default">
                         </div>
                     </div>
                 </div>
@@ -52,20 +48,20 @@
                                 </div>
                                 <p class="comment-detail">回复 <span>叶小雨：</span> 很不错的分享，学习了！</p>
                             </div>
-                            <div class="list clearfix" v-for="item in 3" :key="item">
+                            <div class="list clearfix" v-for="(cItem,cIndex) in info.comments" :key="cIndex">
                                 <div class="left-icon">
-                                     <img src="../../assets/images/default.png" alt="default">
-                                     <p class="comment-name">叶小雨</p>
+                                     <img :src="cItem.userHeadImage" alt="default">
+                                     <p class="comment-name">{{cItem.userLoginname}}</p>
                                 </div>
-                                <p class="comment-detail">很不错的分享，学习了！</p>
+                                <p class="comment-detail">{{cItem.comment}}</p>
                             </div>
                         </div>
                     </div>
                     
                 </div>
                 <div class="input-box clearfix">
-                    <input type="text" placeholder="评论">
-                    <a href="javascript:void(0)"><i class="iconfont icon-xiaolian"></i></a>
+                    <input type="text" placeholder="评论" v-model="comments">
+                    <a href="javascript:void(0)" @click="getComment"><i class="iconfont icon-xin"></i></a>
                 </div>
             </div>
         </div>
@@ -80,13 +76,26 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
+import base from '../../router/http/base';
+import store from '../../store/store';
+import API from '../../router/http/api.js';
+import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
-
+    attId:'',
+    isZan:false,
+    headImage:'',
+    comments:'',
+    batch:'',
+    info:{},
+    initInfo:{
+        headImage:'',
+        useName:''
+    }
 };
 },
 //监听属性 类似于data概念
@@ -95,15 +104,69 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
+    getBatch(params){
+        base.getUrl(API.allUrl.batch,params).then((res) => {
+            if(res.code == 200 && res.success == 1) {
+                this.batch = res.obj
+            }
+        })
+    },
+    getDetail(){
+        let params = {
+            token:store.state.token,
+            attid:this.attId
+        }   
+        base.getUrl(API.allUrl.lookSingPic,params).then((res) => {
+            console.log(res)
+            if(res.code == 200 && res.success == 1) {
+                Object.assign({},this.info,res.obj)
+                this.info = res.obj
+            }
+        })
+    },
+     getZan(){
+        let params = {
+            token:store.state.token,
+            attid:this.attId
+        }
+        base.getUrl(API.allUrl.listLike,params).then((res) => {
 
+            if(res.code == 200 && res.success == 1) {
+                this.isZan = true;
+                this.getDetail()
+            }
+        })
+    },
+    getComment(){
+        let params = {
+            token:store.state.token,
+            batch:this.batch,
+            attid:this.attId*1,
+            comment:this.comments
+        }
+        base.postUrl(API.allUrl.homeComment,params).then((res) => {
+            console.log(res)
+            if(res.code == 200 && res.success == 1) {
+                this.getDetail()
+            }
+        })
+    }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    let attId = this.$route.params.attids;
+    this.attId = attId;
+    this.initInfo.headImage = this.$route.params.headImage;
+    this.initInfo.useName = this.$route.params.useName;
+    let params = {
+        token:store.state.token
+    }
+    this.getBatch(params)
+    this.getDetail()
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
-
+    
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前
@@ -136,6 +199,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 img{
                     width: 124*0.4*0.02rem;
                     height: 124*0.4*0.02rem;
+                    border-radius: 50%;
                 }
             }
             .desc-right{
@@ -190,10 +254,12 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 .zan-wrapper{
                     float: left;
                     width: 96.2%;
+                    overflow: hidden;
                     img{
                         width: 80*0.4*0.02rem;
                         height: 80*0.4*0.02rem;
                         margin-right: 10*0.4*0.02rem;
+                        border-radius: 50%;
                     }
                 }
             }
@@ -219,12 +285,13 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         }
                         .left-icon{
                             float: left;
-                            width: 5.5%;
+                            width: 8.5%;
                             text-align: center;
                             margin-right: 1.3%;
                             img{
                                 width: 80*0.4*0.02rem;
                                 height: 80*0.4*0.02rem;
+                                border-radius: 50%;
                             }
                             .comment-name{
                                 line-height: 15px;

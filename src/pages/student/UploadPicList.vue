@@ -6,7 +6,7 @@
     <div class="desc-menu">寻找棱锥</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
-         <h3 class="title">视频上传列表</h3>
+         <h3 class="title">图片上传列表</h3>
         <div class="main-box">
             <div class="group-wrapper clearfix">
                 <div class="item" v-for="(item, key, index) in setItem" :key="index">

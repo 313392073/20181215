@@ -6,6 +6,7 @@
     <!-- 主要内容 -->
     <div class="main-wrapper">
         <h3 class="title">任务详情</h3>
+        <p class="answer-desc">注：请直接在答题框内答题或者修改答案</p>
         <div class="list-box">
               <div class="list" v-for="(item,index) in questList" :key="index">
                 <div class="list-req">
@@ -274,6 +275,11 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         text-align: center;
         font-size: 0.352rem;
         color: @fcolor;
+    }
+     .answer-desc{
+        color: #f32d2d;
+        font-size: 30*0.4*0.02rem;
+        text-align: center;
     }
     .list-box{
         width: 90.8%;

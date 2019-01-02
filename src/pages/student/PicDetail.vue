@@ -22,7 +22,11 @@
                 <img :src="info.uploadNetUrl" alt="暂无图片">
             </div>
             <div class="back-btn">
-                <div class="bg-btn">
+                <div v-if="isZan" class="bg-btn">
+                    <p><i style="color:red;" class="iconfont icon-xin"></i></p>
+                    <span>{{info.likesUserNum}}</span>
+                </div>
+                <div v-else class="bg-btn" @click="getZan">
                     <p><i class="iconfont icon-xin"></i></p>
                     <span>{{info.likesUserNum}}</span>
                 </div>
@@ -46,9 +50,17 @@ import store from '../../store/store.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
+// 提供reload方法
+provide: function () {
+    return {
+        reload: this.reload
+    }
+},
 data() {
 //这里存放数据
 return {
+    attId:'',
+    isZan:false,
     info:{
         group:'',
         likesUserLoginname:'',
@@ -67,28 +79,51 @@ computed: {
 watch: {},
 //方法集合
 methods: {
+    getDetail(){
+        let params = {
+            token:store.state.token,
+            attid:this.attId
+        }   
+        base.getUrl(API.allUrl.lookSingPic,params).then((res) => {
+            console.log(res)
+            if(res.code == 200 && res.success == 1) {
+                this.info.likesUserLoginname = res.obj.likesUserLoginname;
+                this.info.createTime = res.obj.createTime;
+                this.info.uploadNetUrl = res.obj.uploadNetUrl;
+                this.info.likesUserNum = res.obj.likesUserNum;
+                this.info.likesUserNum = res.obj.likesUserNum;
+            }
+        })
+    },
     getTime(time){
         return share.formatTime(time/1000)
+    },
+    getZan(){
+        let params = {
+            token:store.state.token,
+            attid:this.attId
+        }
+
+        base.getUrl(API.allUrl.listLike,params).then((res) => {
+            if(res.code == 200 && res.success == 1) {
+                this.isZan = true;
+                this.getDetail()
+            }
+        })
+    },
+    reload: function () {
+        this.isRouterAlive = false;
+        // 该方法会在dom更新后执行
+        this.$nextTick(function () { this.isRouterAlive = true })
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
     let attId = this.$route.params.attids;
+    this.attId = attId;
     this.info.group = this.$route.params.groupInfo;
     this.info.headImage = this.$route.params.headImage;
-    let params = {
-        token:store.state.token,
-        attid:attId
-    }
-    base.getUrl(API.allUrl.lookSingPic,params).then((res) => {
-        if(res.code == 200 && res.success == 1) {
-            this.info.likesUserLoginname = res.obj.likesUserLoginname;
-            this.info.createTime = res.obj.createTime;
-            this.info.uploadNetUrl = res.obj.uploadNetUrl;
-            this.info.likesUserNum = res.obj.likesUserNum;
-            this.info.likesUserNum = res.obj.likesUserNum;
-        }
-    })
+    this.getDetail()
     // console.log(this.$route.params.attid)
 },
 //生命周期 - 挂载完成（可以访问DOM元素）

@@ -14,7 +14,7 @@
                         <div class="item-detail">
                             <div class="groupers-box clearfix">
                                 <div class="sub-item" v-for="(subitem,subIndex) in item" :key="subIndex">
-                                    <img :src="subitem.groupuser_headimages" :alt="subitem.groupuser_names">
+                                    <img :src="subitem.groupuser_headimages">
                                     <p>{{subitem.groupuser_names}}</p>
                                 </div>
                             </div>
@@ -90,6 +90,7 @@ created() {
                 batch:res.obj
             }
             base.getUrl(API.allUrl.findPyramid,params1).then((res) => {
+                console.log(res)
                 if(res.code == 200 && res.success == 1) {
                     this.groupList = res.obj;
                 }
