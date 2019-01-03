@@ -103,7 +103,10 @@ return {
         {value:30,'name':'C组'},
         {value:18,'name':'D组'}
     ],
-    info:''
+    info:'',
+    alltest_error:[],
+    alltest_item:[],
+    alltest_user:[]
 };
 },
 //监听属性 类似于data概念
@@ -311,10 +314,9 @@ created() {
         if(res.code == 200 && res.success ==  1) {
             let params = {
                 token:store.state.token,
-                batch:res.obj,
-                listtype:11*1
+                batch:res.obj
             }
-            base.getUrl(API.allUrl.uploadList,params).then((res) => {
+            base.getUrl(API.allUrl.classTest,params).then((res) => {
                 console.log(res)
                 if(res.code == 200 && res.success == 1) {
                     self.info = res.obj;

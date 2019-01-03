@@ -12,8 +12,6 @@
                     <p class="group-name">{{key}}组</p>
                     <div class="sub-item" v-for="(subitem,subIndex) in item" :key="subIndex">
                         
-                        <div class="not-upload"><img src="../../assets/images/noupload.png" alt="noupload"></div>
-                        
                         <div class="detail-desc clearfix">
                             <div class="desc-left">
                                  <img :src="subitem.user_head_image" :alt="subitem.user_name">
@@ -40,6 +38,9 @@
                             <img src="../../assets/images/group-pic.png" alt="group-pic">
                         </div>
                     </div>
+                    <div class="sub-item nosub-item">
+                        <div class="not-upload"><img @click="showUpload" src="../../assets/images/noupload.png" alt="noupload"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -53,6 +54,34 @@
             </div>
             <div class="tips-btn"><button class="cbtn tbtn" @click="HideTip">好的</button></div>
             </div>
+        </div>
+        <!-- 上传时的弹窗 -->
+        <div class="upload-wrapper" v-show="uploadTap">
+            <div class="main-tips">
+                <div class="uploadmain-wrapper">
+                    <div class="comment-box">
+                        <textarea name="comment" cols="30" rows="10" v-model="commentMsg" placeholder="请输入您的评论..."></textarea>
+                    </div>
+                    <div class="upload-picbox">
+                        <img v-for="(item,index) in picList" :key="index" class="upload-default" :src="item">
+                        <img src="../../assets/images/add.png" @click="chooseImg($event)">
+                        <input type="file" name="file" accept="image/png,image/jpg,image/jepg,image/gif" ref="filElem" class="upload-file" @change="uploadImg">
+                    </div>
+                    <div class="tips-btn">
+                        <button class="btn" @click="HideUpload">取消</button>
+                        <button class="btn active" @click="shareUpload">分享</button>
+                    </div>
+                </div>
+                <!-- 取消是否保存 -->
+                <div class="qre-wrapper" v-show="isSave">
+                    <h3>将此次编辑保留？</h3>
+                    <div class="qre-btn clearfix">
+                        <span @click="Save(0)">不保留</span>
+                        <span class="active" @click="Save(1)">保留</span>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </div>
   </div>
@@ -69,12 +98,19 @@ import share from '../../router/http/share.js'
 import base from '../../router/http/base.js'
 import API from '../../router/http/api.js';
 import store from '../../store/store.js';
+import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
+    commentMsg:'',
+    picList:[],
+    uploadDefault:'',
+    uploadTap:false,
+    isSave:false,
+    batch:'',
     groupList:[],
     toggleTips:false,
     tipsMsg:'',
@@ -117,6 +153,87 @@ methods: {
     goDetail(attid,useName,headImage){
         let attId = attid; 
         this.$router.push({name:'StuShareDetail',params:{attids:attId,useName:useName,headImage:headImage}})
+    },
+    showUpload(){
+        this.uploadTap = true;
+    },
+    HideUpload(){
+         this.isSave = true;
+    },
+    Save(tag){
+        if(tag == 0) {
+          this.commentMsg = '';
+          this.picList = [];
+        }
+        this.uploadTap = false;
+        this.isSave = false;
+    },
+    chooseImg(e){
+        if(this.picList.length >= 4) {
+            alert('最多支持同时上传4张图片');
+            return false;
+        }
+        this.$refs.filElem.dispatchEvent(new MouseEvent('click')) 
+    },
+    uploadImg(){
+        let self = this;
+        let fileMaxSize = 1024;//1M
+        let file = self.$refs.filElem.files[0];
+        if(file.size/fileMaxSize > fileMaxSize){
+            self.tipsMsg = '图片过大 不能上传'
+            self.toggleTips = true;
+            return false;
+        }
+        if (!/image\/\w+/.test(file.type)) {
+            self.tipsMsg = '请注意上传图片的格式！'
+            self.toggleTips = true;
+            return false;
+        }
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(){
+            var formData = new FormData();
+            formData.append("file", self.$refs.filElem.files[0]);
+            Axios({
+                method:'post',
+                baseURL:base.baseURL,
+                url:API.allUrl.uploadfile+'?token=1',
+                data:formData,
+            }).then((res) => {
+                if(res.data.code == 200 && res.data.success == 1) {
+                    self.picList.push(res.data.obj)
+                }else{
+                    self.tipsMsg = '网络错误，上传头像失败'
+                    self.toggleTips = true;
+                    return false;
+                }
+            })
+        }
+    },
+    shareUpload(){
+        if(this.picList.length < 1 || this.commentMsg == '') {
+            this.tipsMsg = '请将评论信息填写完整';
+            this.toggleTips = true;
+            return false;
+        }
+         Axios({
+                headers:{
+                    'Content-Type':'application/json;charset=UTF-8'
+                },
+                method:'post',
+                baseURL:base.baseURL,
+                url:API.allUrl.workShare+'?token='+store.state.token+'&batch='+this.batch+'&content='+this.commentMsg,
+                data:this.picList,
+         }).then((res) => {
+             if(res.data.success == 1 && res.data.code == 200) {
+                this.tipsMsg = '分享成功';
+                this.toggleTips = true;
+                this.uploadTap = false;
+                this.commentMsg = '';
+                this.picList = [];
+                this.isSave = false;
+             }
+        })
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
@@ -127,6 +244,7 @@ created() {
     }
     base.getUrl(API.allUrl.batch,params).then(res => {
         if(res.code == 200 && res.success ==  1) {
+            this.batch = res.obj;
             let params = {
                 token:store.state.token,
                 batch:res.obj,
@@ -217,22 +335,23 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                     min-height: 2.2rem;
                     margin-bottom: 20*0.4*0.02rem;
                     padding: 10*0.4*0.02rem;
-                    .not-upload{
-                        width: 100%;
-                        height: 100%;
-                        position: relative;
-                        display: none;
+                    &.nosub-item{
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        .not-upload{
+                            width: 100%;
+                            height: 100%;
+                             display: flex;
+                            justify-content: center;
+                            align-items: center;
                         img{
                             width: 90*0.4*0.02rem;
                             height: 90*0.4*0.02rem;
-                            position: absolute;
-                            left: 0;
-                            top: 0;
-                            right: 0;
-                            bottom: 0;
-                            margin: auto;
                         }
                     }
+                    }
+                    
                     .detail-desc{
                         p{
                             font-size: 12px!important;
@@ -299,7 +418,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         display: flex;
         justify-content: center;
         align-items: center;
-    .main-tips{
+        .main-tips{
             width: 1240*0.02*0.4rem;
             height: 830*0.4*0.02rem;
             background-color: #ffffff;
@@ -356,9 +475,106 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 outline: none;
             }
         }
-        &.active{
-            z-index: 999;
-            opacity: 1;
+    }
+    .upload-wrapper{
+        position: absolute;
+        z-index: 888;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .main-tips{
+            width: 1240*0.02*0.4rem;
+            height: 830*0.4*0.02rem;
+            background-color: #ffffff;
+            box-shadow: 0px 0px 5px 3px rgba(0,0,0,.1);
+            text-align: center;
+            padding-top: 20*0.4*0.02rem;
+            border-radius: 12*0.4*0.02rem;
+            position: relative;
+            .comment-box{
+                width: 96%;
+                min-height:400*0.4*0.02rem;
+                margin: 20*0.4*0.02rem auto;
+                textarea{
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                    border: 1px solid #ffffff;
+                    color: @fcolor;
+                }
+            }
+            .upload-picbox{
+                text-align: left;
+                padding-left: 30*0.4*0.02rem;
+                img{
+                    width: 220*0.4*0.02rem;
+                    height: 220*0.4*0.02rem;
+                    border: 1px solid #ecebeb;
+                    margin-right: 10*0.4*0.02rem;
+                }
+                .upload-file{
+                    display: none;
+                }
+            }
+            .qre-wrapper{
+                position: absolute;
+                top: 30%;
+                left: 20%;
+                width: 60%;
+                border: 1px solid #ececee;
+                border-radius: 18*0.4*0.02rem;
+                text-align: center;
+                 box-shadow: 0 0 5px 3px rgba(0,0, 0,0.1);
+                h3{
+                    color: @fcolor;
+                    font-size: 40*0.4*0.02rem;
+                    min-height: 100*0.4*0.02rem;
+                    line-height: 100*0.4*0.02rem;
+                }
+                .qre-btn{
+                    border-top: 1px solid #ececec;
+                    span{
+                        float: left;
+                        border-right: 1px solid #ececec;
+                        width: calc(~"50% - 1px");
+                        min-height: 80*0.4*0.02rem;
+                        line-height: 80*0.4*0.02rem;
+                        &:nth-child(2){
+                            border-right: none;
+                        }
+                        &.active{
+                            color: #6c63ff;
+                        }
+                    }
+                }
+            }
+        }
+        .tips-btn{
+            width: 100%;
+            text-align: right;
+            padding-right: 50*0.4*0.02rem;
+            .btn{
+                display: inline-block;
+                width: 250*0.4*0.02rem;
+                height: 90*0.4*0.02rem;
+                margin: 0 auto;
+                line-height: 90*0.4*0.02rem;
+                background-color: #ffffff;
+                color: @fcolor;
+                font-size: 0.36rem;
+                border-radius: 20*0.4*0.02rem;
+                border: none;
+                outline: none;
+                &.active{
+                    color: #ffffff;
+                    background-color: #6c63ff;
+                }
+            }
         }
     }
 }

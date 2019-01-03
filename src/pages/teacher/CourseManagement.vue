@@ -25,7 +25,7 @@
                 <a href="javascript:void(0)" class="active upload-btn" @click="goPraafter"> 
                     <i class="iconfont icon-shangchuan1"></i>上传
                 </a>
-                <a href="javascript:void(0)"><i class="iconfont icon-shanchu"></i>删除</a>
+                <a href="javascript:void(0)" @click="deleteAttch"><i class="iconfont icon-shanchu"></i>删除</a>
             </p>
             <div class="main-info">
                 <p class="info-title">全部</p>
@@ -40,7 +40,7 @@
                     <tbody>
                         <tr v-for="(item,index) in typeList" :key="index">
                             <td class="td-check">
-                                <label class="choose"><input type="checkbox" name="" value="student"><span>√</span> </label>
+                                <label class="choose" @click="getCheck($event)"><input type="checkbox" :value="item.id"><span>√</span></label>
                                 <a :href="item.uploadNetUrl" target="_blank"><span>{{getName(item.uploadNetUrl)}}</span></a>
                             </td>
                             <td>{{formatTime(item.createTime)}}</td>
@@ -56,7 +56,7 @@
         <div class="main-tips">
             <i class="iconfont icon-guanbi1" @click="HideTip"></i>
             <img class="tip-img" src="../../assets/images/teaupload.png" alt="send-success">
-          <p class="tips-title">推送成功</p>
+          <p class="tips-title">{{tipsMsg}}</p>
           <div class="tips-msg">
               <p>你已成功推送 <span>2</span>个文件！</p>
           </div>
@@ -116,7 +116,8 @@ return {
     batch:'',
     list:[],
     isActive:0,
-    typeList:[]
+    typeList:[],
+    deleteList:[]
 };
 },
 //监听属性 类似于data概念
@@ -177,6 +178,7 @@ methods: {
                 this.typeList = [];
                 break;
         }
+        console.log(this.typeList)
         return this.typeList;
     },
     HideTip(){
@@ -185,7 +187,55 @@ methods: {
      goPraafter(){
          this.$router.push('/teapraafterclass') 
     },
-   
+    getCheck(e){
+       let arr = [];
+       e.preventDefault();
+       //触发input的点击事件
+       e.currentTarget.querySelector('input').dispatchEvent(new MouseEvent('click'))
+       if(e.currentTarget.querySelector('input').checked){
+           this.deleteList.push(e.currentTarget.querySelector('input').value*1)
+       }else{
+           let index = this.deleteList.indexOf(e.currentTarget.querySelector('input').value*1);
+           if(index > -1) {
+               this.deleteList.splice(index, 1);
+           }
+       }
+    },
+    deleteAttch(){
+        let self = this;
+        let arr = [];
+        self.deleteList.forEach((item) => {
+            arr.push(item)
+        })
+        Axios({
+            method:'post',
+            baseURL:base.baseURL,
+            url:API.allUrl.deleteUploadfile+'?token='+store.state.token,
+            headers:{
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json; charset=UTF-8'
+            },
+            data:arr,
+        }).then((res) => {
+            if(res.data.code == 200 && res.data.success == 1) {
+                 this.toggleTips = true;
+                 this.tipsMsg = '删除成功';
+                 window.location.reload()
+                //  self.getCourseList()
+            }
+        })
+    },
+    getCourseList(){
+        let params = {
+            token:store.state.token,
+            batch:this.batch
+        }
+        base.getUrl(API.allUrl.courseList,params).then((res) => {
+            if(res.code == 200 && res.success == 1) {
+                this.list = res.obj;
+            }
+        })
+    }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
@@ -197,16 +247,7 @@ created() {
         if(res.code == 200 && res.success ==  1) {
             self.batch = res.obj;
         }
-        let params = {
-            token:store.state.token,
-            batch:res.obj
-        }
-        base.getUrl(API.allUrl.courseList,params).then((res) => {
-            console.log(res)
-            if(res.code == 200 && res.success == 1) {
-                this.list = res.obj;
-            }
-        })
+        self.getCourseList()
     })
    
 },
@@ -215,7 +256,6 @@ mounted() {
     this.$nextTick(() => {
         this.changeType(0,'all')
     })
-    
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前

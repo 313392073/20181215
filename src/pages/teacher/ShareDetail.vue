@@ -130,7 +130,6 @@ methods: {
             attid:this.attId
         }
         base.getUrl(API.allUrl.listLike,params).then((res) => {
-
             if(res.code == 200 && res.success == 1) {
                 this.isZan = true;
                 this.getDetail()

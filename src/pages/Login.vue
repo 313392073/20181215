@@ -119,7 +119,7 @@ methods: {
                     // self.$router.push('/stuvideoshare')
                 }else if(JSON.parse(res.obj.user).userType == 1){ //老师
                     // self.$router.push('/teapracticreport')
-                    self.$router.push('/teahomeworkshare')
+                    self.$router.push('/teaclasstotalresult')
                 }else{
                     self.tipsMsg = '请先登录！！'
                     self.toggleTips = true;

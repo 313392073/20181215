@@ -15,15 +15,17 @@ const allUrl = {
     gsAnalysis:'/v1/api/stu/gs/analysis', //公司解析
     uploadList:'/v1/api/comm/group/list/video', //上传列表
     lookSingPic:'/v1/api/comm/group/list/look', //寻找棱锥查看单个图片
-    listLike:'/v1/api/stu/group/list/like', //点赞
+    listLike:'/v1/api/comm/group/list/like', //点赞
     groupCondition:'/v1/api/tea/group/repart/condition', //获取分组条件
     getAssignTeam:'/v1/api/tea/group/repart', //获取分配小组
     courseList:'/v1/api/comm/uploadlist', //获取上传课件的列表
     userList:'/v1/api/tea/task/userlist', //老师分组 获取组员
     taskSubmit:'/v1/api/tea/task/repart', //分组完成
     courseSummary:'/v1/api/comm/work/result', //老师课堂总结
-    homeComment:'/v1/api/comm/works/comment/submit' //作业评论
-    
+    homeComment:'/v1/api/comm/works/comment/submit', //作业评论
+    workShare:'/v1/api/stu/works/share', //作业分享提交
+    classTest:'/v1/api/tea/scorereport/classTest', //课堂总结
+    deleteUploadfile:'/v1/api/tea/uploadfile/delete', //删除附件
     
 }
 export default {
