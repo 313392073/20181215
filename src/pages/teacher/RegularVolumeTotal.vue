@@ -12,15 +12,15 @@
             <div class="detail-box clearfix">
                 <div class="item">
                     <p>未作答</p>
-                    <h3>3</h3>
+                    <h3>{{nodonum}}</h3>
                 </div>
                  <div class="item">
                     <p>答题正确</p>
-                    <h3>8</h3>
+                    <h3>{{rightnum}}</h3>
                 </div>
                  <div class="item">
                     <p>答题错误</p>
-                    <h3>5</h3>
+                    <h3>{{wrongnum}}</h3>
                 </div>
             </div>
         </div>
@@ -35,19 +35,25 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
-import echarts from 'echarts'
+import echarts from 'echarts';
+import base from '../../router/http/base.js';
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
-   charts:'',
-   optionX:[
-        {value:3, name:'未作答'},
-        {value:8, name:'答题正确'},
-        {value:5, name:'答题错误'}
-   ]
+   nodonum:'',
+    rightnum:'',
+    wrongnum:'',
+    charts:'',
+    optionX:[
+        {value:'', name:'未作答'},
+        {value:'', name:'答题正确'},
+        {value:'', name:'答题错误'}
+    ]
 };
 },
 //监听属性 类似于data概念
@@ -87,7 +93,36 @@ methods: {
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    let params = {
+        token:store.state.token
+    }
+    base.getUrl(API.allUrl.batch,params).then((res) => {
+        if(res.code == 200 && res.success == 1) {
+            let paramd = {
+                 token:store.state.token,
+                 batch:res.obj,
+                 courseType:4*1
+            }
+            base.getUrl(API.allUrl.checkSum,paramd).then((res) => {
+                if(res.success == 1 && res.code == 200) {
+                    res.obj.alltest_error.forEach((item,index) => {
+                        if(item.is_right == 0) {
+                            this.rightnum = item.usernum
+                        }else{
+                            this.wrongnum = item.usernum?item.usernum:0
+                        }
+                    })
+                    this.nodonum = res.obj.class_usernum - this.rightnum - this.wrongnum;
+                    this.optionX[0]['value'] = this.nodonum;
+                    this.optionX[1]['value'] = this.rightnum;
+                    this.optionX[2]['value'] = this.wrongnum;
+                    this.$nextTick(function(){
+                        this.initEchart('echart')
+                    })
+                }
+            })
+        }
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

@@ -8,7 +8,7 @@ import store from '../store/store'
 // import Echart4 from '@/components/Echart4'
 // import Echart5 from '@/components/Echart5'
 // import Echart6 from '@/components/Echart6'
-import Tree from '@/components/Tree' //评论demo
+// import Tree from '@/components/Tree' //评论demo
 import Test from '@/components/Test' //评论demo
 import Draw from '@/components/Draw'//找回密码
 // 路由start
@@ -72,14 +72,14 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
   routes: [
-    {
-      path: '/',
-      name: 'Tree',
-      component: Tree,
-      meta: {
-        title: '测试测试测试'
-      }
-    },
+    // {
+    //   path: '/',
+    //   name: 'Tree',
+    //   component: Tree,
+    //   meta: {
+    //     title: '测试测试测试'
+    //   }
+    // },
     {
       path: '/test',
       name: 'Test',

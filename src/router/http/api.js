@@ -24,8 +24,11 @@ const allUrl = {
     courseSummary:'/v1/api/comm/work/result', //老师课堂总结
     homeComment:'/v1/api/comm/works/comment/submit', //作业评论
     workShare:'/v1/api/stu/works/share', //作业分享提交
-    classTest:'/v1/api/tea/scorereport/classTest', //课堂总结
+    classTest:'/v1/api/tea/scorereport/classTest', //课堂总结(老师)
+    stuClassTest:'/v1/api/stu/scorereport/classTest', //课堂总结(学生)
     deleteUploadfile:'/v1/api/tea/uploadfile/delete', //删除附件
+    afterClassTest:'/v1/api/tea/scorereport/afterclassTest', //老师课后实验
+    checkSum:'/v1/api/tea/scorereport/checksum' //老师-检测数据统计-表面积、体积
     
 }
 export default {
