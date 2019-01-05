@@ -94,25 +94,25 @@ export default {
 components: {SideBar},
 data() {
 //这里存放数据
-return {
-    echarts:'',
-    opinionx:['A组', 'B组', 'C组', 'D组'],
-    opinionY:[
-        {value:10,'name':'A组'},
-        {value:20,'name':'B组'},
-        {value:30,'name':'C组'},
-        {value:18,'name':'D组'}
-    ],
-    info:'',
-    alltest_error:[],
-    alltest_item:[],
-    alltest_user:[]
-};
+    return {
+        alltest_error:[],
+        alltest_error_remark:[],
+        alltest_item:[],
+        alltest_user:[],
+        batch:'',
+        echarts:'',
+        opinionX:[],
+        opinionY:[],
+    }
 },
 //监听属性 类似于data概念
-computed: {},
+computed: {
+   
+},
 //监控data中的数据变化
-watch: {},
+watch: {
+    
+},
 //方法集合
 methods: {
     pieEchart(id){
@@ -124,7 +124,7 @@ methods: {
                 top:'auto',
                 itemWidth:12,
                 itemHeight:8,
-                data:['体积1','体积排列1','体积排列2','体积排列3','体积排列4']
+                data:this.alltest_error_remark
             },
             tooltip: {
                 trigger: 'item',
@@ -227,7 +227,7 @@ methods: {
             },
             xAxis: {//x轴
                     type: 'category',
-                    data: this.opinionx,//x轴的数据
+                    data: this.opinionX,//x轴的数据
                     splitLine: {show: false},//去除网格分割线
                     // splitArea: {show: true},//保留网格区域
                     axisLine: {//坐标线
@@ -251,8 +251,8 @@ methods: {
                 },
                 backgroundColor: '#fff',//图得背景色
                 yAxis: {
-                    name: '被找次数',//轴的名字，默认位置在y轴上方显示
-                    max: 50,//最大刻度
+                    name: '学生成绩',//轴的名字，默认位置在y轴上方显示
+                    max: 20,//最大刻度
                     type: 'value',
                     axisLine: {//线
                         show: false
@@ -273,7 +273,7 @@ methods: {
                     }
                 },
                 series: [{
-                    name: '被找次数',//每组数据的名字，与图例对应
+                    name: '学生成绩',//每组数据的名字，与图例对应
                     data: this.opinionY,//数据
                     type: 'bar',//柱状图
                     itemStyle: {
@@ -302,11 +302,30 @@ methods: {
                 }]
            
         })
-    }
+    },
+    // initOpinionx(){
+    //     let self = this;
+    //     self.alltest_user.forEach((item) => {
+    //         self.OpinionX.push(item.user_name)
+    //     })
+    //     console.log(self.opinionX)
+    //     return self.opinionX
+    // },
+    // initOpinionY(){
+    //     let self = this;
+    //     self.alltest_user.forEach((item) => {
+    //         let obj = {
+    //             name:item.name,
+    //             value:item.sum_score
+    //         }
+    //         OpinionY.push(obj)
+    //     })
+    //     // console.log(self.opinionY)
+    //     return self.opinionY
+    // }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-    let self = this;
     let params = {
         token:store.state.token
     }
@@ -317,9 +336,32 @@ created() {
                 batch:res.obj
             }
             base.getUrl(API.allUrl.classTest,params).then((res) => {
-                console.log(res)
+                console.log(res.obj)
                 if(res.code == 200 && res.success == 1) {
-                    self.info = res.obj;
+                    this.alltest_error = res.obj.alltest_error
+                    this.alltest_error_remark = res.obj.alltest_error_remark.split(',')
+                    this.alltest_item = res.obj.alltest_item
+                    this.alltest_user = res.obj.alltest_user
+                    this.alltest_user.forEach((item) => {
+                        let obj = {
+                            name:item.user_name,
+                            value:item.sum_score
+                        }
+                        this.opinionX.push(item.user_name)
+                        this.opinionY.push(obj)
+                    })
+                    console.log(this.alltest_error_remark)
+                    // console.log(res.obj.alltest_error_remark.split(','))
+                    // res.obj.alltest_error_remark.forEach((item) => {
+                    //     this.alltest_error_remark.push(item)
+                    // })
+                    this.$nextTick(function(){
+                        this.barEchart('bechart')
+                        this.pieEchart('echart1')
+                        this.rightEchart('rechart1')
+                        this.rightEchart('rechart2')
+                        this.rightEchart('rechart3')
+                    })
                 }
             })
         }

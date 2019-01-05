@@ -41,26 +41,33 @@
                     <div class="icon-box clearfix">
                         <p class="left-icon"><i class="iconfont icon-xin"></i></p>
                         <div class="comment-wrapper">
-                            <div class="list clearfix">
-                                <div class="left-icon">
-                                    <img src="../../assets/images/default.png" alt="default">
-                                    <p class="comment-name">叶小雨</p>
-                                </div>
-                                <p class="comment-detail">回复 <span>叶小雨：</span> 很不错的分享，学习了！</p>
-                            </div>
+                           
+
                             <div class="list clearfix" v-for="(cItem,cIndex) in info.comments" :key="cIndex">
                                 <div class="left-icon">
                                      <img :src="cItem.userHeadImage" alt="default">
                                      <p class="comment-name">{{cItem.userLoginname}}</p>
                                 </div>
-                                <p class="comment-detail">{{cItem.comment}}</p>
+                                <p class="comment-detail" @click="changeCommer(cItem.name,cIndex)">{{cItem.comment}}</p>
+                                <div v-if="cIndex.reply.length > 0">
+                                    <div class="list clearfix"  v-for="(subItem,subIndex) in cItem.reply" :key="subIndex">
+                                        <div class="left-icon">
+                                            <img :src="subItem.userHeadImage" alt="default">
+                                            <p class="comment-name">{{subItem.userLoginname}}回复 <span>{{subItem.replyuserLoginname}}：</span></p>
+                                        </div>
+                                        <p class="comment-detail" @click="changeCommer(subItem.userLoginname,subIndex)">{{subItem.comment}}</p>
+                                    </div>
+                                </div>
                             </div>
+
                         </div>
                     </div>
                     
                 </div>
                 <div class="input-box clearfix">
-                    <input type="text" placeholder="评论" v-model="comments">
+                    <p>发布你的评论</p>
+                    <p v-if="type">你回复 <span class="old-comment">{{oldComment}}</span></p>
+                    <textarea placeholder="请填写评论内容" v-model="comments"></textarea>
                     <a href="javascript:void(0)" @click="getComment"><i class="iconfont icon-xin"></i></a>
                 </div>
             </div>
