@@ -14,7 +14,7 @@
                     <span>{{info.group}}组</span>
                 </div>
                 <div class="info-right">
-                    <p class="info-title">{{info.likesUserLoginname}}</p>
+                    <p class="info-title">{{info.userLoginname}}</p>
                     <p class="info-time">上传时间：{{getTime(info.createTime)}}</p>
                 </div>
             </div>
@@ -60,20 +60,31 @@ data() {
 //这里存放数据
 return {
     attId:'',
-    isZan:false,
     info:{
         group:'',
-        likesUserLoginname:'',
+        userLoginname:'',
         createTime:'',
         likesUserNum:0,
         uploadNetUrl:'',
-        headImage:''
+        headImage:'',
+        likesUserLoginname:''
     }
 };
 },
 //监听属性 类似于data概念
 computed: {
-    
+    isZan(){
+        let userName = JSON.parse(store.state.user).userLoginname;
+        let str = this.info.likesUserLoginname;
+        for(var i=0;i<str.length;i++){
+             if(str[i] == userName){
+                return true;
+            }
+        }
+        return false;
+        // if(JSON.parse(store.state.user).userLoginname)
+        // console.log()
+    }
 },
 //监控data中的数据变化
 watch: {},
@@ -87,11 +98,11 @@ methods: {
         base.getUrl(API.allUrl.lookSingPic,params).then((res) => {
             console.log(res)
             if(res.code == 200 && res.success == 1) {
-                this.info.likesUserLoginname = res.obj.likesUserLoginname;
+                this.info.userLoginname = res.obj.userLoginname;
                 this.info.createTime = res.obj.createTime;
                 this.info.uploadNetUrl = res.obj.uploadNetUrl;
                 this.info.likesUserNum = res.obj.likesUserNum;
-                this.info.likesUserNum = res.obj.likesUserNum;
+                this.info.likesUserLoginname = res.obj.likesUserLoginname.split(',');
             }
         })
     },
@@ -106,7 +117,6 @@ methods: {
 
         base.getUrl(API.allUrl.listLike,params).then((res) => {
             if(res.code == 200 && res.success == 1) {
-                this.isZan = true;
                 this.getDetail()
             }
         })

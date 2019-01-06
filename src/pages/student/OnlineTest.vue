@@ -56,7 +56,7 @@
                         </div>
                     </div>
                 <div class="ansowerd-btn">
-                     <button v-if="tag" class="btn" @click="showTips">提交答案0</button>
+                    <button v-if="tag" class="btn" @click="showTips">提交答案0</button>
                     <button v-else class="btn" @click="subForm">提交答案</button>
                 </div>
                 </div>
@@ -71,7 +71,7 @@
                         <!-- <p>恭喜你，已答完所有题目！</p>
                         <p>系统已自动帮你计算好分数，快快点击查看吧！</p> -->
                     </div>
-                    <div class="tips-btn"><button class="cbtn tbtn" @click="HideTip">查看成绩</button></div>
+                    <div class="tips-btn"><button class="cbtn tbtn" @click="lookReport">查看成绩</button></div>
                 </div>
             </div>
         </div>
@@ -183,9 +183,13 @@ methods: {
             window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
         })
     },
-    HideTip(){
+    lookReport(){
         this.toggleTips = false
         this.$router.push('/stutestreport')
+    },
+    HideTip(){
+        this.tipsMsg = '';
+        this.toggleTips = false
     },
     alreadySubmit(){
         this.tipsMsg = '此题目已经做过了';
@@ -242,8 +246,10 @@ methods: {
             score:rightAnswer == nowValue?rightScore:0,
             courseItemId : courseItemId
         }
-        this.$set(self.list[index].gs.arr[nowIndex],'answer',nowValue)
-        console.log(self.list[index].gs.arr[nowIndex]['answer'])
+
+        setTimeout(function(){
+            self.$set(self.list[index].gs.arr[nowIndex],'answer',nowValue)
+        },30)
         this.$nextTick(() => {
             window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
         })
@@ -256,6 +262,7 @@ methods: {
     getCourseList(params){ //获取题型
         base.getUrl(API.allUrl.course_list,params).then(res => {
             if(res.code == 200 && res.success == 1){
+                console.log(res.obj)
                 res.obj.forEach((item,index) => {
                   this.questList.push(item)
                 })
@@ -347,8 +354,6 @@ methods: {
         }).then((res) => {
              console.log(res)
             if(res.data.code = 200 && res.data.success == 1){
-              
-               
                 this.toggleTips = true;
                 this.tipsMsg = '本轮结束';
                 this.tag = true;
@@ -375,7 +380,7 @@ created() {
             let params2 = {
                 token:store.state.token,
                 batch:res.obj,
-                type:0
+                type:2
             }
             Axios.all([self.getMenu(params1)],self.getCourseList(params2))
         }

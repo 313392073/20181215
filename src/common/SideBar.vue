@@ -13,7 +13,7 @@
         <p class="side-title">{{beforetab.title}}</p>
         <ul class="before-class menu">
             <li v-for="(item,index) in beforetab.list" :key="item.name" >
-                <a @click="goRoute(item.url)" :class="index == beforetab.list.length-1?'tabborder-bottom':''">{{ item.name}}</a>
+                <a href="javascript:void(0);" @click="goRoute(item.url)" :class="index == beforetab.list.length-1?'tabborder-bottom':''">{{ item.name}}</a>
             </li>
         </ul>
     </div>
@@ -27,17 +27,17 @@
                     </a>
                  </template>
                  <template v-else>
-                     <a href="">{{item.name}}</a>
+                     <a href="javascript:void(0);">{{item.name}}</a>
                  </template>
                 <template v-if="item.list">
                      <ul class="secondary" v-if="item.tag">
                          <li v-for="sub in item.list" :key="sub.name">
-                            <a @click="goRoute(sub.target)">{{ sub.name }}</a>
+                            <a href="javascript:void(0);" @click="goRoute(sub.target)">{{ sub.name }}</a>
                         </li>
                      </ul>
                 </template>
             </li>
-            <li><a class="tabborder-bottom">课堂总结</a></li>
+            <!-- <li><a class="tabborder-bottom">课堂总结</a></li> -->
         </ul>
     </div>
 
@@ -45,7 +45,7 @@
         <p class="side-title">{{aftertab.title}}</p>
         <ul class="after-class menu">
            <li v-for="item in aftertab.list" :key="item.name">
-                <a @click="goRoute(item.url)">{{ item.name }}</a>
+                <a href="javascript:void(0);" @click="goRoute(item.url)">{{ item.name }}</a>
             </li>
         </ul>
     </div>
@@ -58,32 +58,38 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-
+import menu from './menu.js';
+import store from '../store/store.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {},
 data() {
 //这里存放数据
 return {
+    tab:'',
     beforetab: {
         title:'课前预习',
-        list:[{name:'在线测试',url:'/PracticReport'},{name:'寻找棱锥',url:'/FindPyramid'},{name:'制作棱锥',url:'/MakePyramid'}]
+        list:[
+            {name:'在线测试',url:'/stuonlinetest'},
+            {name:'寻找棱锥',url:'/stuassigngroupcase'},
+            {name:'制作棱锥',url:'/stumakepyramids'}
+        ]
     },
     lessontab:{
         title:'课堂学习',
         list:[
              {
                 name:'作业分享',
-                url:'/TeaHomeworkShare',
+                url:'/stuhomeworkshare',
              },
              {
                 name:'正棱锥表面积',
-                url:'/RegularAreaFormula',
+                url:'/stusideareaformula',
                 tag:false,
                 list:[
-                   {name:'视频分享',target:'/VideoShare'},
-                    {name:'侧面积公式',target:'/SideAreaFormula' },
-                    {name:'表面积公式',target:'/regchecktotal' },
+                   {name:'视频分享',target:'/stuvideoshare'},
+                    {name:'侧面积公式',target:'/stusideareaformula' },
+                    {name:'表面积公式',target:'/sturegularareaformula' },
                     {name:'计算表面积',target:'/RegularAreaFormula' },
                 ]
             },
@@ -92,8 +98,8 @@ return {
                 url:'/show',
                 tag:false,
                 list:[
-                   {name:'体积公式',target:'/LearningReport' },
-                    {name:'计算体积',target:'/TestReport' },
+                   {name:'体积公式',target:'/stuvolumeformula' },
+                    {name:'计算体积',target:'/stuexpregpyramid' },
                 ]
             },
             {
@@ -101,15 +107,19 @@ return {
                 url:'',
                 tag:false,
                 list:[
-                   {name:'分组讨论',target:'/PracticReport' },
-                    {name:'小组汇报',target:'/JobResults' },
+                   {name:'分组讨论',target:'/stuclasslearning' },
+                    {name:'小组汇报',target:'/stuexercise' },
                 ]
             },
          ]
     },
     aftertab: {
         title:'课后拓展',
-        list:[{name:'课后习题',url:'/HomeworkProblems'},{name:'课后实验',url:'/AftClaExp'},{name:'分享体会',url:'TeaHomeworkShare'}]
+        list:[
+            {name:'课后习题',url:'/stuexercise'},
+            {name:'课后实验',url:'/stuaftclaexp'},
+            {name:'分享体会',url:'TeaHomeworkShare'}
+        ]
     }
 };
 },
@@ -131,6 +141,17 @@ methods: {
         /**
          * this.$set(self.lessontab['list'][index]) 数据数组对象的第index项  'tag' 数组对象的某一项的标记  tags要修改后的值
          */
+    }
+},
+created(){
+    if(store.state.userType == 0) {
+        this.beforetab.list = menu.stumenu.beforetab
+        this.lessontab.list = menu.stumenu.lessontab
+        this.aftertab.list = menu.stumenu.aftertab
+    }else if(store.state.userType == 1) {
+        this.beforetab.list = menu.teamenu.beforetab
+        this.lessontab.list = menu.teamenu.lessontab
+        this.aftertab.list = menu.teamenu.aftertab
     }
 }
 }

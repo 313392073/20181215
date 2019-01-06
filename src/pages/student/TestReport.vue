@@ -142,10 +142,7 @@ created() {
                     this.resSituation.useTime = res.obj.score_rank[0]['sum_usetime']
                     this.scoreDetail = res.obj.score_report
                     console.log(res)
-                }else{
-                    console.log(res)
                 }
-                
             })
         }
     })

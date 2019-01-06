@@ -1,23 +1,20 @@
 <template>
-    <div>
-      <div id="container"></div>
+    <div style="width:100%;height:500px;background:#eeeeee">
+      <div id="container" ></div>
     </div>
 </template>
 <script>
 import * as THREE from 'three'
-import WebGL from 'three';
-import OrbitControls from 'three-orbit-controls';
-import CSS2DObject from 'three-css2drender'
-// import OrbitControls from 'three/examples/js/controls/OrbitControls'
- 
+import { OrbitControls } from '../assets/js/OrbitControls.js'
+import { CSS2DObject,CSS2DRenderer } from '../assets/js/CSS2DRenderer.js'
+import { WEBGL } from '../assets/js/WebGL.js'
+ var scene = ''
 export default {
-  name: 'Three',
   data() {
     return {
       container: null,
       clock: null,
       camera: null,
-      scene: null,
       renderer: null,
       controls: null,
       labelRenderer: null,
@@ -26,27 +23,23 @@ export default {
   methods: {
     init: function() {
         this.container = document.getElementById("container");
-        this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0xffffff); 
-        this.scene.add(new THREE.AmbientLight(0x888888) );
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xffffff); 
+        scene.add(new THREE.AmbientLight(0x888888) );
         //scene.add( new THREE.DirectionalLight( 0xffffff ,1.5) );
         this.renderer = new THREE.WebGLRenderer( { antialias: true } );
         this.renderer.setPixelRatio( window.devicePixelRatio );
-        this.renderer.setSize( window.innerWidth, window.innerHeight );
-        this.container.appendChild( renderer.domElement );
+        this.renderer.setSize( window.innerWidth/2, window.innerHeight /2);
+        this.container.appendChild( this.renderer.domElement );
         
-        this.labelRenderer = new THREE.CSS2DRenderer();
-        this.labelRenderer.setSize( window.innerWidth, window.innerHeight );
+        this.labelRenderer = new CSS2DRenderer();
+        this.labelRenderer.setSize( window.innerWidth/2, window.innerHeight/2 );
         this.labelRenderer.domElement.style.position = 'absolute';
         this.labelRenderer.domElement.style.top = 0;
         this.container.appendChild( this.labelRenderer.domElement );
 
         this.Draw(10,'A','B','C','D','E','F','R','r','a');//棱长，前六个点标注，后三个线标注
         var textureLoader=new THREE.TextureLoader();  
-        
-        // var axesHelper = new THREE.AxesHelper( 10 );
-        // scene.add( axesHelper );
-
         window.addEventListener( 'resize', this.onWindowResize, false );
  
     },
@@ -96,7 +89,7 @@ export default {
             
             var mesh = new THREE.Mesh(geom, mat);
             
-            this.scene.add(mesh);
+            scene.add(mesh);
             
             lineText(mesh,0,center.y,center.z*2,t);
             
@@ -115,7 +108,7 @@ export default {
             
             var outSphere = new THREE.Mesh(new THREE.SphereBufferGeometry(center.y*3/2,50,50),sphereMaterial);
             outSphere.position.set(0,center.y/2,center.z);
-            this.scene.add(outSphere);
+            scene.add(outSphere);
             
             var geom2 = new THREE.Geometry();
             
@@ -156,8 +149,8 @@ export default {
             
             lineText(mesh3,0,center.y,center.z,R);
             
-            this.scene.add(mesh2);
-            this.scene.add(mesh3);
+            scene.add(mesh2);
+            scene.add(mesh3);
             
             point(a/2, 0, 0, h, !true);
             point(-a/2, 0, 0, i, !true);
@@ -168,16 +161,15 @@ export default {
             point(0, 0, center.z, m,!true);
             point(0, center.y/2, center.z);
 
-            this.controls = new THREE.OrbitControls( this.camera );
+            this.controls = new OrbitControls( this.camera );
             this.controls.target.set(center.x,center.y,center.z);
             this.controls.enablePan = !true;
             this.clock = new THREE.Clock();
-            
+            let self = this;
             function point (x,y,z,str,istop) {
-                
                 var mesh = new THREE.Mesh(new THREE.SphereBufferGeometry(a/100,a,a),new THREE.MeshBasicMaterial({color: 0xff0000}));
                 mesh.position.set(x,y,z);
-                this.scene.add(mesh);
+                scene.add(mesh);
                 
                 if(str){
                     
@@ -195,7 +187,7 @@ export default {
                         
                     }
                     
-                    var pointLabel = new THREE.CSS2DObject( pointDiv );
+                    var pointLabel = new CSS2DObject( pointDiv );
                     pointLabel.position.set( 0, a/100, 0 );
                     mesh.add( pointLabel );
                     
@@ -208,7 +200,7 @@ export default {
                 var lineDiv = document.createElement( 'div' );
                 lineDiv.className = 'label';
                 lineDiv.textContent = str;
-                var lineLabel = new THREE.CSS2DObject( lineDiv );
+                var lineLabel = new CSS2DObject( lineDiv );
                 lineLabel.position.set( x, y, z );
                 obj.add( lineLabel );
                 
@@ -226,12 +218,12 @@ export default {
 
         },
         animate: function() {
-            requestAnimationFrame( animate );
+            requestAnimationFrame( this.animate );
             this.render();
         },
         render() {
             this.controls.update( this.clock.getDelta() );
-            this.renderer.render( this.scene, this.camera );
+            this.renderer.render( scene, this.camera );
             this.labelRenderer.render( scene, this.camera );
         }
     },

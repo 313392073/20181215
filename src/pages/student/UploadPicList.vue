@@ -11,19 +11,27 @@
             <div class="group-wrapper clearfix">
                 <div class="item" v-for="(item, key, index) in setItem" :key="index">
                     <p class="group-name">{{key}}组</p>
-                    <div class="sub-item clearfix" v-for="(subitem,subIndex) in item" :key="subIndex" @click="goDetail(subitem['attid'],key,subitem['user_head_image'])">
-                        <div class="left-img">
-                            <img :src="subitem.upload_net_url" :alt="subitem.user_name">
+                    <div class="sub-item clearfix" v-for="(subitem,subIndex) in item" :key="subIndex">
+                        <div class="left-img" v-if="subitem['attid']" @click="goDetail(subitem['attid'],key,subitem['user_head_image'])">
+                            <img v-if="subitem.upload_net_url" :src="subitem.upload_net_url" :alt="subitem.user_name">
+                            <p v-else class="img-desc">暂未上传图片</p>
+                        </div>
+                        <div class="left-img" v-else @click="showTips">
+                            <img v-if="subitem.upload_net_url" :src="subitem.upload_net_url" :alt="subitem.user_name">
+                            <p v-else class="img-desc">暂未上传图片</p>
                         </div>
                         <div class="right-desc">
-                            <div class="header-box"><img :src="subitem.user_head_image" :alt="subitem.user_name"></div>
+                            <div class="header-box">
+                                <img v-if="subitem.user_head_image" :src="subitem.user_head_image" :alt="subitem.user_name">
+                                <p v-else>暂未上传图片</p>
+                            </div>
                             <p class="desc-name">{{subitem.user_name}}</p>
                             <div class="go-detail">
-                                <span><i class="iconfont icon-xin"></i>{{subitem.likes_user_num}} <input type="hidden" :value="sumZan(subitem.likes_user_num)"/></span>
+                                <span><i class="iconfont icon-xin"></i>{{subitem.likes_user_num}} <input type="hidden" :value="subitem.likes_user_num"/></span>
                             </div>
                         </div>
                     </div>
-                    <div class="desc">共获得 <span>{{totalZan}}</span>个赞</div>
+                    <div class="desc">共获得 <span>{{zanTotal[index]}}</span>个赞</div>
                 </div>
             </div>
         </div>
@@ -49,7 +57,7 @@ data() {
 //这里存放数据
 return {
     groupList:[],
-    totalZan:0
+    zanTotal:[]
 };
 },
 //监听属性 类似于data概念
@@ -59,6 +67,13 @@ computed: {
         this.groupList.forEach((item,index) => {
             obj[item['groupname']].push(item)
         })
+        for(var attr in obj){
+            let sum = 0;
+            obj[attr].forEach((item) => {
+                sum += item.likes_user_num
+            })
+            this.zanTotal.push(sum)
+        }
         return obj;
     }
 },
@@ -76,18 +91,14 @@ methods: {
         brr.forEach((item,index)  => {
             obj[item] = [];
         })
-        console.log(obj)
         return obj;
-    },
-    sumZan(num){
-        let sum = 0;
-            sum += num;
-            this.totalZan = sum;
-            return sum;
     },
     goDetail(attid,group,headImage){
         let attId = attid; 
         this.$router.push({name:'PicDetail',params:{attids:attId,groupInfo:group,headImage:headImage}})
+    },
+    showTips(){
+        alert("暂未上传图片，不可查看详情")
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
@@ -216,13 +227,24 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                     border-radius: 4px;
                     min-height: 200*0.4*0.02rem;
                     margin-bottom: 20*0.4*0.02rem;
+                    height: 100%;
                     .left-img{
                         padding: 10*0.4*0.02rem;
+                        height: 100%;
                         float: left;
                         border-right: 1px solid #dddddd;
                         width: calc(~"60% - 1px");
                         img{
                             min-height: 180*0.4*0.02rem;
+                        }
+                        .img-desc{
+                            height: 100%;
+                            width: 100%;
+                            min-height: 180*0.4*0.02rem;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            color: #f37d7d;
                         }
                     }
                     .right-desc{
@@ -234,6 +256,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                             img{
                                 width: 60*0.4*0.02rem;
                                 height: 60*0.4*0.02rem;
+                                border-radius: 50%;
                             }
                         }
                         .desc-name{
@@ -245,7 +268,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                             text-align: center;
                             span{
                                 i{
-                                    color: #fc4d3e;
+                                    color: #fc5648;
                                     font-size: 34*0.4*0.02rem;
                                     margin-right: 5*0.4*0.02rem;
                                 }

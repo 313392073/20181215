@@ -1,8 +1,9 @@
 /**
  * @author mrdoob / http://mrdoob.com/
  */
+import * as THREE from 'three'
 
-THREE.CSS2DObject = function ( element ) {
+const CSS2DObject = function ( element ) {
 
 	THREE.Object3D.call( this );
 
@@ -21,12 +22,12 @@ THREE.CSS2DObject = function ( element ) {
 
 };
 
-THREE.CSS2DObject.prototype = Object.create( THREE.Object3D.prototype );
-THREE.CSS2DObject.prototype.constructor = THREE.CSS2DObject;
+CSS2DObject.prototype = Object.create( THREE.Object3D.prototype );
+CSS2DObject.prototype.constructor = CSS2DObject;
 
 //
 
-THREE.CSS2DRenderer = function () {
+const CSS2DRenderer = function () {
 
 	console.log( 'THREE.CSS2DRenderer', THREE.REVISION );
 
@@ -70,7 +71,7 @@ THREE.CSS2DRenderer = function () {
 
 	var renderObject = function ( object, camera ) {
 
-		if ( object instanceof THREE.CSS2DObject ) {
+		if ( object instanceof CSS2DObject ) {
 
 			vector.setFromMatrixPosition( object.matrixWorld );
 			vector.applyMatrix4( viewProjectionMatrix );
@@ -127,7 +128,7 @@ THREE.CSS2DRenderer = function () {
 
 		scene.traverse( function ( object ) {
 
-			if ( object instanceof THREE.CSS2DObject ) result.push( object );
+			if ( object instanceof CSS2DObject ) result.push( object );
 
 		} );
 
@@ -171,3 +172,5 @@ THREE.CSS2DRenderer = function () {
 	};
 
 };
+
+export { CSS2DObject,CSS2DRenderer }

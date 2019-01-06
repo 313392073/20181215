@@ -55,10 +55,10 @@
                             </div>
                         </div>
                     </div>
-                <div class="ansowerd-btn">
-                     <button v-if="tag" class="btn" @click="showTips">提交答案0</button>
-                    <button v-else class="btn" @click="subForm">提交答案</button>
-                </div>
+                    <div class="ansowerd-btn">
+                        <button v-if="tag" class="btn" @click="showTips">提交答案0</button>
+                        <button v-else class="btn" @click="subForm">提交答案</button>
+                    </div>
                 </div>
             </div>
             <div class="tips" v-show="toggleTips">

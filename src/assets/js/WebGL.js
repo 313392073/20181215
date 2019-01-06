@@ -3,7 +3,7 @@
  * @author mr.doob / http://mrdoob.com/
  */
 
-var WEBGL = {
+const WEBGL = {
 
 	isWebGLAvailable: function () {
 
@@ -92,3 +92,4 @@ var WEBGL = {
 	}
 
 };
+export { WEBGL }

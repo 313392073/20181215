@@ -9,13 +9,13 @@
             <h3 class="title">分配小组</h3>
             <div class="main-box">
                 <div class="group-wrapper">
-                    <div class="item" v-for="(item,index) in groupList" :key="index">
-                        <div class="item-title">{{item.groupname}}组</div>
+                    <div class="item" v-for="(item, key, index) in setItem" :key="index">
+                        <div class="item-title">{{key}}组</div>
                         <div class="item-detail">
                             <div class="groupers-box clearfix">
-                                <div class="sub-item" v-for="(subitem,subIndex) in item.groupuser_names.split(',')" :key="subIndex">
-                                    <img :src="item.groupuser_headimages.split(',')[subIndex]">
-                                    <p>{{item.groupuser_names.split(',')[subIndex]}}</p>
+                                <div class="sub-item" v-for="(subitem,subIndex) in item" :key="subIndex">
+                                    <img :src="subitem.groupuser_headimages">
+                                    <p>{{subitem.groupuser_names}}</p>
                                 </div>
                             </div>
                         </div>
@@ -49,12 +49,31 @@ return {
 },
 //监听属性 类似于data概念
 computed: {
-   
+    setItem(){
+        let obj = this.getAllkey();
+        this.groupList.forEach((item,index) => {
+            obj[item['groupname']].push(item)
+        })
+        console.log(obj)
+        return obj;
+    }
 },
 //监控data中的数据变化
 watch: {},
 //方法集合
 methods: {
+    getAllkey(){
+        let arr = [];
+        for(var i=0;i<this.groupList.length;i++){
+            arr.push(this.groupList[i]['groupname'])
+        }
+        let brr = share.uniqArr(arr);
+        let obj = {};
+        brr.forEach((item,index)  => {
+            obj[item] = [];
+        })
+        return obj;
+    },
     goNext(){
         this.$router.push('/stuuploadpic')
     }
@@ -145,9 +164,6 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         float: left;
                         width: 25%;
                         margin-bottom: 30*0.4*0.02rem;
-                        img{
-                            border-radius: 50%;
-                        }
                     }
                 }
                 &:nth-child(2){

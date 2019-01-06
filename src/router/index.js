@@ -8,7 +8,7 @@ import store from '../store/store'
 // import Echart4 from '@/components/Echart4'
 // import Echart5 from '@/components/Echart5'
 // import Echart6 from '@/components/Echart6'
-// import Tree from '@/components/Tree' //评论demo
+import Tree from '@/components/Tree' //评论demo
 import Test from '@/components/Test' //评论demo
 import Draw from '@/components/Draw'//找回密码
 // 路由start
@@ -42,7 +42,6 @@ import AfterExpTotal from '@/pages/teacher/AfterExpTotal'    // 课后实验成�
 // 老师-end
 
 //学生start
-
 import OnlineTest from '@/pages/student/OnlineTest'//在线测试
 import TestReport from '@/pages/student/TestReport'//课堂学习成绩报告(学生) 
 import AssignGroupCase from '@/pages/student/AssignGroupCase'    // 寻找棱锥（学生）
@@ -63,7 +62,6 @@ import ClassLearning from '@/pages/student/ClassLearning'//课堂总结(课堂�
 import Exercise from '@/pages/student/Exercise'//课后习题
 import AftClaExp from '@/pages/student/AftClaExp'//课后实验
 //学生start
-
 import LineRelation from '@/pages/LineRelation'//线线关系
 import CourseSet from '@/pages/CourseSet'    // 课后安排设置
 
@@ -72,14 +70,14 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
   routes: [
-    // {
-    //   path: '/',
-    //   name: 'Tree',
-    //   component: Tree,
-    //   meta: {
-    //     title: '测试测试测试'
-    //   }
-    // },
+    {
+      path: '/',
+      name: 'Tree',
+      component: Tree,
+      meta: {
+        title: '测试测试测试'
+      }
+    },
     {
       path: '/test',
       name: 'Test',
@@ -409,7 +407,7 @@ const router = new Router({
       name: 'VolumeFormula',
       component: VolumeFormula,
       meta: {
-        title: '课后习题',
+        title: '体积公式',
         auth: true
       }
     },

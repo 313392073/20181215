@@ -93,6 +93,7 @@ components: {SideBar},
 data() {
 //这里存放数据
 return {
+    type:0, //0 回复别人  1 被回复
     attId:'',
     isZan:false,
     headImage:'',
