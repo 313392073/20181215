@@ -24,31 +24,6 @@
                             <input v-if="item.if_handle == -1" type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @keyup="getValue($event,index,rindex,JSON.parse(item.answer).q[rindex],item.item_score,item.course_id,'q')"/>
                             <input v-else type="text" class="answer-input" @blur="alreadySubmit" readonly :value="JSON.parse(item.answer).q[rindex]">
                         </span>
-                        <!-- bmj -->
-                        <p class="bmj" v-if="JSON.parse(item.course_item).bmj" v-for="(breq,bindex) in JSON.parse(item.course_item).bmj" :key="bindex+50">
-                            {{breq}}
-                            <input v-if="item.if_handle == -1" type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @keyup="getValue($event,index,bindex,JSON.parse(item.answer).bmj[bindex],item.item_score,item.course_id,'bmj')"/>
-                            <input v-else type="text" class="answer-input" @blur="alreadySubmit" readonly :value="JSON.parse(item.answer).bmj[bindex]">
-                        </p>
-                        <!-- 体积  -->
-                        <p class="tj" v-if="JSON.parse(item.course_item).tj" v-for="(treq,tindex) in JSON.parse(item.course_item).tj" :key="tindex">
-                            {{treq}}
-                            <input v-if="item.if_handle == -1" type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20"  @keyup="getValue($event,index,tindex,JSON.parse(item.answer).tj[tindex],item.item_score,item.course_id,'tj')"/>
-                            <input v-else type="text" class="answer-input" @blur="alreadySubmit" readonly :value="JSON.parse(item.answer).tj[tindex]">
-                        </p>
-
-                        <!-- 公式  -->
-                        <p class="gs" :class="getChangeClass" v-if="JSON.parse(item.course_item).gs" v-for="(greq,gindex) in JSON.parse(item.course_item).gs" :key="gindex+80">
-                            <span v-html="greq"></span>
-                            <input v-if="item.if_handle == -1" type="button" value="作答" :maxlength="JSON.parse(item.course_item).c?'1':20" @focus="showWriteFormula($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)"/>
-                            <input type="text" class="answer-input"  @keyup="getGsValue($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)" :value="(list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:''" />
-                            <span v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']" >
-                                您的答案：
-                                <span :class="getChangeClass"  v-html="toAsync((list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:'')"></span>
-                                <!-- <input :class="getChangeClass" type="text" readonly :value="toAsync((list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:'')" /> -->
-                            </span>
-                            <input v-if="item.if_handle == 0" type="text" class="answer-input" @blur="alreadySubmit" readonly :value="JSON.parse(item.answer).gs[gindex]">
-                        </p>
                     </div>
                     <div class="answer-box clearfix">
                         <div class="answerlist-box" style="width:60%;float:left">
@@ -59,18 +34,27 @@
                         </div>
                     </div>
                 </div>
-                <!-- <p class="req-title">题目：请说明如图所示的三棱锥每条边线的关系</p> -->
-                <p class="answer-desx">答案：{{answers}}</p>
-                <div class="answer-box">
-                    <input type="text" placeholder="请输入答案" class="anwer-detail" v-model="answers">
-                </div>
                 <div class="btn-box">
-                    <a href="javascript:void(0)">提交答案</a>
+                    <button v-if="tag" class="btn" @click="showTips">提交答案0</button>
+                    <button v-else class="btn" @click="subForm">提交答案</button>
                 </div>
             </div>
         </div>
-        
     </div>
+    <div class="tips" v-show="toggleTips">
+        <div class="main-tips">
+            <i class="iconfont icon-guanbi1" @click="HideTip"></i> 
+            <img class="tip-img" src="../../assets/images/teaupload.png" alt="send-success">
+            <p class="tips-title">答题结束</p>
+            <div class="tips-msg">
+                {{tipsMsg}}
+                <!-- <p>恭喜你，已答完所有题目！</p>
+                <p>系统已自动帮你计算好分数，快快点击查看吧！</p> -->
+            </div>
+            <div class="tips-btn"><button class="cbtn tbtn" @click="lookReport">查看成绩</button></div>
+        </div>
+    </div>
+    <write-formula v-if="isWrite" @onsub="childsub($event)" :msg="gsMsg" @closeTap="closePtap"></write-formula>
   </div>
   </div>
 <side-bar></side-bar>
@@ -92,20 +76,13 @@ import * as THREE from 'three'
 import { OrbitControls } from '../../assets/js/OrbitControls.js'
 import { CSS2DObject,CSS2DRenderer } from '../../assets/js/CSS2DRenderer.js'
 import { WEBGL } from '../../assets/js/WebGL.js'
-var scene = ''
+var container = '', clock = '', camera = '', scene = '', renderer = '', controls = '', labelRenderer = '';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
-    container: null,
-    clock: null,
-    camera: null,
-    renderer: null,
-    controls: null,
-    labelRenderer: null,
-    answers:'AAAAAAAAAA',
     tag:false,
     isWrite:false,
     toggleTips:false,
@@ -152,208 +129,215 @@ watch: {
             obj[index]['gs'].arr = [];  //具体的答案和得分情况
         })
         this.list = obj;
-        this.$nextTick(() => {
-            window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
-        })
     },
 },
 //方法集合
 methods: {
-    init: function() {
-        this.container = document.getElementById("container");
+    init() {			
+        container = document.getElementById("container");
+
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0xffffff); 
-        scene.add(new THREE.AmbientLight(0x888888) );
+        scene.add( new THREE.AmbientLight(0x888888) );
         //scene.add( new THREE.DirectionalLight( 0xffffff ,1.5) );
-        this.renderer = new THREE.WebGLRenderer( { antialias: true } );
-        this.renderer.setPixelRatio( window.devicePixelRatio );
-        this.renderer.setSize( window.innerWidth/4, window.innerHeight/4);
-        this.container.appendChild( this.renderer.domElement );
         
-        this.labelRenderer = new CSS2DRenderer();
-        this.labelRenderer.setSize( window.innerWidth/4, window.innerHeight/4 );
-        this.labelRenderer.domElement.style.position = 'absolute';
-        this.labelRenderer.domElement.style.zIndex = '0';
-        this.labelRenderer.domElement.style.top = 0;
-        this.container.appendChild( this.labelRenderer.domElement );
+        renderer = new THREE.WebGLRenderer( { antialias: true } );
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize( container.clientWidth, container.clientHeight );
+        container.appendChild( renderer.domElement );
+        
+        labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize( container.clientWidth, container.clientHeight );
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = 0;
+        container.appendChild( labelRenderer.domElement );
 
         this.Draw(10,'A','B','C','D','E','F','R','r','a');//棱长，前六个点标注，后三个线标注
-        var textureLoader=new THREE.TextureLoader();  
-        window.addEventListener( 'resize', this.onWindowResize, false );
- 
-    },
-    Draw(a,h,i,j,k,l,m,R,r,t) {
-				
-            if(isStr(h) && isStr(i) && isStr(j) && isStr(k) && isStr(l) && isStr(m) && isStr(R) && isStr(r) && isStr(t) && isNaN(a)==!true){}else return;
         
-            var center = new THREE.Vector3(0,(a*Math.sqrt(6))/6,-(a*Math.sqrt(3))/6);
-            var posZ = -(a/2)*Math.sqrt(3);
-            
-            this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.0001, 9999999 );
-            this.camera.position.set(a,a,-a-a/2);
-            
-            var geom = new THREE.Geometry();
-            
-            var vertices = [
-                
-                new THREE.Vector3( a/2, 0, 0), 
-                new THREE.Vector3(-a/2, 0, 0), 
-                new THREE.Vector3(0, 0, posZ),
-                new THREE.Vector3(0, center.y*2, center.z)
-                
-            ];
-            
-            geom.vertices = vertices;
-            
-            var faces = [
-            
-                new THREE.Face3(0,1,2),
-                new THREE.Face3(0,3,1),
-                new THREE.Face3(0,2,3),
-                new THREE.Face3(2,1,3)
-                
-            ];
+        //var textureLoader=new THREE.TextureLoader();  
+        
+        // var axesHelper = new THREE.AxesHelper( 10 );
+        // scene.add( axesHelper );
 
-            geom.faces = faces;
-            
-            geom.computeFaceNormals();
-            
-            var mat = new THREE.MeshLambertMaterial({
-            
-                color: 0x000000,
-                side: THREE.DoubleSide,
-                wireframe: true
-                
-            });
-            
-            var mesh = new THREE.Mesh(geom, mat);
-            
-            scene.add(mesh);
-            
-            lineText(mesh,0,center.y,center.z*2,t);
-            
-            var sphereMaterial = new THREE.MeshLambertMaterial({
-                
-                side: THREE.DoubleSide,
-                transparent: true,
-                opacity: 0.05,
-                wireframe: true
-                
-            });
-            
-            var inSphere = new THREE.Mesh(new THREE.SphereBufferGeometry(center.y/2,50,50),sphereMaterial);
-            inSphere.position.set(0,center.y/2,center.z);
-            scene.add(inSphere);
-            
-            var outSphere = new THREE.Mesh(new THREE.SphereBufferGeometry(center.y*3/2,50,50),sphereMaterial);
-            outSphere.position.set(0,center.y/2,center.z);
-            scene.add(outSphere);
-            
-            var geom2 = new THREE.Geometry();
-            
-            var vertices2 = [
-            
-                new THREE.Vector3(0, 0, 0),
-                new THREE.Vector3(0, 0, center.z),
-                new THREE.Vector3(0, center.y*2, center.z)
-                
-            ];
-            
-            geom2.vertices = vertices2;
-            
-            var faces2 = [
-            
-                new THREE.Face3(0,1,2),
-                
-            ];
+        window.addEventListener( 'resize', this.onWindowResize, false );
 
-            geom2.faces = faces2;
-            
-            geom2.computeFaceNormals();
-            
-            var mat2 = new THREE.MeshLambertMaterial({
-            
-                color: 0xffff00,
-                side: THREE.DoubleSide,
-                transparent: true,
-                opacity: 0.5,
-                
-            });
-            
-            var mesh2 = new THREE.Mesh(geom2, mat2);
-            
-            lineText(mesh2,0,center.y/4,center.z,r);
-            
-            var mesh3 = new THREE.Mesh(geom2, mat);
-            
-            lineText(mesh3,0,center.y,center.z,R);
-            
-            scene.add(mesh2);
-            scene.add(mesh3);
-            
-            point(a/2, 0, 0, h, !true);
-            point(-a/2, 0, 0, i, !true);
-            point(0, 0, posZ, j, !true);
-            point(0, center.y*2, center.z, k, true);
-            
-            point(0, 0, 0, l,!true);
-            point(0, 0, center.z, m,!true);
-            point(0, center.y/2, center.z);
+    },
+    Draw (a,h,i,j,k,l,m,R,r,t) {
+				if(isStr(h) && isStr(i) && isStr(j) && isStr(k) && isStr(l) && isStr(m) && isStr(R) && isStr(r) && isStr(t) && isNaN(a)==!true){}else return;
+			
+				var center = new THREE.Vector3(0,(a*Math.sqrt(6))/6,-(a*Math.sqrt(3))/6);
+				var posZ = -(a/2)*Math.sqrt(3);
+				
+				camera = new THREE.PerspectiveCamera( 75, container.clientWidth / container.clientHeight, 0.1, 9999999 );     
+				camera.position.set(a,a,-a-a/2);
+				
+				var geom = new THREE.Geometry();
+				
+				var vertices = [
+					
+					new THREE.Vector3( a/2, 0, 0), 
+					new THREE.Vector3(-a/2, 0, 0), 
+					new THREE.Vector3(0, 0, posZ),
+					new THREE.Vector3(0, center.y*2, center.z)
+					
+				];
+				
+				geom.vertices = vertices;
+				
+				var faces = [
+				
+					new THREE.Face3(0,1,2),
+					new THREE.Face3(0,3,1),
+					new THREE.Face3(0,2,3),
+					new THREE.Face3(2,1,3)
+					
+				];
 
-            this.controls = new OrbitControls( this.camera );
-            this.controls.target.set(center.x,center.y,center.z);
-            this.controls.enablePan = !true;
-            this.clock = new THREE.Clock();
-            let self = this;
-            function point (x,y,z,str,istop) {
-                var mesh = new THREE.Mesh(new THREE.SphereBufferGeometry(a/100,a,a),new THREE.MeshBasicMaterial({color: 0xff0000}));
-                mesh.position.set(x,y,z);
-                scene.add(mesh);
-                
-                if(str){
-                    
-                    var pointDiv = document.createElement( 'div' );
-                    pointDiv.className = 'label';
-                    pointDiv.textContent = str;
-                    
-                    if (istop) {
-                        
-                        pointDiv.style.marginTop = '-1em';
-                    
-                    } else {
-                        
-                        pointDiv.style.marginTop = '1.5em';
-                        
-                    }
-                    
-                    var pointLabel = new CSS2DObject( pointDiv );
-                    pointLabel.position.set( 0, a/100, 0 );
-                    mesh.add( pointLabel );
-                    
-                }
-                
-            }
-            
-            function lineText(obj,x,y,z,str){
-                
-                var lineDiv = document.createElement( 'div' );
-                lineDiv.className = 'label';
-                lineDiv.textContent = str;
-                var lineLabel = new CSS2DObject( lineDiv );
-                lineLabel.position.set( x, y, z );
-                obj.add( lineLabel );
-                
-            }
-            function isStr(value){
-                if(typeof value=='string'&&value.constructor==String) return true;
-                else return false;
-            }
-        },
+				geom.faces = faces;
+				
+				geom.computeFaceNormals();
+				
+				var mat = new THREE.MeshLambertMaterial({
+				
+					color: 0x000000,
+					side: THREE.DoubleSide,
+					wireframe: true
+					
+				});
+				
+				var mesh = new THREE.Mesh(geom, mat);
+				
+				scene.add(mesh);
+				
+				lineText(mesh,0,center.y,center.z*2,t);
+				
+				var sphereMaterial = new THREE.MeshLambertMaterial({
+					
+					side: THREE.DoubleSide,
+					transparent: true,
+					opacity: 0.05,
+					wireframe: true
+					
+				});
+				
+				var inSphere = new THREE.Mesh(new THREE.SphereBufferGeometry(center.y/2,50,50),sphereMaterial);
+				inSphere.position.set(0,center.y/2,center.z);
+				scene.add(inSphere);
+				
+				var outSphere = new THREE.Mesh(new THREE.SphereBufferGeometry(center.y*3/2,50,50),sphereMaterial);
+				outSphere.position.set(0,center.y/2,center.z);
+				scene.add(outSphere);
+				
+				var geom2 = new THREE.Geometry();
+				
+				var vertices2 = [
+				
+					new THREE.Vector3(0, 0, 0),
+					new THREE.Vector3(0, 0, center.z),
+					new THREE.Vector3(0, center.y*2, center.z)
+					
+				];
+				
+				geom2.vertices = vertices2;
+				
+				var faces2 = [
+				
+					new THREE.Face3(0,1,2),
+					
+				];
+
+				geom2.faces = faces2;
+				
+				geom2.computeFaceNormals();
+				
+				var mat2 = new THREE.MeshLambertMaterial({
+				
+					color: 0xffff00,
+					side: THREE.DoubleSide,
+					transparent: true,
+					opacity: 0.5,
+					
+				});
+				
+				var mesh2 = new THREE.Mesh(geom2, mat2);
+				
+				lineText(mesh2,0,center.y/4,center.z,r);
+				
+				var mesh3 = new THREE.Mesh(geom2, mat);
+				
+				lineText(mesh3,0,center.y,center.z,R);
+				
+				scene.add(mesh2);
+				scene.add(mesh3);
+				
+				point(a/2, 0, 0, h, !true);
+				point(-a/2, 0, 0, i, !true);
+				point(0, 0, posZ, j, !true);
+				point(0, center.y*2, center.z, k, true);
+				
+				point(0, 0, 0, l,!true);
+				point(0, 0, center.z, m,!true);
+				point(0, center.y/2, center.z);
+
+				controls = new OrbitControls( camera, container );
+				controls.target.set(center.x,center.y,center.z);
+				controls.enablePan = !true;
+				clock = new THREE.Clock();
+				
+				function point (x,y,z,str,istop) {
+					var mesh = new THREE.Mesh(new THREE.SphereBufferGeometry(a/100,a,a),new THREE.MeshBasicMaterial({color: 0xff0000}));
+					mesh.position.set(x,y,z);
+					scene.add(mesh);
+					
+					if(str){
+						
+						var pointDiv = document.createElement( 'div' );
+						pointDiv.className = 'label';
+						pointDiv.textContent = str;
+						
+						if (istop) {
+							
+							pointDiv.style.marginTop = '-1em';
+						
+						} else {
+							
+							pointDiv.style.marginTop = '1.5em';
+							
+						}
+						
+						var pointLabel = new CSS2DObject( pointDiv );
+						pointLabel.position.set( 0, a/100, 0 );
+						mesh.add( pointLabel );
+						
+					}
+					
+				}
+				
+				function lineText(obj,x,y,z,str){
+					
+					var lineDiv = document.createElement( 'div' );
+					lineDiv.className = 'label';
+					lineDiv.textContent = str;
+					var lineLabel = new CSS2DObject( lineDiv );
+					lineLabel.position.set( x, y, z );
+					obj.add( lineLabel );
+					
+				}
+				
+				function isStr(value){
+			
+					if(typeof value=='string'&&value.constructor==String) return true;
+					else return false;
+					
+				}
+				
+			},
         onWindowResize() {
-            this.renderer.setSize( window.innerWidth, window.innerHeight );
-            this.labelRenderer.setSize( window.innerWidth, window.innerHeight );
-            this.camera.aspect = window.innerWidth / window.innerHeight;
-            this.camera.updateProjectionMatrix();
+            renderer.setSize( container.clientWidth, container.clientHeight);
+            labelRenderer.setSize( container.clientWidth, container.clientHeight );
+
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
 
         },
         animate: function() {
@@ -361,9 +345,9 @@ methods: {
             this.render();
         },
         render() {
-            this.controls.update( this.clock.getDelta() );
-            this.renderer.render( scene, this.camera );
-            this.labelRenderer.render( scene, this.camera );
+            controls.update( clock.getDelta() );
+            renderer.render( scene, camera );
+            labelRenderer.render( scene, camera );  
         },
         toAsync(str){
         return '$'+str+'$';
@@ -475,6 +459,10 @@ methods: {
                 return false;
             }
         })
+    },
+    lookReport(){
+        this.toggleTips = false
+        this.$router.push('/stutestreport')
     },
     subForm(){ //提交数据
         // this.list //所有的答案和得分情况
@@ -594,7 +582,6 @@ mounted() {
     this.$nextTick(() => {
         this.init();
         this.animate()
-        window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
     })
 },
 beforeCreate() {}, //生命周期 - 创建之前
@@ -631,37 +618,48 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
             .container{
                 width: 100%;
                 height: 100%;
+                min-height: 800*0.4*0.02rem;
+                position: relative;
+                z-index: 0;
             }
         }
         .desc-box{
             width: 50%;
             float: left;
-            position: relative;
-            z-index: 2;
-            .req-title,.answer-desx{
+            .req-title{
                 font-size: 40*0.4*0.02rem;
                 color: #676767;
                 line-height: 110*0.4*0.02rem;
                 min-height: 110*0.4*0.02rem;
             }
-
+             .answer-input{
+                width: 80px;
+                border:none;
+                border-bottom: 1px solid @fcolor;
+                text-align: center;
+                font-size: 40*0.40*0.02rem;
+                color: #333;
+                background-color: transparent;
+            }
             .answer-box{
-                width: 80%;
-                margin: 25*0.4*0.02rem auto;
-                min-height: 500*0.4*0.02rem;
-                box-shadow: 0 0 3px 3px rgba(0,0,0,0.1);
-                position: relative;
-                .anwer-detail{
-                    width: 90%;
-                    position: absolute;
-                    bottom: 20%;
-                    left: 5%;
-                    border: none;
-                    border-bottom: 1px solid #a4a4a4;
-                    font-size: 40*0.4*0.02rem;
-                    color: #676767;
-                    text-align: center;
-                    line-height: 80*0.4*0.02rem;
+                .answerlist{
+                    text-indent: 0.8rem;
+                    line-height: 0.8rem;
+                    .answer-num{
+                        text-indent: 0;
+                        display: inline-block;
+                        width: 40*0.4*0.02rem;
+                        height: 40*0.4*0.02rem;
+                        line-height: 40*0.4*0.02rem;
+                        border-radius: 50%;
+                        text-align: center;
+                        font-size: 12px!important;
+                        border: 1px solid #6c63ff;
+                        &.active{
+                            color: #ffffff;
+                            background-color: #6c63ff;
+                        }
+                    }
                 }
             }
             .btn-box{
@@ -669,8 +667,8 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 margin: 80*0.4*0.02rem auto;
                 width: 100%;
                 text-align: center;
-                a{
-                    display: block;
+                button{
+                    display: inline-block;
                     width: 330*0.4*0.02rem;
                     height: 104*0.4*0.02rem;
                     line-height: 104*0.4*0.02rem;
@@ -678,6 +676,8 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                     color: #ffffff;
                     font-size: 35*0.4*0.02rem;
                     text-align: center;
+                    border: none;
+                    outline: none;
                     margin: auto;
                     border-radius: 104*0.4*0.02rem;
                 }
@@ -686,4 +686,72 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
     }
 }
 
+.tips{
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .main-tips{
+        width: 1240*0.02*0.4rem;
+        height: 830*0.4*0.02rem;
+        background-color: #ffffff;
+        background: url("../../assets/images/send-tipbg.jpg") no-repeat center;
+        background-size: contain;
+        box-shadow: 0px 0px 5px 3px rgba(0,0,0,.1);
+        text-align: center;
+        padding-top: 20*0.4*0.02rem;
+        position: relative;
+        &>i{
+            position: absolute;
+            width: 80*0.4*0.02rem;
+            height: 80*0.4*0.02rem;
+            top: 60*0.4*0.02rem;
+            right: 60*0.4*0.02rem;
+            font-size: 0.4rem;
+            color: #8e8e8e;
+            border-radius: 50%;
+            box-shadow: 0 0 2px 2px rgba(0, 0, 0,0.2);
+            padding: 3px;
+            cursor: pointer;
+        }
+        .tip-img{
+            margin-top: 30*0.4*0.02rem;
+            max-width: 2.5rem;
+        }
+        .tips-title{
+            text-align: center;
+            color: #f32d2d;
+            font-size: 0.36rem;
+            margin: 0.4rem auto;
+        }
+        .tips-msg{
+            font-size: 0.24rem;
+            color: @fcolor;
+            line-height: 26*0.02rem;
+        }
+    }
+    .tips-btn{
+        width: 100%;
+        margin: 0.6rem auto 0;
+        text-align: center;
+        .tbtn{
+            display: block;
+            width: 320*0.4*0.02rem;
+            height: 90*0.4*0.02rem;
+            margin: 0 auto;
+            line-height: 90*0.4*0.02rem;
+            background-color: #6c63ff;
+            color: #ffffff;
+            font-size: 0.36rem;
+            border-radius: 90*0.4*0.02rem;
+            border: none;
+            outline: none;
+        }
+    }
+}
 </style>

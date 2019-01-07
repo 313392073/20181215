@@ -15,11 +15,7 @@
                 <div class="desc-right">
                     <p class="desc-detail">{{info.attRemark}}</p>
                     <div class="desc-images clearfix">
-                        <img src="../../assets/images/group-pic.png" alt="group-pic">
-                        <img src="../../assets/images/group-pic.png" alt="group-pic">
-                        <img src="../../assets/images/group-pic.png" alt="group-pic">
-                        <img src="../../assets/images/group-pic.png" alt="group-pic">
-                        <img src="../../assets/images/group-pic.png" alt="group-pic">
+                        <img :src="info.uploadNetUrl" alt="group-pic">
                     </div>
                     <div class="desc-btns">
                         <a v-if="isZan" href="javascript:void(0)"><i style="color:red" class="iconfont icon-xin"></i>赞</a>
@@ -33,7 +29,7 @@
                     <div class="icon-box clearfix">
                         <p class="left-icon"><i class="iconfont icon-xin"></i></p>
                         <div class="zan-wrapper">
-                            <img v-for="(cItem,cIndex) in info.comments" :key="cIndex" :src="cItem.userHeadImage" alt="default">
+                            <img v-if="info.comments.length>0" v-for="(cItem,cIndex) in info.comments" :key="cIndex" :src="cItem.userHeadImage" alt="default">
                         </div>
                     </div>
                 </div>
@@ -41,32 +37,20 @@
                     <div class="icon-box clearfix">
                         <p class="left-icon"><i class="iconfont icon-xin"></i></p>
                         <div class="comment-wrapper">
-                           
-
-                            <div class="list clearfix" v-for="(cItem,cIndex) in info.comments" :key="cIndex">
+                           <div class="list clearfix" v-for="(cItem,cIndex) in info.comments" :key="cIndex">
                                 <div class="left-icon">
-                                     <img :src="cItem.userHeadImage" alt="default">
-                                     <p class="comment-name">{{cItem.userLoginname}}</p>
+                                     <!-- <img :src="cItem.userHeadImage" alt="default"> -->
+                                     <p class="comment-name" >{{cItem.userLoginname}}</p>
                                 </div>
-                                <p class="comment-detail" @click="changeCommer(cItem.name,cIndex)">{{cItem.comment}}</p>
-                                <div v-if="cIndex.reply.length > 0">
-                                    <div class="list clearfix"  v-for="(subItem,subIndex) in cItem.reply" :key="subIndex">
-                                        <div class="left-icon">
-                                            <img :src="subItem.userHeadImage" alt="default">
-                                            <p class="comment-name">{{subItem.userLoginname}}回复 <span>{{subItem.replyuserLoginname}}：</span></p>
-                                        </div>
-                                        <p class="comment-detail" @click="changeCommer(subItem.userLoginname,subIndex)">{{subItem.comment}}</p>
-                                    </div>
-                                </div>
+                                <p class="comment-detail" v-if="cItem.replyUserLoginname" @click="setComment(cItem.userLoginname)">回复 <span v-if="cItem.replyUserLoginname">{{cItem.replyUserLoginname}}：</span>{{cItem.comment}}</p>
+                                <p class="comment-detail" v-else  @click="setComment(cItem.userLoginname)">{{cItem.comment}}</p>
                             </div>
-
                         </div>
                     </div>
                     
                 </div>
-                <div class="input-box clearfix">
-                    <p>发布你的评论</p>
-                    <p v-if="type">你回复 <span class="old-comment">{{oldComment}}</span></p>
+                 <div class="input-box clearfix">
+                    <p v-if="type"> 你回复 <span class="old-comment">{{oldComment}}</span></p>
                     <textarea placeholder="请填写评论内容" v-model="comments"></textarea>
                     <a href="javascript:void(0)" @click="getComment"><i class="iconfont icon-xin"></i></a>
                 </div>
@@ -94,6 +78,7 @@ data() {
 //这里存放数据
 return {
     type:0, //0 回复别人  1 被回复
+    oldComment:'',
     attId:'',
     isZan:false,
     headImage:'',
@@ -112,6 +97,10 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
+    setComment(name){
+        this.type = 1;
+        this.oldComment = name;
+    },
     getBatch(params){
         base.getUrl(API.allUrl.batch,params).then((res) => {
             if(res.code == 200 && res.success == 1) {
@@ -145,16 +134,33 @@ methods: {
         })
     },
     getComment(){
-        let params = {
-            token:store.state.token,
-            batch:this.batch,
-            attid:this.attId*1,
-            comment:this.comments
+         let params = '';
+        if(this.type == 0) {
+            params = {
+                attid:this.attId*1,
+                comment:this.comments
+            }
+        }else if(this.type == 1) {
+            params = {
+                attid:this.attId*1,
+                comment:this.comments,
+                replyUserLoginname:this.oldComment
+            }
         }
-        base.postUrl(API.allUrl.homeComment,params).then((res) => {
-            console.log(res)
-            if(res.code == 200 && res.success == 1) {
-                this.getDetail()
+        Axios({
+            method:'post',
+            headers:{
+                'Content-Type': 'application/json',
+                'Accept':'application/json'
+            },
+            baseURL:base.baseURL,
+            url:API.allUrl.homeComment+'?token='+store.state.token+'&batch='+this.batch,
+            data:params,
+        }).then((res) => {
+            if(res.data.code == 200 && res.data.success == 1) {
+                this.type = 0;
+                this.comments = '';
+                this.getDetail();
             }
         })
     }
@@ -324,7 +330,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
             }
             .input-box{
                 margin: 20*0.4*0.02rem 0;
-                input{
+                textarea{
                     float: left;
                     min-height: 60*0.4*0.02rem;
                     line-height: 60*0.4*0.02rem;

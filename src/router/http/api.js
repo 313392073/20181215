@@ -29,7 +29,6 @@ const allUrl = {
     deleteUploadfile:'/v1/api/tea/uploadfile/delete', //删除附件
     afterClassTest:'/v1/api/tea/scorereport/afterclassTest', //老师课后实验
     checkSum:'/v1/api/tea/scorereport/checksum' //老师-检测数据统计-表面积、体积
-    
 }
 export default {
     allUrl

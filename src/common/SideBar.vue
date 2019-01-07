@@ -27,7 +27,7 @@
                     </a>
                  </template>
                  <template v-else>
-                     <a href="javascript:void(0);">{{item.name}}</a>
+                     <a @click="goRoute(item.url)">{{item.name}}</a>
                  </template>
                 <template v-if="item.list">
                      <ul class="secondary" v-if="item.tag">

@@ -30,9 +30,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item,index) in scoreDetail" :key="index">
-                                <td class="td-left"><i>{{index+1}}</i><span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).a" :key="subIndex">{{subItem}}</span></td>
-                                <td><span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).a" :key="rsubIndex">{{rsubItem}}</span></td>
+                            <tr v-for="(item,index) in scoreDetail" :key="index" :class="index>4?trHide:''">
+                                <td class="td-left">
+                                    <i>{{index+1}}</i>
+                                    <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).q" :key="subIndex">{{subItem}}</span>
+                                    <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).bmj" :key="subIndex">{{subItem}}</span>
+                                    <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).tj" :key="subIndex">{{subItem}}</span>
+                                    <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).gs" :key="subIndex">{{subItem}}</span>
+                                </td>
+                                <td>
+                                    <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).q" :key="rsubIndex">{{rsubItem}}</span>
+                                    <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).bmj" :key="rsubIndex">{{rsubItem}}</span>
+                                    <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).tj" :key="rsubIndex">{{rsubItem}}</span>
+                                    <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).gs" :key="rsubIndex">{{rsubItem}}</span>
+                                </td>
                                 <td class="use-time">{{item.score}}分</td>
                             </tr>
                         </tbody>
@@ -50,7 +61,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item,index) in scoreDetail" :key="index" :class="index>5?trHide:''">
+                            <tr v-for="(item,index) in scoreDetail" :key="index" :class="index>4?trHide:''">
                                 <td><i>{{index+1}}</i><img :src="item.user_head_image" class="head-pic" :alt="item.user_name"><span>{{item.user_name}}</span></td>
                                 <td>{{item.score}}分</td>
                                 <td class="use-time">{{getMinute(item.usetime)}}</td>
@@ -141,7 +152,7 @@ created() {
                     this.resSituation.rightPercent = res.obj.score_rank[0]['test_user_rightnum']
                     this.resSituation.useTime = res.obj.score_rank[0]['sum_usetime']
                     this.scoreDetail = res.obj.score_report
-                    console.log(res)
+                    console.log(this.scoreDetail)
                 }
             })
         }
@@ -228,6 +239,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 margin-right: 54*0.02*0.4rem;
                 width: calc(~"50% - 27*0.02*0.4rem");
                 height: 825*0.4*0.02rem;
+                overflow: auto;
                 box-shadow: 0 2px 5px 3px rgba(0,0,0,0.1);
                 table{
                     width: 100%;
@@ -237,6 +249,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                             height: 40*0.4*0.04rem;
                             color: @fcolor;
                             font-size: 34*0.4*0.02rem;
+                            th{
+                                min-width: 120*0.4*0.02rem;
+                            }
                         }
                     }
                     tbody{
@@ -279,6 +294,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                                     }
                                 }
                             }
+                            &.tr-hide{
+                                display: none;
+                            }
                         }
                     }
                 }
@@ -294,6 +312,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 width: calc(~"50% - 27*0.02*0.4rem");
                 height: 825*0.4*0.02rem;
                 box-shadow: 0 2px 5px 3px rgba(0,0,0,0.1); 
+                overflow-y: auto;
                 table{
                     width: 100%;
                     thead{
@@ -315,6 +334,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                                     width: 85*0.4*0.02rem;
                                     height: 85*0.4*0.02rem;
                                     margin: 0 30*0.02*0.4rem;
+                                    border-radius: 50%;
                                 }
                                 i{
                                     display: inline-block;

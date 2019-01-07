@@ -311,6 +311,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 float: left;
                 width: calc(~"50% - 27*0.02*0.4rem");
                 height: 825*0.4*0.02rem;
+                overflow-y: scroll;
                 box-shadow: 0 2px 5px 3px rgba(0,0,0,0.1); 
                 table{
                     width: 100%;
@@ -333,6 +334,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                                     width: 85*0.4*0.02rem;
                                     height: 85*0.4*0.02rem;
                                     margin: 0 30*0.02*0.4rem;
+                                    border-radius: 50%;
                                 }
                                 i{
                                     display: inline-block;

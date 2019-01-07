@@ -11,10 +11,10 @@
             <div class="situation-box">
                 <p class="main-title">成绩概况:</p>
                 <div class="situation-detail clearfix">
-                    <div class="item">分数: <span class="score">98</span></div>
-                    <div class="item">班级排名: <span class="order">08</span></div>
-                    <div class="item">正确率: <span class="rights">80%</span></div>
-                    <div class="item">用时: <span class="time">14分08秒</span></div>
+                    <div class="item">分数: <span class="score">{{scoreReport.sum_score}}</span></div>
+                    <div class="item">班级排名: <span class="order">{{getScore()}}</span></div>
+                    <div class="item">正确率: <span class="rights">{{parseInt(scoreReport.rightnum*1/(scoreReport.rightnum*1+scoreReport.errornum*1))*100}}%</span></div>
+                    <div class="item">用时: <span class="time">{{getMinute(scoreReport.sum_usetime)}}</span></div>
                 </div>
             </div>
 
@@ -36,14 +36,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item,index) in 5" :key="item">
-                                <td><i>{{index+1}}</i><img src="../../assets/images/default.png" class="head-pic" alt="default"><span>流星雨</span></td>
-                                <td>100分</td>
-                                <td class="use-time">09分45秒</td>
+                            <tr v-for="(item,index) in scoreRank" :key="index" :class="index>5?trHide:''">
+                                <td>
+                                    <i>{{index+1}}</i>
+                                    <img :src="item.user_head_image" class="head-pic" alt="default">
+                                    <span>{{item.user_name}}</span>
+                                </td>
+                                <td>{{item.sum_score}}分</td>
+                                <td class="use-time">{{getMinute(item.sum_usetime)}}</td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="btn-box"><a href="javascript:void(0)" class="cbtn">查看全部</a></div>
+                    <div class="btn-box"><a href="javascript:void(0)" class="cbtn" @click="showAlltr">{{btnMsg}}</a></div>
                 </div>
             </div>
         </div>
@@ -62,12 +66,17 @@ import echarts from 'echarts';
 import base from '../../router/http/base.js';
 import API from '../../router/http/api.js';
 import store from '../../store/store.js';
+import share from '../../router/http/share.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
 data() {
 //这里存放数据
 return {
+    scoreRank:[],
+    scoreReport:'',
+    btnMsg:'查看全部',
+    trHide:'tr-hide',
     charts:'',
     optionX:['基础知识','计算能力','建模能力'],
     optionY:[2.6, 5.9, 9.0]
@@ -79,6 +88,28 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
+    showAlltr(){ //查看更多
+        if(this.trHide == 'tr-hide'){
+            this.trHide = 'tag';
+            this.btnMsg = '隐藏'
+        }else{
+            this.trHide = 'tr-hide';
+            this.btnMsg = '查看全部'
+        }
+    },
+    getMinute(min){
+        return share.getMinute(min);
+    },
+    getScore(){
+        let self = this;
+        let score = 0;
+        self.scoreRank.forEach((item,index) => {
+            if(item.user_loginname == self.scoreReport.user_loginname) {
+                score = index
+            }
+        })
+        return score;
+    },
     initEchart(id){
         this.charts = echarts.init(document.getElementById(id))
         this.charts.setOption({
@@ -166,11 +197,12 @@ created() {
                 token:store.state.token,
                 batch:res.obj
             }
-            console.log(params)
+            // console.log(params)
             base.getUrl(API.allUrl.stuClassTest,params).then((res) => {
                 console.log(res)
                 if(res.code == 200 && res.success == 1) {
-                    self.info = res.obj;
+                    self.scoreRank = res.obj.score_rank;
+                    self.scoreReport = res.obj.score_report;
                 }
             })
         }
@@ -270,6 +302,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 float: left;
                 width: calc(~"50% - 27*0.02*0.4rem");
                 height: 825*0.4*0.02rem;
+                overflow-y: auto;
                 box-shadow: 0 2px 5px 3px rgba(0,0,0,0.1); 
                 table{
                     width: 100%;
@@ -292,6 +325,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                                     width: 85*0.4*0.02rem;
                                     height: 85*0.4*0.02rem;
                                     margin: 0 30*0.02*0.4rem;
+                                    border-radius: 50%;
                                 }
                                 i{
                                     display: inline-block;
@@ -308,6 +342,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                                 &.use-time{
                                     color: #6c63ff;
                                 }
+                            }
+                             &.tr-hide{
+                                display: none;
                             }
                         }
                     }

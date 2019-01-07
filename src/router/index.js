@@ -11,7 +11,6 @@ import store from '../store/store'
 import Tree from '@/components/Tree' //评论demo
 import Test from '@/components/Test' //评论demo
 import Draw from '@/components/Draw'//找回密码
-import Tests from '@/components/Tests'//找回密码
 // 路由start
 import SelectId from '@/pages/SelectId'//注册
 import RegPage from '@/pages/RegPage'//注册
@@ -77,14 +76,6 @@ const router = new Router({
       component: Tree,
       meta: {
         title: '测试测试测试'
-      }
-    },
-    {
-      path: '/tests',
-      name: 'Tests',
-      component: Tests,
-      meta: {
-        title: '000'
       }
     },
     {
@@ -416,7 +407,7 @@ const router = new Router({
       name: 'VolumeFormula',
       component: VolumeFormula,
       meta: {
-        title: '体积公式',
+        title: '课后习题',
         auth: true
       }
     },
