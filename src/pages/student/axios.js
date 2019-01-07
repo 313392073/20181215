@@ -570,3 +570,15 @@ var params = {
   * 
   */
 [{ "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 24 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 25 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 37 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 38 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 45 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 46 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 50 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 51 }, { "answer": "", "isRight": 0, "classBatch": "88", "userLoginname": "漆静01", "courseItemId": 52 }]
+
+
+let person = {
+    defaultname:'tom',
+    get name(){
+        return this.defaultname;
+    },
+    set name(val){
+        this.defaultname = val;
+    }
+}
+
