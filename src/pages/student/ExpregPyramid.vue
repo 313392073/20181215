@@ -25,14 +25,6 @@
                             <input v-else type="text" class="answer-input" @blur="alreadySubmit" readonly :value="JSON.parse(item.answer).q[rindex]">
                         </span>
                     </div>
-                    <div class="answer-box clearfix">
-                        <div class="answerlist-box" style="width:60%;float:left">
-                            <div class="answerlist" v-if="JSON.parse(item.course_item)" v-for="(answer,aindex) in JSON.parse(item.course_item).c" :key="aindex+100" ><span class="answer-num">{{order[aindex]}}</span> :{{answer}}</div>
-                        </div>
-                        <div class="pic" style="width:40%;float:right;text-align:right">
-                            <img :src="item.course_pic_path?item.course_pic_path:''" alt="">
-                        </div>
-                    </div>
                 </div>
                 <div class="btn-box">
                     <button v-if="tag" class="btn" @click="showTips">提交答案0</button>
@@ -355,27 +347,6 @@ methods: {
     closePtap(){
         this.isWrite = false;
     },
-    childsub(e){ //写了公式传递回来的数据
-        let self = this;
-        self.gsMsg = e.gsMsg;
-        self.gsMsg.rightAnswer = e.datas.data
-        self.isWrite = e.isRight;
-        /**答案开始 */
-        let rAnswer = self.gsMsg.rightAnswer;
-        let rScore = self.gsMsg.rightScore;
-        let nowValue = self.gsMsg.rightAnswer;
-        let obj = {
-            answer:nowValue,
-            isRight:self.gsMsg.rightScore == nowValue?true:false,
-            score:self.gsMsg.answer == nowValue?self.gsMsg.rightScore:0,
-            courseItemId : self.gsMsg.courseItemId
-        }
-        let num = self.gsMsg.rindex;
-        self.list[self.gsMsg.index].gs.arr[num] = obj;
-        this.$nextTick(() => {
-            window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
-        })
-    },
     HideTip(){
         this.toggleTips = false
         this.$router.push('/stutestreport')
@@ -387,15 +358,6 @@ methods: {
     showTips(){
         this.tipsMsg = '答题结束，不可重复提交答案';
         this.toggleTips = true
-    },
-    showWriteFormula(e,index,nowIndex,rightAnswer,rightScore,courseItemId,type){ //打开手写板  写公式
-        this.gsMsg.index = index;
-        this.gsMsg.rindex = nowIndex;
-        this.gsMsg.answer = rightAnswer;
-        this.gsMsg.score = rightScore;
-        this.gsMsg.courseItemId = courseItemId;
-        this.gsMsg.type = 'gs';
-        this.isWrite = true;
     },
     getValue(e,index,nowIndex,rightAnswer,rightScore,courseItemId,type){ //边写答案边存数据
         let rAnswer = rightAnswer;
@@ -424,28 +386,6 @@ methods: {
                 return;
         }
     },
-    getGsValue(e,index,nowIndex,rightAnswer,rightScore,courseItemId,type){
-        let self = this;
-        let rAnswer = rightAnswer;
-        let rScore = rightScore;
-        let nowValue = e.currentTarget.value;
-        let obj = {
-            answer:nowValue,
-            isRight:rightAnswer == nowValue?true:false,
-            score:rightAnswer == nowValue?rightScore:0,
-            courseItemId : courseItemId
-        }
-        this.$set(self.list[index].gs.arr[nowIndex],'answer',nowValue)
-        console.log(self.list[index].gs.arr[nowIndex]['answer'])
-        this.$nextTick(() => {
-            window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
-        })
-    },
-    getMenu(params) { //获取menu
-        base.getUrl(API.allUrl.course_m_info,params).then(res => {
-            console.log(res)
-        })
-    },
     getCourseList(params){ //获取题型
         base.getUrl(API.allUrl.course_list,params).then(res => {
             console.log(res)
@@ -473,9 +413,6 @@ methods: {
             let type = item['type'];
             let answers = {};
             answers['q'] = [];
-            answers['tj'] = [];
-            answers['bmj'] = [];
-            answers['gs'] = [];
             let answerscore = 0;
             obj.isRight = 0;
             obj.classBatch = this.classBatch;
@@ -490,39 +427,7 @@ methods: {
                 obj.useTime = 0;
                 JSON.stringify(obj)
             }
-            if(this.list[item].bmj.arr.length>0){
-                this.list[item].bmj.arr.forEach((subitem,subindex) => {
-                    answers['bmj'].push(subitem.answer);
-                    answerscore += subitem.score;
-                    obj.courseItemId = subitem.courseItemId;
-                })
-                obj.answer=JSON.stringify(answers)
-                obj.score = JSON.stringify(answerscore);
-                obj.useTime = 0;
-                JSON.stringify(obj)
-            }
-            if(this.list[item].tj.arr.length>0){
-                this.list[item].tj.arr.forEach((subitem,subindex) => {
-                    answers['tj'].push(subitem.answer);
-                    answerscore += subitem.score;
-                    obj.courseItemId = subitem.courseItemId;
-                })
-                obj.answer=JSON.stringify(answers)
-                obj.score = JSON.stringify(answerscore);
-                obj.useTime = 0;
-                JSON.stringify(obj)
-            }
-            if(this.list[item].gs.arr.length>0){
-                this.list[item].gs.arr.forEach((subitem,subindex) => {
-                    answers['gs'].push(subitem.answer);
-                    answerscore += subitem.score;
-                    obj.courseItemId = subitem.courseItemId;
-                })
-                obj.answer=JSON.stringify(answers)
-                obj.score = JSON.stringify(answerscore);
-                obj.useTime = 0;
-                JSON.stringify(obj)
-            }
+            
             arr.push(obj)
         })
         for(var i=0;i<this.questList.length;++i){
@@ -564,16 +469,12 @@ created() {
     base.getUrl(API.allUrl.batch,params).then(res => {
         if(res.code == 200 && res.success == 1){
             this.classBatch = res.obj;
-            let params1 = {
-                token:store.state.token,
-                batch:res.obj
-            }
             let params2 = {
                 token:store.state.token,
                 batch:res.obj,
                 type:5*1
             }
-            Axios.all([self.getMenu(params1)],self.getCourseList(params2))
+           self.getCourseList(params2)
         }
     })
 },
