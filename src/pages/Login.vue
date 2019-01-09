@@ -5,23 +5,7 @@
         <div class="right-wrapper">
             <!--登录 -->
             <div class="info-box">
-                <div class="headpic">
-                    <img :src="defaultUrl" alt="default">
-                </div>
                 <form action="" method="POST" @submit.prevent="checkForm">
-                    <div class="item">
-                        <label class="desc">选择身份</label>
-                        <label class="choose">
-                            <input type="radio" name="identity" value="teacher" checked v-model="dataObj.checkedValue">
-                            <span></span>
-                            教师
-                        </label>
-                        <label class="choose">
-                            <input type="radio" name="identity" value="student" v-model="dataObj.checkedValue">
-                            <span></span>
-                            学生
-                        </label>
-                    </div>
                     <div class="item">
                         <label class="desc">用户名</label>
                         <input type="text" class="info" name="username" id="username" v-model="dataObj.username">
@@ -115,7 +99,7 @@ methods: {
                 store.commit(types.LOGIN,obj)
                 store.commit(types.USERTYTPE,JSON.parse(res.obj.user).userType)
                 if(JSON.parse(res.obj.user).userType == 0){ //学生
-                    self.$router.push('/stuhomeworkshare')
+                    self.$router.push('/stujobresults')
                     // self.$router.push('/stuvideoshare')
                 }else if(JSON.parse(res.obj.user).userType == 1){ //老师
                     // self.$router.push('/teapracticreport')
@@ -174,6 +158,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         .info-box{
             width: 67%;
             margin: 0 auto;
+            padding-top: 30.49%;
             .reg-title{
                 width: 100%;
                 text-align: center;
@@ -189,15 +174,6 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 color: #ffffff;
                 font-size: 60*0.4px;
                 font-weight: normal;
-            }
-            .headpic{
-                width: 100%;
-                margin: 15.49% auto;
-                text-align: center;
-                img{
-                    width: 255*0.4px;
-                    height: 255*0.4px;
-                }
             }
             .item{
                 min-height: 45*0.4px;
@@ -227,34 +203,6 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                     min-width: 24%;
                     font-size: 16px;
                     margin-bottom: 45*0.4px;
-                }
-                .choose{
-                    display: inline-block;
-                    margin-bottom: 45*0.4px;
-                    margin-left: 50*0.4*0.02rem;
-                    font-size: 16px;
-                    cursor: pointer;
-                    input[type="radio"] {
-                        appearance: none;
-                        -webkit-appearance: none;
-                        outline: none;
-                        display: none
-                    }
-                    span{
-                        border-radius: 50%;
-                        margin-right: 0.1rem;
-                        vertical-align: middle;
-                    }
-                    input[type="radio"]+span {
-                        width: 40*0.4*0.02rem;
-                        height: 40*0.4*0.02rem;
-                        display: inline-block;
-                        background-color: transparent;
-                        border: 1px solid #ffffff;
-                    }
-                    input[type="radio"]:checked+span {
-                        background-color: #ffffff;
-                    }
                 }
                 .info{
                     display: inline-block;

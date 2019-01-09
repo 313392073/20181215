@@ -27,19 +27,11 @@
                                 <table>
                                     <tr>
                                         <td class="td-title">题号</td>
-                                        <td>1(1)</td>
-                                        <td>1(2)</td>
-                                        <td>2(1)</td>
-                                        <td>2(2)</td>
-                                        <td>2(3)</td>
+                                        <td v-for="(item,index) in alltest_item" :key="index" v-if="item.course_type == 3">{{JSON.parse(item.course_item)['num']}}</td>
                                     </tr>
                                     <tr>
                                         <td class="td-title">正确率</td>
-                                        <td>94%</td>
-                                        <td>94%</td>
-                                        <td>94%</td>
-                                        <td>94%</td>
-                                        <td>94%</td>
+                                        <td v-for="(item,index) in alltest_item" :key="index" v-if="item.course_type == 3">{{Math.ceil(item.is_right_num/alltest_item.length)/100}}%</td>
                                     </tr>
                                 </table>
                                 <p class="desc">表面积检测</p>
@@ -48,19 +40,11 @@
                                 <table>
                                     <tr>
                                         <td class="td-title">题号</td>
-                                        <td>1(1)</td>
-                                        <td>1(2)</td>
-                                        <td>2(1)</td>
-                                        <td>2(2)</td>
-                                        <td>2(3)</td>
+                                        <td v-for="(item,index) in alltest_item" :key="index" v-if="item.course_type == 4">{{JSON.parse(item.course_item)['num']}}</td>
                                     </tr>
                                     <tr>
                                         <td class="td-title">正确率</td>
-                                        <td>94%</td>
-                                        <td>94%</td>
-                                        <td>94%</td>
-                                        <td>94%</td>
-                                        <td>94%</td>
+                                        <td v-for="(item,index) in alltest_item" :key="index" v-if="item.course_type == 4">{{Math.ceil(item.is_right_num/alltest_item.length)/100}}%</td>
                                     </tr>
                                 </table>
                                 <p class="desc">体积检测</p>
@@ -99,6 +83,7 @@ data() {
         alltest_error_remark:[],
         alltest_item:[],
         alltest_user:[],
+        allTestUsernum:0,
         batch:'',
         echarts:'',
         opinionX:[],
@@ -115,7 +100,8 @@ watch: {
 },
 //方法集合
 methods: {
-    pieEchart(id){
+    pieEchart(id,remark,arr){
+        console.log(remark)
         this.echarts = echarts.init(document.getElementById(id));
         this.echarts.setOption({
             color:['#7BABED','#32D4EB','#39CC6C','#6AE7A5','#FE8706'],
@@ -124,7 +110,7 @@ methods: {
                 top:'auto',
                 itemWidth:12,
                 itemHeight:8,
-                data:this.alltest_error_remark
+                data:["2侧面积公式，3表面积测试，4体积公式，5线线关系"]
             },
             tooltip: {
                 trigger: 'item',
@@ -146,23 +132,17 @@ methods: {
                         length:0,
                         length2:0,
                     },
-                    data:[
-                        {value:40, name:'体积1'},
-                        {value:20, name:'体积排列1'},
-                        {value:8, name:'体积排列2'},
-                        {value:10, name:'体积排列3'},
-                        {value:12, name:'体积排列4'}
-                    ]
+                    data:arr
                 }
             ]
         })
     },
-    rightEchart(id){
+    rightEchart(id,titles,datas){
         this.echarts = echarts.init(document.getElementById(id));
         this.echarts.setOption({
             title:{
                 show:true,
-                text:'表面积',
+                text:titles,
                 x:'center',
                 y:'100px',
                 textStyle:{
@@ -204,8 +184,8 @@ methods: {
                         }
                     },
                     data:[
-                        {value:92, name:'表面积'},
-                        {value:8, name:'默认数据'},
+                        {value:datas},
+                        {value:this.allTestUsernum},
                     ]
                 }
             ]
@@ -303,26 +283,6 @@ methods: {
            
         })
     },
-    // initOpinionx(){
-    //     let self = this;
-    //     self.alltest_user.forEach((item) => {
-    //         self.OpinionX.push(item.user_name)
-    //     })
-    //     console.log(self.opinionX)
-    //     return self.opinionX
-    // },
-    // initOpinionY(){
-    //     let self = this;
-    //     self.alltest_user.forEach((item) => {
-    //         let obj = {
-    //             name:item.name,
-    //             value:item.sum_score
-    //         }
-    //         OpinionY.push(obj)
-    //     })
-    //     // console.log(self.opinionY)
-    //     return self.opinionY
-    // }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
@@ -336,12 +296,12 @@ created() {
                 batch:res.obj
             }
             base.getUrl(API.allUrl.classTest,params).then((res) => {
-                console.log(res.obj)
                 if(res.code == 200 && res.success == 1) {
                     this.alltest_error = res.obj.alltest_error
-                    this.alltest_error_remark = res.obj.alltest_error_remark.split(',')
+                    this.alltest_error_remark = res.obj.alltest_coursetype_remark?res.obj.alltest_coursetype_remark.split(','):''
                     this.alltest_item = res.obj.alltest_item
                     this.alltest_user = res.obj.alltest_user
+                    this.allTestUsernum = res.obj.alltest_user.length
                     this.alltest_user.forEach((item) => {
                         let obj = {
                             name:item.user_name,
@@ -350,17 +310,55 @@ created() {
                         this.opinionX.push(item.user_name)
                         this.opinionY.push(obj)
                     })
-                    console.log(this.alltest_error_remark)
-                    // console.log(res.obj.alltest_error_remark.split(','))
-                    // res.obj.alltest_error_remark.forEach((item) => {
-                    //     this.alltest_error_remark.push(item)
-                    // })
-                    this.$nextTick(function(){
-                        this.barEchart('bechart')
-                        this.pieEchart('echart1')
-                        this.rightEchart('rechart1')
-                        this.rightEchart('rechart2')
-                        this.rightEchart('rechart3')
+                    let self = this;
+                    let remark = [];
+                    // console.log(this.alltest_error)
+                    let str = '';
+                    let wrong = '';
+                    let arr = [];
+                    this.alltest_error.forEach((item) => {
+                          if(item.course_type == 2) {
+                                str = '侧面积公式'
+                            } else if(item.course_type == 3) {
+                                str = '表面积公式'
+                            } else if(item.course_type == 4) {
+                                str = '体积公式'
+                            }  else if(item.course_type == 5) {
+                                str = '线线关系'
+                            }
+                            if(item.is_right == 0 && item.is_right_num) {
+                               wrong = item.usernum - item.is_right_num
+                            }
+                            if(item.is_right == -1) {
+                                wrong = 0
+                            }
+                            let obj = {
+                                name:str,
+                                value:wrong
+                            }
+                            arr.push(obj)
+                    })
+                    self.$nextTick(function(){
+                        setTimeout(function(){
+                            self.barEchart('bechart')
+                            self.alltest_error_remark.forEach((item) => {
+                                remark.push(item)
+                            })
+                            self.pieEchart('echart1',remark,arr)
+                            self.alltest_item.forEach((item,index) => {
+                                let str = '';
+                                if(item.course_type == 2) {
+                                    str = '侧面积公式'
+                                } else if(item.course_type == 3) {
+                                    str = '表面积公式'
+                                } else if(item.course_type == 4) {
+                                    str = '体积公式'
+                                }  else if(item.course_type == 5) {
+                                    str = '线线关系'
+                                } 
+                                self.rightEchart('rechart'+(index*1+1),str,item.is_right_num)
+                            })
+                        },1000)
                     })
                 }
             })
@@ -369,13 +367,13 @@ created() {
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
-    this.$nextTick(function(){
-        this.barEchart('bechart')
-        this.pieEchart('echart1')
-        this.rightEchart('rechart1')
-        this.rightEchart('rechart2')
-        this.rightEchart('rechart3')
-    })
+    // this.$nextTick(function(){
+    //     this.barEchart('bechart')
+    //     this.pieEchart('echart1')
+    //     this.rightEchart('rechart1')
+    //     this.rightEchart('rechart2')
+    //     this.rightEchart('rechart3')
+    // })
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前

@@ -39,7 +39,7 @@
                         <div class="comment-wrapper">
                             <div class="list clearfix" v-for="(cItem,cIndex) in info.comments" :key="cIndex">
                                 <div class="left-icon">
-                                     <!-- <img :src="cItem.userHeadImage" alt="default"> -->
+                                     <img :src="cItem.userHeadImage" alt="default">
                                      <p class="comment-name" >{{cItem.userLoginname}}</p>
                                 </div>
                                 <p class="comment-detail" v-if="cItem.replyUserLoginname" @click="setComment(cItem.userLoginname)">回复 <span v-if="cItem.replyUserLoginname">{{cItem.replyUserLoginname}}：</span>{{cItem.comment}}</p>
@@ -113,6 +113,7 @@ methods: {
             attid:this.attId
         }   
         base.getUrl(API.allUrl.lookSingPic,params).then((res) => {
+            console.log(res)
             if(res.code == 200 && res.success == 1) {
                 Object.assign({},this.info,res.obj)
                 this.info = res.obj

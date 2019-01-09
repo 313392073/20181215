@@ -38,7 +38,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(item,index) in typeList" :key="index">
+                        <tr v-for="(item,index) in typeList" :key="index.id">
                             <td class="td-check">
                                 <label class="choose" @click="getCheck($event)"><input type="checkbox" :value="item.id"><span>√</span></label>
                                 <a :href="item.uploadNetUrl" target="_blank"><span>{{getName(item.uploadNetUrl)}}</span></a>
@@ -60,7 +60,7 @@
           <div class="tips-msg">
               <p>你已成功推送 <span>2</span>个文件！</p>
           </div>
-          <div class="tips-btn"><button class="cbtn tbtn">好的</button></div>
+          <div class="tips-btn"><button class="cbtn tbtn" @click="HideTip">好的</button></div>
         </div>
     </div>
   </div>
@@ -136,7 +136,7 @@ methods: {
         return str[1]
     },
     changeType(index,type){
-        this.isActive=index;
+        this.isActive = index;
         let arr = {};
         arr['doc'] = [];
         arr['pic'] = [];
@@ -175,10 +175,9 @@ methods: {
                 this.typeList = arr['music'];
                 break;
             default:
-                this.typeList = [];
+                this.typeList = this.list;
                 break;
         }
-        console.log(this.typeList)
         return this.typeList;
     },
     HideTip(){
@@ -207,6 +206,7 @@ methods: {
         self.deleteList.forEach((item) => {
             arr.push(item)
         })
+        console.log(arr)
         Axios({
             method:'post',
             baseURL:base.baseURL,
@@ -220,8 +220,7 @@ methods: {
             if(res.data.code == 200 && res.data.success == 1) {
                  this.toggleTips = true;
                  this.tipsMsg = '删除成功';
-                 window.location.reload()
-                //  self.getCourseList()
+                 this.$router.go(0)
             }
         })
     },
@@ -233,6 +232,9 @@ methods: {
         base.getUrl(API.allUrl.courseList,params).then((res) => {
             if(res.code == 200 && res.success == 1) {
                 this.list = res.obj;
+                this.$nextTick(() => {
+                    this.changeType(0,'all')
+                })
             }
         })
     }
@@ -253,9 +255,7 @@ created() {
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
-    this.$nextTick(() => {
-        this.changeType(0,'all')
-    })
+    
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前

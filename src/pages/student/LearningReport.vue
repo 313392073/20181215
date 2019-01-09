@@ -197,7 +197,7 @@ created() {
                 token:store.state.token,
                 batch:res.obj
             }
-            // console.log(params)
+            console.log(params)
             base.getUrl(API.allUrl.stuClassTest,params).then((res) => {
                 console.log(res)
                 if(res.code == 200 && res.success == 1) {

@@ -12,8 +12,8 @@
                 <p class="main-title">测试概况:</p>
                 <div class="situation-detail clearfix">
                     <div class="item time clearfix"><p class="desc-time">时间: </p><div class="detail-time"><p class="start-time">{{timestampToTime(resSituation.min_time)}}</p><p class="end-time">{{timestampToTime(resSituation.max_time)}}</p></div></div>
-                    <div class="item num">题量: <span class="order">{{resSituation.course_num}}</span></div>
-                    <div class="item submitd">已交: <span class="rights">{{resSituation.answered}}</span></div>
+                    <div class="item num">题量: <span class="order">{{resSituation.course_num}}题</span></div>
+                    <div class="item submitd">已交: <span class="rights">{{resSituation.answered}}人</span></div>
                     <div class="item score">平均分: <span class="time">{{resSituation.average}}分</span></div>
                 </div>
             </div>
@@ -22,7 +22,7 @@
                 <div class="detail-left">
                     <p class="main-title">各小组正确率统计:</p>
                     <div class="echart-box clearfix">
-                        <div v-for="(item,index) in 6" :key="item" class="echarts" :id="gernerateId(index)">
+                        <div v-for="(item,index) in allTestUser" :key="item" class="echarts" :id="gernerateId(index)">
 
                         </div>
                     </div>
@@ -38,7 +38,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item,index) in scoreDetail" :key="index" :class="index>5?trHide:''">
+                            <tr v-for="(item,index) in scoreDetail" :key="index" :class="index>4?trHide:''">
                                 <td><i>{{index+1}}</i><img :src="item.user_head_image" class="head-pic" :alt="item.user_name"><span>{{item.user_name}}</span></td>
                                 <td>{{item.sum_score}}分</td>
                                 <td class="use-time">{{getMinute(item.sum_usetime)}}</td>
@@ -76,6 +76,8 @@ return {
     optionY:[2.6, 5.9, 9.0],
     btnMsg:'查看全部',
     trHide:'tr-hide',
+    allTestUser:0,
+    allTestInfo:'',
     resSituation:{
         max_time:'',
         min_time:'',
@@ -83,6 +85,7 @@ return {
         answered:'',
         average:''
     },
+    dataArr:[],
     scoreDetail:[]
 };
 },
@@ -110,12 +113,14 @@ methods: {
     gernerateId(index){
         return 'echart'+(index*1+1)
     },
-    initEchart(id){
+    initEchart(id,titles,datas){
+        // console.log(this.dataArr[index].name)
+        // console.log(this.dataArr[index].value*100)
         this.charts = echarts.init(document.getElementById(id))
-        this.charts.setOption({
-            title:{
+        let options = {
+             title:{
                 show:true,
-                text:'表面积',
+                text:titles,
                 x:'center',
                 y:'0',
                 textStyle:{
@@ -133,7 +138,6 @@ methods: {
             calculable : true,
             series : [
                 {
-                    name:'访问来源',
                     type:'pie',
                     legendHoverLink:false,
                     hoverAnimation :false,
@@ -161,13 +165,18 @@ methods: {
                         }
                     },
                     data:[
-                        {value:92, name:'表面积'},
-                        {value:8, name:'默认数据'},
+                        { value:datas },
+                        { value:this.allTestUser },
                     ]
                 }
             ]
-        })
+        }
+
+        if (options && typeof options === "object") {
+            this.charts.setOption(options, true);
+        }
     }
+    
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
@@ -182,6 +191,7 @@ created() {
                 userType:store.state.userType*1,
                 batch:res.obj
             }
+            console.log(params1)
             base.getUrl(API.allUrl.onlineTest,params1).then((res) => {
                 console.log(res)
                 if(res.code == 200 && res.success == 1) {
@@ -191,6 +201,18 @@ created() {
                     self.resSituation.answered = res.obj.class_report[0]['test_usernum']+'/'+res.obj.score_rank.length;
                     self.resSituation.average = res.obj.class_report[0]['sum_score']*1/res.obj.class_report[0]['test_usernum'];
                     self.scoreDetail = res.obj.score_rank;
+                    self.allTestUser = res.obj.alltest_item.length;
+                    self.allTestInfo = res.obj.alltest_item;
+                    this.allTestInfo.forEach((item,index) => {
+                        let obj = {
+                            name:'',
+                            value:''
+                        };
+                        obj.name = '第'+(index*1+1)+'题';
+                        obj.value = JSON.parse(item.course_item).num/this.allTestUser;
+                        this.dataArr.push(obj)
+                    })
+                    
                 }else{
                     console.log(res)
                 }
@@ -200,13 +222,14 @@ created() {
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
+   let self = this;
+  
     this.$nextTick(function(){
-        this.initEchart('echart1')
-        this.initEchart('echart2')
-        this.initEchart('echart3')
-        this.initEchart('echart4')
-        this.initEchart('echart5')
-        this.initEchart('echart6')
+        setTimeout(function(){
+            for(var i=0;i<self.allTestUser;i++){
+                self.initEchart('echart'+(i*1+1),self.dataArr[i]['name'],self.dataArr[i]['value'])
+            }
+        },500)
     })
 },
 beforeCreate() {}, //生命周期 - 创建之前
@@ -294,15 +317,16 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 float: left;
                 margin-right: 54*0.02*0.4rem;
                 width: calc(~"50% - 27*0.02*0.4rem");
-                height: 825*0.4*0.02rem;
+                min-height: 825*0.4*0.02rem;
                 box-shadow: 0 2px 5px 3px rgba(0,0,0,0.1);
+                padding-bottom: 50*0.4*0.02rem;
                 .echart-box{
                     width: 100%;
                     height: calc(~"100% - 65*0.4*0.02rem");
                     .echarts{
                         float: left;
-                        width: calc(~"50% - 2px");
-                        height: 33%;
+                        width: 50%;
+                        min-height: 200*0.4*0.02rem;
                         border: 1px solid rgba(0,0,0,0.1);
                     }
                 }

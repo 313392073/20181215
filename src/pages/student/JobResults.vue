@@ -11,88 +11,12 @@
             <div class="situation-box">
                 <p class="main-title">小组排名:</p>
                 <div class="situation-detail clearfix">
-                    <div class="item">
-                        <p class="item-title first">第一名 A组</p>
+                    <div class="item" v-for="(item,index) in groupScore" :key="index">
+                        <p class="item-title first">第{{index*1 + 1}}名 {{item.groupname}}组</p>
                         <div class="detail-box clearfix">
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
-                            </div>
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
-                            </div>
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
-                            </div>
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="item">
-                        <p class="item-title second">第二名 B组</p>
-                        <div class="detail-box clearfix">
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
-                            </div>
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
-                            </div>
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
-                            </div>
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <p class="item-title third">第三名 C组</p>
-                        <div class="detail-box clearfix">
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
-                            </div>
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
-                            </div>
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
-                            </div>
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <p class="item-title fouth">第四名 D组</p>
-                        <div class="detail-box clearfix">
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
-                            </div>
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
-                            </div>
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
-                            </div>
-                            <div>
-                                <img src="../../assets/images/default.png" alt="default.png">
-                                <p>流星雨</p>
+                            <div v-for="(subItem,subIndex) in item.groupuser_loginnames.split(',')" :key="subIndex">
+                                <img :src="item.groupuser_headimages.split(',')[subIndex]" alt="default.png">
+                                <p>{{subItem}}</p>
                             </div>
                         </div>
                     </div>
@@ -121,7 +45,10 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
-import echarts from 'echarts'
+import echarts from 'echarts';
+import base from '../../router/http/base.js';
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
@@ -135,7 +62,9 @@ return {
         {value:20,'name':'B组'},
         {value:30,'name':'C组'},
         {value:18,'name':'D组'}
-    ]
+    ],
+    groupScore:'',
+    groupResult:''
 };
 },
 //监听属性 类似于data概念
@@ -236,7 +165,7 @@ methods: {
            
         })
     },
-    lineEchart(id){{
+    lineEchart(id,datax,tj,bmj){{
         this.charts = echarts.init(document.getElementById(id))
         this.charts.setOption({
             tooltip : {
@@ -255,7 +184,7 @@ methods: {
                 {
                     type : 'category',
                     boundaryGap : false,
-                    data : ['A组','B组','C组','D组']
+                    data : datax
                 }
             ],
             yAxis : [
@@ -286,7 +215,7 @@ methods: {
                     type:'line',
                     stack: '总量',
                     areaStyle: {},
-                    data:[0.2, 0.4, 0.3, 0.5],
+                    data:tj,
                     symbol:'circle',
                     symbolSize:8,
                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ 
@@ -304,7 +233,7 @@ methods: {
                     areaStyle: {},
                     symbol:'circle',
                     symbolSize:8,
-                    data:[0.3, 0.4, 0.6,0.4],
+                    data:bmj,
                     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ 
                         offset: 0,
                         color: '#77ABEB'
@@ -319,13 +248,44 @@ methods: {
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
+    let self = this;
+    let params = {
+        token:store.state.token
+    }
+    base.getUrl(API.allUrl.batch,params).then(res => {
+        if(res.code == 200 && res.success ==  1) {
+            let params = {
+                token:store.state.token,
+                batch:res.obj
+            }
+            console.log(params)
+            base.getUrl(API.allUrl.courseSummary,params).then((res) => {
+                console.log(res)
+                if(res.code == 200 && res.success == 1) {
+                    self.groupScore = res.obj.group_score;
+                    self.groupResult = res.obj.group_result;
+                    let optionx = [];
+                    let optiont = [];
+                    let optionb = [];
 
+                    if(self.groupResult && self.groupResult.length > 0) {
+                        self.groupResult.forEach((item) => {
+                            optionx.push(item['group_name']+'组')
+                            optiont.push(item['group_bmj_range']*100)
+                            optionb.push(item['group_tj_range'])
+                        })
+                    }
+                    this.lineEchart('linechart',optionx,optiont,optionb)
+                }
+            })
+        }
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
     this.$nextTick(function(){
         this.barEchart('barechart')
-        this.lineEchart('linechart')
+        
     })
 },
 beforeCreate() {}, //生命周期 - 创建之前
@@ -398,6 +358,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                             img{
                                 width: 75*0.4*0.02rem;
                                 height: 75*0.4*0.02rem;
+                                border-radius: 50%;
                             }
                         }
                     }
