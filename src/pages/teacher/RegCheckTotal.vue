@@ -45,9 +45,9 @@ components: {SideBar},
 data() {
 //这里存放数据
 return {
-    nodonum:'',
-    rightnum:'',
-    wrongnum:'',
+    nodonum:0,
+    rightnum:0,
+    wrongnum:0,
     charts:'',
     optionX:[
         {value:'', name:'未作答'},

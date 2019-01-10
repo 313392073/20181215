@@ -358,7 +358,7 @@ created() {
                                 } 
                                 self.rightEchart('rechart'+(index*1+1),str,item.is_right_num)
                             })
-                        },1000)
+                        },500)
                     })
                 }
             })

@@ -41,9 +41,12 @@
                                 <span v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']" >
                                     您的答案：
                                     <span :class="getChangeClass"  v-html="toAsync((list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:'')"></span>
-                                    <!-- <input :class="getChangeClass" type="text" readonly :value="toAsync((list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:'')" /> -->
+                                    <input :class="getChangeClass" type="text" readonly :value="toAsync((list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:'')" />
                                 </span>
-                                <input v-if="item.if_handle == 0" type="text" class="answer-input" @blur="alreadySubmit" readonly :value="JSON.parse(item.answer).gs[gindex]">
+                                
+                                <!-- <input v-if="item.if_handle == 0" type="text" class="answer-input" @blur="alreadySubmit" readonly :value="JSON.parse(item.answer).gs[gindex]"> -->
+                                <span v-if="item.if_handle == 0" class="gs-box" v-html="toAsync(JSON.parse(item.answer).gs[gindex])"></span>
+                                <!-- <input v-if="item.if_handle == 0" type="text" class="answer-input" @blur="alreadySubmit" readonly :value="JSON.parse(item.answer).gs[gindex]"> -->
                             </p>
                         </div>
                         <div class="answer-box clearfix">
@@ -149,10 +152,6 @@ watch: {
             window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
         })
     },
-    list(newValue,oldValue){
-        console.log(newValue)
-        console.log(oldValue)
-    }
 },
 //方法集合
 methods: {
@@ -256,7 +255,7 @@ methods: {
     },
     getMenu(params) { //获取menu
         base.getUrl(API.allUrl.course_m_info,params).then(res => {
-            console.log(res)
+            console.log('获取menu'+res)
         })
     },
     getCourseList(params){ //获取题型
@@ -265,6 +264,12 @@ methods: {
                 console.log(res.obj)
                 res.obj.forEach((item,index) => {
                   this.questList.push(item)
+                })
+                this.$nextTick(() => {
+                    window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
+                })
+               this.questList.forEach((item) => {
+                    console.log(JSON.parse(item.answer).gs)
                 })
             }else{
                 self.tipsMsg = '网络错误，请稍后再试'
@@ -352,7 +357,6 @@ methods: {
             url:API.allUrl.courseSubmit+'?token='+store.state.token+'&batch='+this.classBatch,
             data:JSON.stringify(arr),
         }).then((res) => {
-             console.log(res)
             if(res.data.code = 200 && res.data.success == 1){
                 this.toggleTips = true;
                 this.tipsMsg = '本轮结束';

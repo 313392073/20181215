@@ -220,7 +220,6 @@ methods: {
             if(res.data.code == 200 && res.data.success == 1) {
                  this.toggleTips = true;
                  this.tipsMsg = '删除成功';
-                 this.$router.go(0)
             }
         })
     },

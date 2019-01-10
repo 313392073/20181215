@@ -253,6 +253,7 @@ created() {
             base.getUrl(API.allUrl.uploadList,params).then((res) => {
                 if(res.code == 200 && res.success == 1) {
                     self.groupList = res.obj;
+                    console.log(res.obj)
                 }
             })
         }

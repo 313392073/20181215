@@ -82,8 +82,6 @@ computed: {
             }
         }
         return false;
-        // if(JSON.parse(store.state.user).userLoginname)
-        // console.log()
     }
 },
 //监控data中的数据变化
@@ -102,7 +100,7 @@ methods: {
                 this.info.createTime = res.obj.createTime;
                 this.info.uploadNetUrl = res.obj.uploadNetUrl;
                 this.info.likesUserNum = res.obj.likesUserNum;
-                this.info.likesUserLoginname = res.obj.likesUserLoginname.split(',');
+                this.info.likesUserLoginname = res.obj.likesUserLoginname?res.obj.likesUserLoginname.split(','):[];
             }
         })
     },
