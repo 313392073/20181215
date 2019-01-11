@@ -18,7 +18,7 @@
                     <div class="login-btn">
                         <input type="submit" class="sbtn" value="登录">
                     </div>
-                    <p class="user-reg"><router-link to='reg'><a>新用户注册</a></router-link></p>
+                    <p class="user-reg"><router-link to='selectId'><a>新用户注册</a></router-link></p>
                 </form>
             </div>
             <div class="tips" v-show="toggleTips">
@@ -103,7 +103,7 @@ methods: {
                     self.$router.push('/stuonlinetest')
                     // self.$router.push('/stuvideoshare')
                 }else if(JSON.parse(res.obj.user).userType == 1){ //老师
-                    self.$router.push('/teapracticreport')
+                    self.$router.push('/teaselectclass')
                     // self.$router.push('/teaafterexptotal')
                 }else{
                     self.tipsMsg = '请先登录！！'

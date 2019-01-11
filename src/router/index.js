@@ -18,6 +18,8 @@ import Login from '@/pages/Login'//登录
 import FindPwd from '@/pages/FindPwd'//找回密码
 
 //老师 start
+import SelectClass from '@/pages/teacher/SelectClass'// 课程设置
+import SelectUnit from '@/pages/teacher/SelectUnit'// 课程设置
 import PracticReport from '@/pages/teacher/PracticReport'// 在线测试(学生)
 import LookingForPyramid from '@/pages/teacher/lookingforpyramid'    // 寻找棱锥
 import MakePyramid from '@/pages/teacher/MakePyramid'// 制作棱锥
@@ -95,7 +97,7 @@ const router = new Router({
     //   }
     // },
     {
-      path: '/',
+      path: '/selectId',
       name: 'SelectId',
       component: SelectId,
       meta: {
@@ -111,7 +113,7 @@ const router = new Router({
       }
     },
     {
-      path: '/login',
+      path: '/',
       name: 'Login',
       component: Login,
       meta: {
@@ -145,6 +147,24 @@ const router = new Router({
       }
     },
     { //老师 start
+      path: '/teaselectclass',
+      name: 'SelectClass',
+      component: SelectClass,
+      meta: {
+        title: '老师选课',
+        auth: true
+      }
+    },
+    { 
+      path: '/teaselectunit',
+      name: 'SelectUnit',
+      component: SelectUnit,
+      meta: {
+        title: '老师选课',
+        auth: true
+      }
+    },
+    { 
       path: '/teapracticreport',
       name: 'PracticReport',
       component: PracticReport,
@@ -460,34 +480,34 @@ const router = new Router({
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  document.title = to.meta.title?to.meta.title:'棱锥'
-  if(to.matched.some( r => r.meta.auth)){
-    if(store.state.token){ //toke存在  还需要判断user 登录没有
-      if(store.state.user) {
-        next()
-      }else{
-        next({
-          path:'/login',
-          query:{redirect:to.fullPath}
-        })
-      }
-    }else{ 
-      if(to.name == '/login' || to.name == 'reg' || to.name == 'findpwd'){
-        next();
-        return;
-      }else{
-        //token 不存在  直接重新登录
-        next({
-          path:'/login',
-          query:{redirect:to.fullPath}
-        })
-      }
-    }
-  }else{
-    next()
-  }
+// router.beforeEach((to, from, next) => {
+//   document.title = to.meta.title?to.meta.title:'棱锥'
+//   if(to.matched.some( r => r.meta.auth)){
+//     if(store.state.token){ //toke存在  还需要判断user 登录没有
+//       if(store.state.user) {
+//         next()
+//       }else{
+//         next({
+//           path:'/',
+//           query:{redirect:to.fullPath}
+//         })
+//       }
+//     }else{ 
+//       if(to.name == 'Login' || to.name == 'RegPage' || to.name == 'FindPwd' || to.name == 'SelectId'){
+//         next();
+//         return;
+//       }else{
+//         //token 不存在  直接重新登录
+//         next({
+//           path:'/',
+//           query:{redirect:to.fullPath}
+//         })
+//       }
+//     }
+//   }else{
+//     next()
+//   }
   
-})
+// })
 
 export default router

@@ -25,6 +25,7 @@
     "three-orbit-controls": "^82.1.0",
     "three-orbitcontrols": "^2.99.1",
     "vue": "^2.5.2",
+    "vue-layer": "^0.9.10",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
     "webgl": "0.0.7"
