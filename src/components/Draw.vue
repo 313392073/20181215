@@ -2,6 +2,7 @@
 <template>
 <div id='box'>
   <span class="gs-box">$v = \frac{1}{3}sh$</span>
+  <span class="gs-box">$s = \frac{1}{2} a h *9$</span>
 
 
   <!-- $\frac{1}{3}sh$

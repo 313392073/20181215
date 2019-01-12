@@ -12,7 +12,7 @@
                 <p class="icon-upload"><i class="iconfont icon-shangchuan"></i></p>
                 <p class="upload-desc">选择需要上传的课件,支持PDF,PPTX,DOCX,JPG,MP4等常见文档 图片 视频格式</p>
                 <input type="file" name="file" accept="*" ref="filElem" class="upload-file" @change="upload">
-                <div class="next-btn"><button class="nbtn" @click="choose">选择文件</button></div>
+                <div class="next-btn"><button class="nbtn" @click="choose">{{chooseFile}}</button></div>
             </div>
             <div class="item clearfix" v-for="item in 3" :key="item" style="display:none">
                 <div class="item-icon"><img src="../../assets/images/group-pic.png" alt="group-pic"></div>
@@ -47,6 +47,7 @@ data() {
 //这里存放数据
 return {
     batch:'',
+    chooseFile:'选择文件'
 };
 },
 //监听属性 类似于data概念
@@ -62,7 +63,7 @@ methods: {
         let self = this;
         let fileMaxSize = 1024;//1M
         let file = self.$refs.filElem.files[0];
-        console.log(file)
+        this.chooseFile = '文件已选择'
         if(file.size/fileMaxSize > fileMaxSize){
             self.tipsMsg = '图片过大 不能上传'
             self.toggleTips = true;

@@ -15,8 +15,26 @@
                         </div>
                     </div>
                     <div class="item">
+                        <label class="desc">选择性别</label>
+                        <label class="choose">
+                            <input type="radio" name="identity" value="0" v-model="checkedValue">
+                            <span></span>
+                            男
+                        </label>
+                        <label class="choose">
+                            <input type="radio" name="identity" value="1" v-model="checkedValue">
+                            <span></span>
+                            女
+                        </label>
+                    </div>
+
+                    <div class="item">
                         <label class="desc">姓名</label>
                         <input type="text" class="info" name="username" id="username" v-model="dataObj.username">
+                    </div>
+                    <div class="item">
+                        <label class="desc">邮箱</label>
+                        <input type="text" class="info" name="email" id="email" v-model="dataObj.email">
                     </div>
                     <div class="item">
                         <label class="desc">密码</label>
@@ -26,6 +44,7 @@
                         <label class="desc">确认密码</label>
                         <input type="password" class="info" name="repwd" id="repwd" v-model="dataObj.repwd">
                     </div>
+
                     <div class="login-btn">
                         <input type="submit" class="sbtn" value="确认注册">
                     </div>
@@ -66,11 +85,13 @@ return {
     toggleTips:false,
     defaultUrl:defaultUrls,
     dataObj:{
-        filePath:'',
         username:'',
         pwd:'',
-        repwd:''
+        repwd:'',
+        email:'',
+        sex:''
     },
+    checkedValue:''
 };
 },
 //监听属性 类似于data概念
@@ -121,8 +142,11 @@ methods: {
     },
     checkForm(){
         let self = this;
+        console.log(self.dataObj)
+        console.log(self.defaultUrl)
+        console.log(self.checkedValue)
         // self.dataObj.filePath = self.$refs.filElem.files[0]?self.$refs.filElem.files[0].name:'';
-        if(self.defaultUrl == '' || self.dataObj.username == '' || self.dataObj.pwd == '' || self.dataObj.repwd == '') {
+        if(self.defaultUrl == '' || self.dataObj.username == '' || self.dataObj.pwd == '' || self.dataObj.repwd == '' || self.checkedValue == '' || self.dataObj.email == '') {
             self.tipsMsg = '请将信息输入完整后才能提交'
             self.toggleTips = true;
             return false;
@@ -147,8 +171,11 @@ methods: {
             userPassword : self.dataObj.pwd,
             headImage : self.defaultUrl,
             userType : store.state.userType*1?store.state.userType*1:'0',
-            classId : store.state.chooseCourse*1?1:'1'
+            classId : store.state.chooseCourse*1?1:'1',
+            sex:self.checkedValue,
+            email:self.dataObj.email
         }
+        console.log(params)
         base.postUrl(API.allUrl.regist,params).then((res) => {
             if(res.code == 200 && res.success == 1){
                 self.tipsMsg = '注册成功，立即去登陆';
@@ -209,7 +236,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
             .reg-title{
                 width: 100%;
                 text-align: center;
-                margin: 23% auto 7.8%;
+                margin: 13% auto 7.8%;
                 color: #ffffff;
                 font-size: 60*0.4px;
                 font-weight: normal;
@@ -224,31 +251,31 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
             }
             .headpic{
                 width: 100%;
-                margin: 15.49% auto;
+                margin: 8.49% auto;
                 text-align: center;
                 img{
-                    width: 255*0.4px;
-                    height: 255*0.4px;
+                    width: 200*0.4px;
+                    height: 200*0.4px;
                 }
             }
             .item{
                 min-height: 90*0.4px;
                 line-height: 90*0.4px;
                 padding-left: 0;
-                margin-bottom: 75*0.4px;
+                margin-bottom: 40*0.4px;
                 color: #ffffff;
                 border-bottom: 1px solid #ffffff;
                 padding-left: 8px;
                 .header-box{
-                    width: 255*0.4px;
-                    height: 255*0.4px;
+                    width: 200*0.4px;
+                    height: 200*0.4px;
                     margin: 0 auto;
                     border-radius:50%; 
                     text-align: center;
                     .upload-pic{
                         border-radius:50%;
-                        width: 255*0.4px;
-                        height: 255*0.4px;
+                        width: 200*0.4px;
+                        height: 200*0.4px;
                         margin: 0 auto;
                     }
                     .upload-file{
@@ -265,12 +292,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 .choose{
                     display: inline-block;
                     margin-bottom: 45*0.4px;
-                    margin-left: 1rem;
+                    margin-left: 50*0.4*0.02rem;
                     font-size: 16px;
                     cursor: pointer;
-                    &:last-child{
-                        margin-left: 1.8rem;
-                    }
                     input[type="radio"] {
                         appearance: none;
                         -webkit-appearance: none;
@@ -283,8 +307,8 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         vertical-align: middle;
                     }
                     input[type="radio"]+span {
-                        width: 1rem;
-                        height: 1rem;
+                        width: 40*0.4*0.02rem;
+                        height: 40*0.4*0.02rem;
                         display: inline-block;
                         background-color: transparent;
                         border: 1px solid #ffffff;

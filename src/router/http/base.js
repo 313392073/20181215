@@ -31,7 +31,7 @@ axios.interceptors.response.use(
                 case 401:
                 store.commit(types.LOGOUT)
                 router.replace({
-                    path:'/login',
+                    path:'/',
                     query:{redirect:router.currentRoute.fullPath}
                 })
             }

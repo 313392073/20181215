@@ -18,6 +18,8 @@ import Login from '@/pages/Login'//登录
 import FindPwd from '@/pages/FindPwd'//找回密码
 
 //老师 start
+import SelectClass from '@/pages/teacher/SelectClass'// 课程设置
+import SelectUnit from '@/pages/teacher/SelectUnit'// 课程设置
 import PracticReport from '@/pages/teacher/PracticReport'// 在线测试(学生)
 import LookingForPyramid from '@/pages/teacher/lookingforpyramid'    // 寻找棱锥
 import MakePyramid from '@/pages/teacher/MakePyramid'// 制作棱锥
@@ -70,32 +72,32 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
   routes: [
+    // {
+    //   path: '/',
+    //   name: 'Tree',
+    //   component: Tree,
+    //   meta: {
+    //     title: '测试测试测试'
+    //   }
+    // },
+    // {
+    //   path: '/test',
+    //   name: 'Test',
+    //   component: Test,
+    //   meta: {
+    //     title: '测试'
+    //   }
+    // },
+    // {
+    //   path: '/draw',
+    //   name: 'Draw',
+    //   component: Draw,
+    //   meta: {
+    //     title: '11注册页面'
+    //   }
+    // },
     {
-      path: '/',
-      name: 'Tree',
-      component: Tree,
-      meta: {
-        title: '测试测试测试'
-      }
-    },
-    {
-      path: '/test',
-      name: 'Test',
-      component: Test,
-      meta: {
-        title: '测试'
-      }
-    },
-    {
-      path: '/draw',
-      name: 'Draw',
-      component: Draw,
-      meta: {
-        title: '11注册页面'
-      }
-    },
-    {
-      path: '/selectid',
+      path: '/selectId',
       name: 'SelectId',
       component: SelectId,
       meta: {
@@ -111,7 +113,7 @@ const router = new Router({
       }
     },
     {
-      path: '/login',
+      path: '/',
       name: 'Login',
       component: Login,
       meta: {
@@ -145,6 +147,24 @@ const router = new Router({
       }
     },
     { //老师 start
+      path: '/teaselectclass',
+      name: 'SelectClass',
+      component: SelectClass,
+      meta: {
+        title: '老师选课',
+        auth: true
+      }
+    },
+    { 
+      path: '/teaselectunit',
+      name: 'SelectUnit',
+      component: SelectUnit,
+      meta: {
+        title: '老师选课',
+        auth: true
+      }
+    },
+    { 
       path: '/teapracticreport',
       name: 'PracticReport',
       component: PracticReport,
@@ -468,18 +488,18 @@ const router = new Router({
 //         next()
 //       }else{
 //         next({
-//           path:'/login',
+//           path:'/',
 //           query:{redirect:to.fullPath}
 //         })
 //       }
 //     }else{ 
-//       if(to.name == '/login' || to.name == 'reg' || to.name == 'findpwd'){
+//       if(to.name == 'Login' || to.name == 'RegPage' || to.name == 'FindPwd' || to.name == 'SelectId'){
 //         next();
 //         return;
 //       }else{
 //         //token 不存在  直接重新登录
 //         next({
-//           path:'/login',
+//           path:'/',
 //           query:{redirect:to.fullPath}
 //         })
 //       }

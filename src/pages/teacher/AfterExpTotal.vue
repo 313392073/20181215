@@ -8,7 +8,7 @@
     <div class="main-wrapper">
         <h3 class="title">课后实验成绩统计</h3>
         <div class="main-box">
-             <div id="tchart" class="tchart"></div>
+            <div id="tchart" class="tchart"></div>
         </div>
     </div>
   </div>
@@ -122,13 +122,12 @@ created() {
             base.getUrl(API.allUrl.afterClassTest,params).then((res) => {
                 if(res.code == 200 && res.success == 1) {
                     self.infoList = res.obj;
-                    console.log(res)
                     res.obj.score_rank.forEach((item) => {
                         let obj = {
                             name:item.user_name,
-                            value:item.course_type,
+                            value:item.sum_score,
                         }
-                        this.opinionX.push(item.course_type);
+                        this.opinionX.push(item.sum_score);
                         this.opinionY.push(item.user_name);
                     })
                     this.$nextTick(function(){

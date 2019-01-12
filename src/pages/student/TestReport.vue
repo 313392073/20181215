@@ -31,18 +31,18 @@
                         </thead>
                         <tbody>
                             <tr v-for="(item,index) in scoreDetail" :key="index" :class="index>4?trHide:''">
-                                <td class="td-left">
+                                <td class="td-left" v-if="item.my_answer">
                                     <i>{{index+1}}</i>
-                                    <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).q" :key="subIndex">{{subItem}}</span>
-                                    <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).bmj" :key="subIndex">{{subItem}}</span>
-                                    <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).tj" :key="subIndex">{{subItem}}</span>
-                                    <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).gs" :key="subIndex">{{subItem}}</span>
+                                    <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).q" :key="subIndex+5">{{subItem}}</span>
+                                    <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).bmj" :key="subIndex+10">{{subItem}}</span>
+                                    <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).tj" :key="subIndex+15">{{subItem}}</span>
+                                    <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).gs" :key="subIndex+25">{{subItem}}</span>
                                 </td>
-                                <td>
-                                    <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).q" :key="rsubIndex">{{rsubItem}}</span>
-                                    <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).bmj" :key="rsubIndex">{{rsubItem}}</span>
-                                    <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).tj" :key="rsubIndex">{{rsubItem}}</span>
-                                    <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).gs" :key="rsubIndex">{{rsubItem}}</span>
+                                <td v-if="item.right_answer"> 
+                                    <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).q" :key="rsubIndex+10">{{rsubItem}}</span>
+                                    <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).bmj" :key="rsubIndex+20">{{rsubItem}}</span>
+                                    <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).tj" :key="rsubIndex+30">{{rsubItem}}</span>
+                                    <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).gs" :key="rsubIndex+40">{{rsubItem}}</span>
                                 </td>
                                 <td class="use-time">{{item.score}}分</td>
                             </tr>
@@ -138,7 +138,6 @@ created() {
         token:store.state.token
     }
     base.getUrl(API.allUrl.batch,params).then(res => {
-        console.log(res)
         if(res.code == 200 && res.success ==  1) {
             let params1 = {
                 token:store.state.token,
@@ -152,7 +151,6 @@ created() {
                     this.resSituation.rightPercent = res.obj.score_rank[0]['test_user_rightnum']
                     this.resSituation.useTime = res.obj.score_rank[0]['sum_usetime']
                     this.scoreDetail = res.obj.score_report
-                    console.log(this.scoreDetail)
                 }
             })
         }

@@ -45,9 +45,9 @@ components: {SideBar},
 data() {
 //这里存放数据
 return {
-   nodonum:'',
-    rightnum:'',
-    wrongnum:'',
+   nodonum:0,
+    rightnum:0,
+    wrongnum:0,
     charts:'',
     optionX:[
         {value:'', name:'未作答'},
@@ -106,7 +106,7 @@ created() {
             base.getUrl(API.allUrl.checkSum,paramd).then((res) => {
                 if(res.success == 1 && res.code == 200) {
                     res.obj.alltest_error.forEach((item,index) => {
-                        if(item.is_right == 0) {
+                        if(item.is_right == 0 && item.is_right_num > 0) {
                             this.rightnum = item.usernum
                         }else{
                             this.wrongnum = item.usernum?item.usernum:0
@@ -115,7 +115,7 @@ created() {
                     this.nodonum = res.obj.class_usernum - this.rightnum - this.wrongnum;
                     this.optionX[0]['value'] = this.nodonum;
                     this.optionX[1]['value'] = this.rightnum;
-                    this.optionX[2]['value'] = this.wrongnum;
+                    this.optionX[2]['value'] = this.wrongnum?this.wrongnum:0;
                     this.$nextTick(function(){
                         this.initEchart('echart')
                     })

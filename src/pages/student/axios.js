@@ -582,3 +582,9 @@ let person = {
     }
 }
 
+
+
+
+self.$layer.confirm('网络错误，请稍后再试',{
+    title:'温馨提示'
+});
