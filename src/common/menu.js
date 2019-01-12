@@ -11,7 +11,7 @@ const stumenu = {
         },
         {
            name:'正棱锥表面积',
-           tag:false,
+           tag:true,
            list:[
               {name:'视频分享',target:'/stuvideoshare'},
                {name:'侧面积公式',target:'/stusideareaformula' },
@@ -20,7 +20,7 @@ const stumenu = {
        },
        {
            name:'正棱锥体积',
-           tag:false,
+           tag:true,
            list:[
               {name:'课后习题',target:'/stuvolumeformula' },
                {name:'线线关系',target:'/stuexpregpyramid' },
@@ -50,7 +50,7 @@ const teamenu = {
          },
          {
             name:'正棱锥表面积',
-            tag:false,
+            tag:true,
             list:[
                {name:'视频分享',target:'/teavideoshared'},
                 {name:'表面积公式',target:'/teacalsurfacearea' },
@@ -59,7 +59,7 @@ const teamenu = {
         },
         {
             name:'正棱锥体积',
-            tag:false,
+            tag:true,
             list:[
                {name:'正棱锥表面积检测',target:'/tearegchecktotal' },
                 {name:'计算体积统计',target:'/tearegularvolumetotal' },

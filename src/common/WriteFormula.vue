@@ -3,16 +3,17 @@
 <div class="write-wrapper">
     <div class="main-wrapper">
         <h3 class="title">注意：请在白色框内书写您的答案</h3>
-        <div class="main-box">
-            <div class="canvas-box">
-                <canvas class="canvas" id="canvas" width="800" height="400"></canvas>
-            </div>
-        </div>
         <div class="btn-box">
             <button class="btn" @click="closeTap">关闭画板</button>
             <button class="btn" @click="resetAnswer">重置画板</button>
             <button class="btn" @click="submitAnswer">解析答案</button>
         </div>
+        <div class="main-box">
+            <div class="canvas-box">
+                <canvas class="canvas" id="canvas" width="800" height="400"></canvas>
+            </div>
+        </div>
+        
     </div>
 </div>
 </template>
@@ -251,7 +252,7 @@ mounted() {
     }
     .btn-box{
         width: 100%;
-        margin: 0.6rem auto 0;
+        margin: 0.5rem auto;
         text-align: center;
         .btn{
             display: inline-block;

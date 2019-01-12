@@ -520,6 +520,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 width: 100%;
                 height: 100%;
                 min-height: 800*0.4*0.02rem;
+                margin-top: -40%;
                 position: relative;
                 z-index: 0;
             }

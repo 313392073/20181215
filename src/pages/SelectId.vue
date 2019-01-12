@@ -21,7 +21,7 @@
                     </div>
                     <div class="item">
                         <label class="desc" >选择班级</label>
-                        <select name="majorId" class="majorId" @change="majorIdSelect($event)">
+                        <select name="majorId" class="majorId" @click="majorIdSelect($event)">
                             <option v-for="item in majorIds" :key="item.id" :value="item.id">{{item.name}}</option>
                         </select>
                         <i class="iconfont icon-icon_sanjiaoxing"></i>
@@ -83,14 +83,6 @@ return {
     majorId:'',
     majorIds:[
         {
-            name:'英语',
-            id:1
-        },
-        {
-            name:'化学',
-            id:2
-        },
-        {
             name:'数学',
             id:3
         }
@@ -110,6 +102,7 @@ watch: {
 methods: {
     majorIdSelect(e){
         this.majorId = e.target.value
+        
     },
     courseIdSelect(e){
         this.courseId = e.target.value
@@ -118,7 +111,7 @@ methods: {
         let self = this;
         if(self.courseId) {
             if(self.courseId == 'no') {
-                self.tipsMsg = '请选择您的选课信息';
+                self.tipsMsg = '请选择您的选课信息111';
                 self.toggleTips = true;
                 return
             }else{

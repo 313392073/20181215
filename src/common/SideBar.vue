@@ -12,7 +12,7 @@
     <div class="list" style="margin-top:0.4rem;">
         <p class="side-title">{{beforetab.title}}</p>
         <ul class="before-class menu">
-            <li v-for="(item,index) in beforetab.list" :key="item.name" >
+            <li v-for="(item,index) in beforetab.list" :key="item.name" :class="nowUrl == item.url?'active':''">
                 <a href="javascript:void(0);" @click="goRoute(item.url)" :class="index == beforetab.list.length-1?'tabborder-bottom':''">{{ item.name}}</a>
             </li>
         </ul>
@@ -20,7 +20,7 @@
     <div class="list">
         <p class="side-title">{{lessontab.title}}</p>
         <ul class="lesson-learn menu">
-            <li v-for="(item,index) in lessontab.list" :key="item.name">
+            <li v-for="(item,index) in lessontab.list" :key="item.name" :class="nowUrl == item.url?'active':''">
                  <template v-if="item.list">
                     <a href="javascript:void(0);"  @click="slideToggle(item.tag,index)">{{item.name}}
                         <span :class="item.tag? 'iconfont icon-sanjiaoxing':'iconfont icon-sanjiaoxing1'"></span>
@@ -31,7 +31,7 @@
                  </template>
                 <template v-if="item.list">
                      <ul class="secondary" v-if="item.tag">
-                         <li v-for="sub in item.list" :key="sub.name">
+                         <li v-for="sub in item.list" :key="sub.name" :class="nowUrl == sub.target?'active':''">
                             <a href="javascript:void(0);" @click="goRoute(sub.target)">{{ sub.name }}</a>
                         </li>
                      </ul>
@@ -44,13 +44,13 @@
     <div class="list">
         <p class="side-title">{{aftertab.title}}</p>
         <ul class="after-class menu">
-           <li v-for="item in aftertab.list" :key="item.name">
+           <li v-for="item in aftertab.list" :key="item.name" :class="nowUrl == item.url?'active':''">
                 <a href="javascript:void(0);" @click="goRoute(item.url)">{{ item.name }}</a>
             </li>
         </ul>
     </div>
-    <div class="loginout list" style="display: none">
-        <a href="">退出登录</a>
+    <div class="loginout list">
+        <a href="javascript:void(0);" @click="getOut">退出登录</a>
     </div>
 </div>
 </template>
@@ -59,7 +59,9 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import menu from './menu.js';
-import store from '../store/store.js';
+import base from '../router/http/base'
+import * as types from '../store/types'
+import store from '../store/store'
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {},
@@ -67,6 +69,7 @@ data() {
 //这里存放数据
 return {
     tab:'',
+    nowUrl:'',
     beforetab: {
         title:'课前预习',
         list:[
@@ -85,7 +88,7 @@ return {
              {
                 name:'正棱锥表面积',
                 url:'/stusideareaformula',
-                tag:false,
+                tag:true,
                 list:[
                    {name:'视频分享',target:'/stuvideoshare'},
                     {name:'侧面积公式',target:'/stusideareaformula' },
@@ -96,7 +99,7 @@ return {
             {
                 name:'正棱锥体积',
                 url:'/show',
-                tag:false,
+                tag:true,
                 list:[
                    {name:'体积公式',target:'/stuvolumeformula' },
                     {name:'计算体积',target:'/stuexpregpyramid' },
@@ -105,7 +108,7 @@ return {
             {
                 name:'在线关系',
                 url:'',
-                tag:false,
+                tag:true,
                 list:[
                    {name:'分组讨论',target:'/stuclasslearning' },
                     {name:'小组汇报',target:'/stuexercise' },
@@ -120,7 +123,7 @@ return {
             {name:'课后实验',url:'/stuaftclaexp'},
             {name:'分享体会',url:'TeaHomeworkShare'}
         ]
-    }
+    },
 };
 },
 //监听属性 类似于data概念
@@ -131,19 +134,39 @@ watch: {
 },
 //方法集合
 methods: {
-    goRoute:function(url){
+    goRoute(url) {
         this.$router.push(url)
     },
-    slideToggle:function(tag,index){
+    slideToggle(tag,index) {
         let self = this;
         let tags = tag;
         self.$set(self.lessontab['list'][index],'tag',!tags)
         /**
          * this.$set(self.lessontab['list'][index]) 数据数组对象的第index项  'tag' 数组对象的某一项的标记  tags要修改后的值
          */
+    },
+    getOut(){
+        store.commit(types.LOGOUT)
+        // this.$layer.confirm({
+        //     title: '信息',
+        //     content: '',
+        //     area: 'auto',
+        //     offset: 'auto',
+        //     icon: -1,
+        //     btn: '确定',
+        //     time: 0,
+        //     shade: true,//是否显示遮罩
+        //     yes: '',
+        //     cancel: '',
+        //     tips: [0,{}],//支持上右下左四个方向，通过1-4进行方向设定,可以设定tips: [1, '#c00']
+        //     tipsMore: false,//是否允许多个tips
+        //     shadeClose: true,//点击遮罩是否关闭
+        // })
+        this.$router.push('/login')
     }
 },
 created(){
+    this.nowUrl = this.$route.path
     if(store.state.userType == 0) {
         this.beforetab.list = menu.stumenu.beforetab
         this.lessontab.list = menu.stumenu.lessontab
@@ -233,22 +256,33 @@ created(){
                             font-size: 0.2rem;
                             color: @fcolor;
                         }
+                        &.active{
+                            background-color: #6C63FF;
+                            a{
+                                color: #ffffff;
+                                font-size: 0.24rem;
+                            }
+                        }
                     }
                 }
             }
         }
         &.loginout{
+             line-height: 60*0.4*0.02rem;
+            min-height: 60*0.4*0.02rem;
+             background-color: rgba(0,0, 0, 0.1);
             a{
                 display: block;
-                width: 90%;
+                width: 2.04rem;
                 border-radius: 4px;
-                height: 0.5rem;
+                height: 0.8rem;
                 margin: 0 auto;
-                line-height: 0.5rem;
-                background-color: #666666;
+                line-height: 0.8rem;
                 color: @fcolor;
                 font-size: 0.24rem;
-                text-align: center;
+                text-align: left;
+                font-size: 0.28rem;
+                text-indent: 0;
             }
         }
     }
