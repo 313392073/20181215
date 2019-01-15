@@ -4,6 +4,7 @@ import router from '../index';
 import * as types from '../../store/types';
 import qs from 'qs';
 const baseURL = 'http://118.31.8.72:83';
+// const baseURL = 'http://192.168.1.56';
 const timeout = 5000;
 
 //请求的拦截

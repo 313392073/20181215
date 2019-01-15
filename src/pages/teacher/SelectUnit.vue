@@ -21,17 +21,17 @@
         <div class="next-step">
             <div class="second-step">
                 <div class="second-content clearfix" v-for="(item,index) in courseList" :key="index">
-                    <div class="citem" v-for="(subItem,subIndex) in item.menuList" :class="subItem.state?'active':0" :key="subIndex" @click="makeChoose(index,subIndex,subItem.courseId,subItem.menuId,subItem.menuLevel,subItem.menuName,subItem.menuOrder,subItem.menuUrlStu,subItem.menuUrlTeacher,subItem.pmenuId,subItem.state,subItem.sysClassId)">
+                    <div class="citem" v-for="(subItem,subIndex) in item.menuList" :class="subItem.tag?'active':0" :key="subIndex" @click="makeChoose(index,subIndex,subItem.courseId,subItem.menuId,subItem.menuLevel,subItem.menuName,subItem.menuOrder,subItem.menuUrlStu,subItem.menuUrlTeacher,subItem.pmenuId,subItem.state,subItem.sysClassId)">
                         <i></i><span>{{subItem.menuName}}</span>
                     </div>
                 </div>
             </div>
 
             <div class="last-step">
-                <div class="lastcontent clearfix" v-for="(item,index) in courseList" :key="index">
-                    <div class="item" v-for="(subItem,subIndex) in item.menuList" :key="subIndex" v-if="subItem.state">
-                        <i>{{subIndex+1}}</i>
-                        <span>{{subItem.menuName}}</span>
+                <div class="lastcontent clearfix">
+                    <div class="item" v-for="(item,index) in getOrder" :key="index" v-if="item.tag">
+                        <i>{{index+1}}</i>
+                        <span>{{item.menuName}}</span>
                     </div>
                 </div>
 
@@ -64,13 +64,29 @@ data() {
 return {
     courseList:[],
     classId:'',
-    courseId:''
+    courseId:'',
+    setList:[]
 };
 },
 //监听属性 类似于data概念
-computed: {},
+computed: {
+    getOrder(){
+        let self = this;
+        if(self.setList.length>0){
+            let arr = [];
+            self.setList.forEach((item,index) => {
+                let pindexd = item.split('_')[0]
+                let indexd = item.split('_')[1]
+                arr.push(self.courseList[pindexd]['menuList'][indexd])
+            })
+            return arr
+        }
+    },
+},
 //监控data中的数据变化
-watch: {},
+watch: {
+    
+},
 //方法集合
 methods: {
     formatTime(time){
@@ -80,20 +96,55 @@ methods: {
         this.$router.go(-1)
     },
     makeChoose(pindex,index,courseId,menuId,menuLevel,menuName,menuOrder,menuUrlStu,menuUrlTeacher,pmenuId,state,sysclassId){
-        if(this.courseList[pindex]['menuList'][index]['state'] == 1) {
-            this.courseList[pindex]['menuList'][index]['state'] = 0
+        let self = this;
+        let str = pindex + '_' + index
+        if(self.courseList[pindex]['menuList'][index]['tag']) {
+            self.$set(self.courseList[pindex]['menuList'][index],'state',0) //取消样式
+            self.$set(self.courseList[pindex]['menuList'][index],'tag',false) //取消样式
+            let arrIndex = self.setList.indexOf(str)
+            self.setList.splice(arrIndex,1)
         }else{
-            this.courseList[pindex]['menuList'][index]['state'] = 1
+            self.setList.push(str)
+            self.$set(self.courseList[pindex]['menuList'][index],'state',1) //添加样式
+            self.$set(self.courseList[pindex]['menuList'][index],'tag',true) //添加样式
         }
-        this.courseId = courseId
+    },
+    compare(property){
+         return function(obj1,obj2){
+             var value1 = obj1[property];
+             var value2 = obj2[property];
+             return value1 - value2;     // 升序
+         }
     },
     submitCouese(){
         let self = this;
         let arr = [];
-        this.courseList.forEach((item,index) => {
-            item.menuList.forEach((subItem,subIndex) => {
-                arr.push(subItem)
+        if(self.setList.length>0){
+            self.setList.forEach((item,index) => {
+                let pindexd = item.split('_')[0]
+                let indexd = item.split('_')[1]
+                self.$set(self.courseList[pindexd]['menuList'][indexd],'menuOrder',index+1)
             })
+        }
+        self.courseList.forEach((item,index) => {
+            if(item['menuList'].length > 0) {
+                item['menuList'].forEach((subItem,subIndex) => {
+                    let obj = {
+                        courseId:subItem['courseId'],
+                        menuId:subItem['menuId'],
+                        menuLevel:subItem['menuLevel'],
+                        menuName:subItem['menuName'],
+                        menuOrder:subItem['menuOrder'],
+                        menuUrlStu:subItem['menuUrlStu'],
+                        menuUrlTeacher:subItem['menuUrlTeacher'],
+                        pmenuId:subItem['state'],
+                        state:subItem['state'],
+                        sysclassId:subItem['sysclassId']
+                    }
+                    obj['menuOrder']?obj['menuOrder']:delete obj['menuOrder']
+;                   arr.push(obj)
+                })
+            }
         })
         Axios({
             method:'post',
@@ -106,11 +157,25 @@ methods: {
             data:JSON.stringify(arr),
         }).then((res) => {
             if(res.data.code == 200 && res.data.success == 1) {
-                self.$layer.confirm('设置成功',{
+                self.$layer.open({
+                    type:0,
+                    content: '设置成功',
                     title:'温馨提示',
-                    time:500,
-                    yes:self.$router.push('/')
+                    shade:true,
+                    time:2,
+                    anim:'scale',
+                    success(layer) {
+                        console.log('layer id is:',layer.id)
+                    },
+                    yes(index) {
+                        self.$layer.close(index);
+                        self.$router.push('/teapracticreport')
+                    },
+                    end() {
+                        console.log('end')
+                    }
                 });
+
             }else{
                 self.$layer.confirm('网络错误，请稍后再试',{
                     title:'温馨提示'
@@ -128,10 +193,36 @@ created() {
     }
     base.getUrl(API.allUrl.getCourseInfo,params).then((res) => {
         if(res.code == 200 && res.success == 1) {
+            if(res.obj.length > 0) {
+                res.obj.forEach((item,index) => {
+                    if(item.menuList.length>0){
+                        item.menuList.forEach((subItem,subIndex) => {
+                            res.obj[index]['menuList'][subIndex]['tag'] = false;
+                            res.obj[index]['menuList'][subIndex]['state'] = 0;
+                            delete res.obj[index]['menuList'][subIndex]['menuOrder'];
+                        })
+                    }
+                })
+            }
             self.courseList = res.obj
         }else{
-            self.$layer.confirm('网络错误，请稍后再试',{
-                title:'温馨提示'
+            self.$layer.open({
+                type:0,
+                content: '登录失效，请先登录',
+                title:'温馨提示',
+                shade:true,
+                time:2,
+                anim:'scale',
+                success(layer) {
+                    console.log('layer id is:',layer.id)
+                },
+                yes(index) {
+                    self.$layer.close(index);
+                    self.$router.push('/')
+                },
+                end() {
+                    console.log('end')
+                }
             });
         }
     })

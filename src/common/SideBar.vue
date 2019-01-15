@@ -1,6 +1,6 @@
 <template>
 <div class="right-wrapper">
-    <div class="user-info clearfix" style="display: none">
+    <div class="user-info clearfix" style="display:none">
         <div class="left-pic">
             <img src="images/user.png" alt="headerpic" class="headerpic">
         </div>
@@ -9,7 +9,10 @@
             <p class="user-name">Administrator</p>
         </div>
     </div>
-    <div class="list" style="margin-top:0.4rem;">
+    <div class="list" style="margin-top:0.9rem;">
+        <p v-if="isTea" class="side-title" @click="goRoute('/teaselectclass')">课程设置</p>
+    </div>
+    <div class="list">
         <p class="side-title">{{beforetab.title}}</p>
         <ul class="before-class menu">
             <li v-for="(item,index) in beforetab.list" :key="item.name" :class="nowUrl == item.url?'active':''">
@@ -17,6 +20,7 @@
             </li>
         </ul>
     </div>
+    
     <div class="list">
         <p class="side-title">{{lessontab.title}}</p>
         <ul class="lesson-learn menu">
@@ -59,9 +63,10 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import menu from './menu.js';
-import base from '../router/http/base'
-import * as types from '../store/types'
-import store from '../store/store'
+import base from '../router/http/base';
+import API from '../router/http/api.js';
+import * as types from '../store/types';
+import store from '../store/store';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {},
@@ -127,7 +132,15 @@ return {
 };
 },
 //监听属性 类似于data概念
-computed: {},
+computed: {
+    isTea(){
+        if(store.state.userType && store.state.userType == 1) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+},
 //监控data中的数据变化
 watch: {
     
@@ -136,6 +149,7 @@ watch: {
 methods: {
     goRoute(url) {
         this.$router.push(url)
+        localStorage.setItem('hisurl',url);
     },
     slideToggle(tag,index) {
         let self = this;
@@ -146,23 +160,34 @@ methods: {
          */
     },
     getOut(){
+        let self = this;
         store.commit(types.LOGOUT)
-        // this.$layer.confirm({
-        //     title: '信息',
-        //     content: '',
-        //     area: 'auto',
-        //     offset: 'auto',
-        //     icon: -1,
-        //     btn: '确定',
-        //     time: 0,
-        //     shade: true,//是否显示遮罩
-        //     yes: '',
-        //     cancel: '',
-        //     tips: [0,{}],//支持上右下左四个方向，通过1-4进行方向设定,可以设定tips: [1, '#c00']
-        //     tipsMore: false,//是否允许多个tips
-        //     shadeClose: true,//点击遮罩是否关闭
-        // })
-        this.$router.push('/login')
+        self.$layer.open({
+            type:0,
+            content: '你确要退出登录么？',
+            shade:true,
+            time:2,
+            anim:'scale',
+            success(layer) {
+                console.log('layer id is:',layer.id)
+            },
+            yes(index) {
+                let params = {
+                    token:store.state.token
+                }
+                base.postUrl(API.allUrl.logout,params).then((res) => {
+                    console.log(res)
+                    if(res.code == 200 && res.success == 1) {
+                        self.$layer.close(index)
+                        self.$router.push('/')
+                    }
+                })
+            },
+            end() {
+                console.log('end')
+            }
+        });
+        
     }
 },
 created(){

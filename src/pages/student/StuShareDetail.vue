@@ -3,7 +3,7 @@
 <div class="wrapper">
 <div class="left-wrapper">
 <div class="left-box">
-    <div class="desc-menu">作业分享</div>
+    <div class="desc-menu"> <i class="iconfont icon-2fanhui" @click="goBack"></i> 作业分享</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
         <div class="main-box">
@@ -51,7 +51,7 @@
                 <div class="input-box clearfix">
                     <p v-if="type"> 你回复 <span class="old-comment">{{oldComment}}</span></p>
                     <textarea placeholder="请填写评论内容" v-model="comments"></textarea>
-                    <a href="javascript:void(0)" @click="getComment"><i class="iconfont icon-xin"></i></a>
+                    <a href="javascript:void(0)" @click="getComment"><i class="iconfont icon-xiaolian"></i></a>
                 </div>
             </div>
         </div>
@@ -96,6 +96,9 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
+    goBack(){
+        this.$router.go(-1)
+    },
     setComment(name){
         this.type = 1;
         this.oldComment = name;
@@ -339,7 +342,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                     float: left;
                     min-height: 60*0.4*0.02rem;
                     line-height: 60*0.4*0.02rem;
-                    width: calc(~"100% - 75*0.4*0.02rem");
+                    width: calc(~"100% - 100*0.4*0.02rem");
                     border-radius: 4px;
                     border: 1px solid #cfcccc;
                     padding: 0 15*0.4*0.02rem;
@@ -348,15 +351,14 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 }
                 a{
                     float: left;
-                    width: 75*0.4*0.02rem;
+                    width: 100*0.4*0.02rem;
+                    min-height: 100*0.4*0.02rem;
+                    line-height: 100*0.4*0.02rem;
                     text-align: center;
-                    min-height: 60*0.4*0.02rem;
-                    line-height: 60*0.4*0.02rem;
                     color: #989898;
                     i{
-                        font-size: 48*0.4*0.02rem;
+                        font-size: 80*0.4*0.02rem;
                     }
-                   
                 }
                 .old-comment{
                     color: #6c63ff;

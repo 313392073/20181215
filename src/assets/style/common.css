@@ -22,11 +22,10 @@ html {
   }
   /*竖屏样式*/
   @media screen and (orientation:portrait) {
-    
-    body {
+    /* body {
       transform-origin: 0 0;
       transform: rotateZ(90deg) translateY(-100%);
-    }
+    } */
   }
   article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
     display: block;

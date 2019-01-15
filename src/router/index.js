@@ -8,6 +8,7 @@ import store from '../store/store'
 // import Echart4 from '@/components/Echart4'
 // import Echart5 from '@/components/Echart5'
 // import Echart6 from '@/components/Echart6'
+import Tips from '@/components/Tips' //评论demo
 import Tree from '@/components/Tree' //评论demo
 import Test from '@/components/Test' //评论demo
 import Draw from '@/components/Draw'//找回密码
@@ -70,32 +71,16 @@ import CourseSet from '@/pages/CourseSet'    // 课后安排设置
 Vue.use(Router)
 
 const router = new Router({
-  mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
+  // mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
   routes: [
-    // {
-    //   path: '/',
-    //   name: 'Tree',
-    //   component: Tree,
-    //   meta: {
-    //     title: '测试测试测试'
-    //   }
-    // },
-    // {
-    //   path: '/test',
-    //   name: 'Test',
-    //   component: Test,
-    //   meta: {
-    //     title: '测试'
-    //   }
-    // },
-    // {
-    //   path: '/draw',
-    //   name: 'Draw',
-    //   component: Draw,
-    //   meta: {
-    //     title: '11注册页面'
-    //   }
-    // },
+    {
+      path: '/',
+      name: 'Login',
+      component: Login,
+      meta: {
+        title: '登录页面'
+      }
+    },
     {
       path: '/selectId',
       name: 'SelectId',
@@ -110,14 +95,6 @@ const router = new Router({
       component: RegPage,
       meta: {
         title: '注册页面'
-      }
-    },
-    {
-      path: '/',
-      name: 'Login',
-      component: Login,
-      meta: {
-        title: '登录页面'
       }
     },
     {

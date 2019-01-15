@@ -68,7 +68,6 @@ watch: {},
 methods: {
     checkForm(){
         let self = this;
-        console.log(self.dataObj)
         if(self.dataObj.username == '' || self.dataObj.pwd == '') {
             self.tipsMsg = '请将信息输入完整后才能提交'
             self.toggleTips = true;
@@ -91,6 +90,7 @@ methods: {
             userPassword:self.dataObj.pwd
         }
         base.getUrl(API.allUrl.login,params).then((res) => {
+            console.log(res)
             if(res.code == 200 && res.success == 1){
                 let obj = {
                     userInfo:res.obj.user,
@@ -100,11 +100,18 @@ methods: {
                 store.commit(types.LOGIN,obj)
                 store.commit(types.USERTYTPE,JSON.parse(res.obj.user).userType)
                 if(JSON.parse(res.obj.user).userType == 0){ //学生
+                    // if(localStorage.getItem('hisurl')){
+                    //     self.$router.push(localStorage.getItem('hisurl'))
+                    // }else{
+                    //     self.$router.push('/stuonlinetest')
+                    // }
                     self.$router.push('/stuonlinetest')
-                    // self.$router.push('/stuvideoshare')
                 }else if(JSON.parse(res.obj.user).userType == 1){ //老师
-                    self.$router.push('/teaselectclass')
-                    // self.$router.push('/teaafterexptotal')
+                    if( res.obj.user &&  JSON.parse(res.obj.user)['sysClassId']) {
+                        self.$router.push('/teapracticreport')
+                    }else{
+                        self.$router.push('/teaselectclass')
+                    }
                 }else{
                     self.tipsMsg = '请先登录！！'
                     self.toggleTips = true;

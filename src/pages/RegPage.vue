@@ -142,9 +142,6 @@ methods: {
     },
     checkForm(){
         let self = this;
-        console.log(self.dataObj)
-        console.log(self.defaultUrl)
-        console.log(self.checkedValue)
         // self.dataObj.filePath = self.$refs.filElem.files[0]?self.$refs.filElem.files[0].name:'';
         if(self.defaultUrl == '' || self.dataObj.username == '' || self.dataObj.pwd == '' || self.dataObj.repwd == '' || self.checkedValue == '' || self.dataObj.email == '') {
             self.tipsMsg = '请将信息输入完整后才能提交'
@@ -177,11 +174,12 @@ methods: {
         }
         console.log(params)
         base.postUrl(API.allUrl.regist,params).then((res) => {
+            console.log(res)
             if(res.code == 200 && res.success == 1){
                 self.tipsMsg = '注册成功，立即去登陆';
                 self.toggleTips = true;
                 setTimeout(function(){
-                    self.$router.push('/login')
+                    self.$router.push('/')
                 },2000)
             }else{
                 self.tipsMsg = res.msg;

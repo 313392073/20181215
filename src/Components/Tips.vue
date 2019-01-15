@@ -25,8 +25,22 @@ watch: {},
 //方法集合
 methods: {
     showTips(){
-        this.$layer.confirm('网络错误，请稍后再试',{
-            title:'温馨提示'
+        let self = this;
+        self.$layer.open({
+            type:0,
+            content: 'hello word',
+            shade:true,
+            time:2,
+            anim:'scale',
+            success(layer) {
+                console.log('layer id is:',layer.id)
+            },
+            yes(index) {
+                self.$layer.close(index)
+            },
+            end() {
+                console.log('end')
+            }
         });
     }
 },

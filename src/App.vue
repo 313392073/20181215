@@ -15,6 +15,7 @@ export default {
     
   },
   created(){
+    // plus.screen.lockOrientation( 'landscape-primary');
       // this.$router.push('/reg')
   }
 };
@@ -43,6 +44,11 @@ export default {
               font-size: 44*0.4*0.02rem;
               padding-left: 0.5rem;
               color: @fcolor;
+              i{
+                color: #6c63ff;
+                font-size: 0.32rem;
+                font-weight: bold;
+              }
           }
           .main-wrapper{
               width: 100%;

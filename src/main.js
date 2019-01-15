@@ -6,7 +6,7 @@ import router from './router'
 import axios from 'axios';
 import vuex from 'vuex';
 import rem from '@/assets/js/rem'
-import landscape from '@/assets/js/landscape'
+// import landscape from '@/assets/js/landscape'
 import iconfont from '@/assets/style/iconfont.css'
 import common from '@/assets/style/common.css'
 import layer from 'vue-layer'
