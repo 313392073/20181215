@@ -11,7 +11,6 @@
                 <div class="item clearfix" v-for="(item, key, index) in setItem" :key="index">
                     <p class="group-name">{{key}}组</p>
                     <div class="sub-item" v-for="(subitem,subIndex) in item" :key="subIndex">
-                        
                         <div class="detail-desc clearfix">
                             <div class="desc-left">
                                  <img :src="subitem.user_head_image" :alt="subitem.user_name">
@@ -32,10 +31,16 @@
                             <a href="javascript:void(0)"><i class="iconfont icon-xuanzhong"></i>{{subitem.look_num}}</a>
                         </div>
                         <div class="detail-imgs">
+                            <slot v-if="subitem.upload_net_url">
+                                 <img v-if="subitem.upload_net_url.length == 1" :src="subitem.upload_net_url.length" alt="group-pic">
+                                 <img v-if="subitem.upload_net_url.length > 1" v-for="(picItem,picIndex) in subitem.upload_net_url.split(',')" :key="picIndex" :src="picItem" alt="group-pic" :class="picIndex >= 4?'imgHide':''">
+                            </slot>
+                            <slot v-else>
+                                <p>暂未上传任何图片</p>
+                            </slot>
+                            <!-- <img src="../../assets/images/group-pic.png" alt="group-pic">
                             <img src="../../assets/images/group-pic.png" alt="group-pic">
-                            <img src="../../assets/images/group-pic.png" alt="group-pic">
-                            <img src="../../assets/images/group-pic.png" alt="group-pic">
-                            <img src="../../assets/images/group-pic.png" alt="group-pic">
+                            <img src="../../assets/images/group-pic.png" alt="group-pic">-->
                         </div>
                     </div>
                     <div class="sub-item nosub-item">
@@ -123,6 +128,7 @@ computed: {
         this.groupList.forEach((item,index) => {
             obj[item['groupname']].push(item)
         })
+        console.log(obj)
         return obj;
     }
 },
@@ -400,6 +406,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         img{
                             width: 62*0.4*0.02rem;
                             height: 62*0.4*0.02rem;
+                            &.imgHide{
+                                display: none;
+                            }
                         }
                     }
                     
