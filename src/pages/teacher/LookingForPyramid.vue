@@ -3,7 +3,7 @@
 <div class="wrapper" @mouseup="end">
     <div class="left-wrapper">
     <div class="left-box">
-        <div class="desc-menu">寻找棱锥</div>
+        <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>寻找棱锥</div>
         <!-- 主要内容 -->
         <div class="main-wrapper">
             <h3 class="title">分配小组</h3>
@@ -179,6 +179,9 @@ computed: {
 watch: {},
 //方法集合
 methods: {
+    goBack(){
+        this.$router.go(-1)
+    },
     getrefresh(){
         let params = {
             token:store.state.token,

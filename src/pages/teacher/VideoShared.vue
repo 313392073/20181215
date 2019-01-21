@@ -3,7 +3,7 @@
 <div class="wrapper">
 <div class="left-wrapper">
 <div class="left-box">
-    <div class="desc-menu">视频分享</div>
+    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>视频分享</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
          <h3 class="title">视频上传列表</h3>
@@ -90,6 +90,9 @@ computed: {
 watch: {},
 //方法集合
 methods: {
+    goBack(){
+        this.$router.go(-1)
+    },
     showTips(){
         this.tipsMsg = '暂未上传图片，无法查看详情';
         this.toggleTips = true;

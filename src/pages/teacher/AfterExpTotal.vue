@@ -3,7 +3,7 @@
 <div class="wrapper">
 <div class="left-wrapper">
 <div class="left-box">
-    <div class="desc-menu">课后实验数据统计</div>
+    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>课后实验数据统计</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
         <h3 class="title">课后实验成绩统计</h3>
@@ -43,6 +43,9 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
+    goBack(){
+        this.$router.go(-1)
+    },
     initData(){
         let arr = [];
         arr = this.opinionX

@@ -3,7 +3,7 @@
 <div class="wrapper">
 <div class="left-wrapper">
 <div class="left-box">
-    <div class="desc-menu">寻找棱锥</div>
+    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>寻找棱锥</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
         <h3 class="title">图片详情</h3>
@@ -88,6 +88,9 @@ computed: {
 watch: {},
 //方法集合
 methods: {
+    goBack(){
+        this.$router.go(-1)
+    },
     getDetail(){
         let params = {
             token:store.state.token,

@@ -3,7 +3,7 @@
 <div class="wrapper">
 <div class="left-wrapper">
  <div class="left-box">
-    <div class="desc-menu">课堂学习</div>
+    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>课堂学习</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
         <h3 class="title">课堂练习成绩报告单</h3>
@@ -71,9 +71,14 @@ return {
 //监听属性 类似于data概念
 computed: {},
 //监控data中的数据变化
-watch: {},
+watch: {
+    
+},
 //方法集合
 methods: {
+    goBack(){
+        this.$router.go(-1)
+    },
 
 },
 //生命周期 - 创建完成（可以访问当前this实例）

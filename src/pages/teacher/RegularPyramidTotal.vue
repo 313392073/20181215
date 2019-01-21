@@ -3,7 +3,7 @@
 <div class="wrapper">
 <div class="left-wrapper">
 <div class="left-box">
-    <div class="desc-menu">正棱锥表面积</div>
+    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>正棱锥表面积</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
         <h3 class="title">第一次计算表面积数据统计</h3>
@@ -63,7 +63,9 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
-
+    goBack(){
+        this.$router.go(-1)
+    },
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {

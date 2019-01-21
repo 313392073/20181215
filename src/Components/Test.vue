@@ -1,28 +1,15 @@
 <!--  -->
 <template>
-    <div class="commentBox">
-		<h3>发表评论</h3>
-		<b v-if="type">你回复&nbsp;{{oldComment}}</b>
-		<textarea name="" value="请填写评论内容" v-model="commentText"></textarea>
-		<button class="btn" @click="addComment">发表</button>
-		<button class="btn" @click="canelComment">取消</button>
-        <div class="commentBox">
-            <h3>评论</h3>
-            <p v-if="comment.length==0">暂无评论，我来发表第一篇评论！</p>
-            <div v-else>
-                <div class="comment" v-for="(item,index) in comment" v-bind:index="index" :key="index">
-                    <b>{{item.name}}<span>{{item.time}}</span></b>
-                    <p @click="changCommmer(item.name,index)">{{item.content}}</p>
-                    <div v-if="item.reply.length > 0">
-                        <div class="reply" v-for="(reply,subIndex) in item.reply" :key="subIndex">
-                            <b>{{reply.responder}}&nbsp;&nbsp;回复&nbsp;&nbsp;{{reply.reviewers}}<span>{{reply.time}}</span></b>
-                            <p @click="changCommmer(reply.responder,index)">{{reply.content}}</p>
-                        </div>
-                    </div>
+   <div>
+        <div class="weui-cells weui-cells_checkbox font14" v-for="(item,index) in question_item" :key="index">
+            <label class="weui-cell weui-check__label">
+                <div class="weui-cell__ft width-inherit">
+                    <input type="checkbox" class="weui-check" v-on:click="CheckItem(item)" v-model="item.flag" name="checkbox" />
                 </div>
-            </div>
-		</div>
-	</div>
+            </label>
+        </div>
+   </div>
+
 </template>
 
 <script>
@@ -35,86 +22,45 @@ components: {},
 data() {
 //这里存放数据
 return {
-    type:0, //0为评论作者 1为评论别人的评论 2为评论别人的别人
-    commentText:"",
-    oldComment: null,
-    chosedIndex: -1,
-    comment: [
+    question_item:[
         {
-            name: "有毒的黄同学",
-            time: "2016-08-17",
-            content: "好,讲得非常好，good",
-            reply: [
-                {
-                    responder: "有毒的黄同学",
-                    reviewers: "傲娇的",
-                    time: "2016-09-05",
-                    content: "你说得对"
-                },
-                {
-                    responder: "傲娇的",
-                    reviewers: "有毒的黄同学",
-                    time: "2016-09-05",
-                    content: "很强"
-                }
-            ]
+            cand_item:'1',
+            text:'今天天气不错0',
+            flag:false,
         },
         {
-            name: "Freedom小黄",
-            time: "2016-08-17",
-            content: "好,讲得非常好，good",
-            reply: []
-        }
-    ]
+            cand_item:'1',
+            text:'今天天气不错1',
+            flag:false,
+        },
+        {
+            cand_item:'1',
+            text:'今天天气不错2',
+            flag:false,
+        },
+        {
+            cand_item:'1',
+            text:'今天天气不错3',
+            flag:false,
+        },
+    ],
+    checkedValue:[],//一定必须是数组不能是字符串
+    answer:[],
 };
 },
 //监听属性 类似于data概念
 computed: {},
 //监控data中的数据变化
-watch: {},
+watch: {
+    checkedValue:function(new_v,old_v){
+        this.answer = this.checkedValue;
+    }
+},
 //方法集合
 methods: {
-    canelComment(){
-        this.comment = [];
-    },
-    addComment(data) {
-        if(this.type == 0) {
-            this.comment.push({
-                name: 'session0',
-                time: this.getTime(),
-                content: this.commentText,
-                reply: []
-            });
-            //服务器端变
-        }else if(this.type == 1){
-            this.comment[this.chosedIndex].reply.push({
-                responder: 'session1',
-                reviewers:this.comment[this.chosedIndex].name,
-                time: this.getTime(),
-                content: this.commentText
-            });
-            this.type = 0;
-        }
-        this.commentText = '';
-        console.log(this.comment)
-    },
-    changCommmer(name,index) {
-        this.oldComment = name;
-        this.chosedIndex = index;
-        this.type = 1;
-        console.log(this.comment)
-    },
-    canelCommit() {
-        this.type = 0;
-    },
-    getTime(){
-        var now = new Date();
-        var year = now.getFullYear();
-        var month = now.getMonth()+1;
-        var day = now.getDate();
-        month.length < 2 ?  "0" + month : month;
-        day.length < 2 ?  "0" + day : day;
-        return year+"-"+month+"-"+day;
+    CheckItem:function(item){
+        item.flag = !item.flag;
+        console.log(this.question_item);
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
