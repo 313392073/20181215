@@ -45,9 +45,12 @@ export default {
               padding-left: 0.5rem;
               color: @fcolor;
               i{
+                position: relative;
                 color: #6c63ff;
                 font-size: 0.32rem;
                 font-weight: bold;
+                top: -1px;
+                margin-right: 5px;
               }
           }
           .main-wrapper{

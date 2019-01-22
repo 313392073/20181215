@@ -34,20 +34,21 @@
                             </p>
 
                             <!-- 公式  -->
-                            <p class="gs" :class="getChangeClass" v-if="JSON.parse(item.course_item).gs" v-for="(greq,gindex) in JSON.parse(item.course_item).gs" :key="gindex+80">
+                            <div class="gs" :class="getChangeClass" v-if="JSON.parse(item.course_item).gs" v-for="(greq,gindex) in JSON.parse(item.course_item).gs" :key="gindex+80">
                                 <span v-html="greq"></span>
-                                <input v-if="item.if_handle == -1" type="button" value="作答" :maxlength="JSON.parse(item.course_item).c?'1':20" @focus="showWriteFormula($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)"/>
-                                <input type="text" class="answer-input"  @keyup="getGsValue($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)" :value="(list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:''" />
-                                <span v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']" >
+                                <div class="answer-div">
+                                    <input v-if="item.if_handle == -1" class="answer-btn" type="button" value="作答" :maxlength="JSON.parse(item.course_item).c?'1':20" @focus="showWriteFormula($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)"/>
+                                    <textarea class="answer-boxed" v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']" cols="60" rows="1" @keyup="getGsValue($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)" :value="(list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:''" ></textarea>
+                                </div>
+                                <div class="answerd-wrapper">
                                     您的答案：
-                                    <span :class="getChangeClass"  v-html="toAsync((list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:'')"></span>
-                                    <input :class="getChangeClass" type="text" readonly :value="toAsync((list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:'')" />
-                                </span>
-                                
-                                <!-- <input v-if="item.if_handle == 0" type="text" class="answer-input" @blur="alreadySubmit" readonly :value="JSON.parse(item.answer).gs[gindex]"> -->
+                                    <p v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']">
+                                        <span :class="getChangeClass"  v-html="toAsync((list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:'')"></span>
+                                    </p>
+                                     <input type="hidden" :value="test">
+                                </div>
                                 <span v-if="item.if_handle == 0" class="gs-box" v-html="toAsync(JSON.parse(item.answer).gs[gindex])"></span>
-                                <!-- <input v-if="item.if_handle == 0" type="text" class="answer-input" @blur="alreadySubmit" readonly :value="JSON.parse(item.answer).gs[gindex]"> -->
-                            </p>
+                            </div>
                         </div>
                         <div class="answer-box clearfix">
                             <div class="answerlist-box" style="width:60%;float:left">
@@ -58,10 +59,10 @@
                             </div>
                         </div>
                     </div>
-                <div class="ansowerd-btn">
-                    <button v-if="tag" class="btn" @click="showTips">提交答案0</button>
-                    <button v-else class="btn" @click="subForm">提交答案</button>
-                </div>
+                    <div class="ansowerd-btn">
+                        <button v-if="tag" class="btn" @click="showTips">提交答案0</button>
+                        <button v-else class="btn" @click="subForm">提交答案</button>
+                    </div>
                 </div>
             </div>
             <div class="tips" v-show="toggleTips">
@@ -71,8 +72,6 @@
                     <p class="tips-title">答题结束</p>
                     <div class="tips-msg">
                         {{tipsMsg}}
-                        <!-- <p>恭喜你，已答完所有题目！</p>
-                        <p>系统已自动帮你计算好分数，快快点击查看吧！</p> -->
                     </div>
                     <div class="tips-btn"><button class="cbtn tbtn" @click="lookReport">查看成绩</button></div>
                 </div>
@@ -118,7 +117,8 @@ return {
         courseItemId:'',
         type:''
     },
-    list:{}
+    list:{},
+    test:''
 };
 },
 //监听属性 类似于data概念
@@ -248,10 +248,8 @@ methods: {
             score:rightAnswer == nowValue?rightScore:0,
             courseItemId : courseItemId
         }
-
-        setTimeout(function(){
-            self.$set(self.list[index].gs.arr[nowIndex],'answer',nowValue)
-        },30)
+        self.$set(self.list[index].gs.arr[nowIndex],'answer',nowValue)
+        self.test = nowValue
         this.$nextTick(() => {
             window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
         })
@@ -266,13 +264,11 @@ methods: {
             if(res.code == 200 && res.success == 1){
                 console.log(res.obj)
                 res.obj.forEach((item,index) => {
+                    item.if_handle = -1;
                   this.questList.push(item)
                 })
                 this.$nextTick(() => {
                     window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
-                })
-               this.questList.forEach((item) => {
-                    console.log(JSON.parse(item.answer).gs)
                 })
             }else{
                 self.tipsMsg = '网络错误，请稍后再试'
@@ -387,7 +383,7 @@ created() {
             let params2 = {
                 token:store.state.token,
                 batch:res.obj,
-                type:2
+                type:6
             }
             Axios.all([self.getMenu(params1)],self.getCourseList(params2))
         }
@@ -398,7 +394,6 @@ mounted() {
     this.$nextTick(() => {
         window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
     })
-   
 }
 }
 </script>
@@ -459,6 +454,30 @@ mounted() {
             margin: 0.2rem 0;
             
         }
+        .gs{
+            position: relative;
+            .answer-div{
+                margin: 10px auto;
+                .answer-btn{
+                    border:2px solid #6c63ff;
+                    border-radius: 4px;
+                    background-color: #6c63ff;
+                    color: #ffffff;
+                }
+                .answer-boxed{
+                    border: 1px solid #dddddd;
+                    border-radius: 4px;
+                }
+            }
+            .answerd-wrapper{
+                min-height: 80px;
+                &>p{
+                    min-height: 50px;
+                }
+            }
+        }
+        
+        
         .answerd{
             width: 100%;
             margin: 0 auto;
@@ -535,6 +554,7 @@ mounted() {
                         }
     
                     }
+                    
                 }
             }
         }

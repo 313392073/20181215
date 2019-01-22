@@ -36,13 +36,13 @@
                                     <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).q" :key="subIndex+5">{{subItem}}</span>
                                     <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).bmj" :key="subIndex+10">{{subItem}}</span>
                                     <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).tj" :key="subIndex+15">{{subItem}}</span>
-                                    <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).gs" :key="subIndex+25">{{subItem}}</span>
+                                    <span class="gs-box" v-for="(subItem,subIndex) in JSON.parse(item.my_answer).gs" :key="subIndex+25">{{subItem}}</span>
                                 </td>
                                 <td v-if="item.right_answer"> 
                                     <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).q" :key="rsubIndex+10">{{rsubItem}}</span>
                                     <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).bmj" :key="rsubIndex+20">{{rsubItem}}</span>
                                     <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).tj" :key="rsubIndex+30">{{rsubItem}}</span>
-                                    <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).gs" :key="rsubIndex+40">{{rsubItem}}</span>
+                                    <span class="gs-box" v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).gs" :key="rsubIndex+40">{{rsubItem}}</span>
                                 </td>
                                 <td class="use-time">{{item.score}}分</td>
                             </tr>
@@ -154,6 +154,9 @@ created() {
                     this.resSituation.rightPercent = res.obj.score_rank[0]['test_user_rightnum']
                     this.resSituation.useTime = res.obj.score_rank[0]['sum_usetime']
                     this.scoreDetail = res.obj.score_report
+                    this.$nextTick(() => {
+                        window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
+                    })
                 }
             })
         }
@@ -161,7 +164,9 @@ created() {
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
-    
+    this.$nextTick(() => {
+        window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
+    })
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前

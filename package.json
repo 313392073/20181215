@@ -28,6 +28,7 @@
     "vue-layer": "^0.9.10",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
+    "vux": "^2.9.2",
     "webgl": "0.0.7"
   },
   "devDependencies": {
