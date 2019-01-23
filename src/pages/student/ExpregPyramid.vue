@@ -20,9 +20,9 @@
                             {{info}}
                         </p>
                         <!-- 题目q -->
-                        <span v-if="JSON.parse(item.course_item).q" v-for="(req,rindex) in JSON.parse(item.course_item).q" :key="rindex+30">{{req}}
-                            <input v-if="item.if_handle == -1" type="text" class="answer-input" :maxlength="JSON.parse(item.course_item).c?'1':20" @keyup="getValue($event,index,rindex,JSON.parse(item.answer).q[rindex],item.item_score,item.course_id,'q')"/>
-                            <input v-else type="text" class="answer-input" @blur="alreadySubmit" readonly :value="JSON.parse(item.answer).q[rindex]">
+                       <span v-if="JSON.parse(item.course_item).q" v-for="(req,rindex) in JSON.parse(item.course_item).q" :key="rindex+30">{{req}}
+                            <input v-if="item.if_handle == -1" type="text" class="answer-input"  @keyup="getValue($event,index,rindex,JSON.parse(item.answer).q[rindex],item.item_score,item.course_id,'q')"/>
+                            <input v-else type="text" class="answer-input"  @keyup="getValue($event,index,rindex,JSON.parse(item.answer).q[rindex],item.item_score,item.course_id,'q')" :value="item.handled_answer?JSON.parse(item.handled_answer).q[rindex]:''">
                         </span>
                     </div>
                 </div>
@@ -545,6 +545,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 font-size: 40*0.40*0.02rem;
                 color: #333;
                 background-color: transparent;
+                &:focus{
+                    border-bottom: 1px solid #6c63ff;
+                }
             }
             .answer-box{
                 .answerlist{

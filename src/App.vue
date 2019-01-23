@@ -57,6 +57,17 @@ export default {
               width: 100%;
               height: calc(~"100% - 1.6rem");
               overflow: auto;
+              &>.title{
+                position: relative;
+                .refresh-btn{
+                   position: absolute;
+                   right: 10px;
+                   top: 5px;
+                   img{
+                      max-width: 20px;
+                   }
+                }
+              }
           }
       }
   }

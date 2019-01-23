@@ -36,13 +36,13 @@
                                     <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).q" :key="subIndex+5">{{subItem}}</span>
                                     <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).bmj" :key="subIndex+10">{{subItem}}</span>
                                     <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).tj" :key="subIndex+15">{{subItem}}</span>
-                                    <span class="gs-box" v-for="(subItem,subIndex) in JSON.parse(item.my_answer).gs" :key="subIndex+25">{{subItem}}</span>
+                                    <span class="gs-box" v-for="(subItem,subIndex) in JSON.parse(item.my_answer).gs" :key="subIndex+25">{{toAsync(subItem)}}</span>
                                 </td>
                                 <td v-if="item.right_answer"> 
                                     <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).q" :key="rsubIndex+10">{{rsubItem}}</span>
                                     <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).bmj" :key="rsubIndex+20">{{rsubItem}}</span>
                                     <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).tj" :key="rsubIndex+30">{{rsubItem}}</span>
-                                    <span class="gs-box" v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).gs" :key="rsubIndex+40">{{rsubItem}}</span>
+                                    <span class="gs-box" v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).gs" :key="rsubIndex+40">{{toAsync(rsubItem)}}</span>
                                 </td>
                                 <td class="use-time">{{item.score}}分</td>
                             </tr>
@@ -120,6 +120,13 @@ watch: {},
 methods: {
     goBack(){
         this.$router.go(-1)
+    },
+     toAsync(str){
+        if(str){
+            return '$'+str+'$';
+        }else{
+            return ''
+        }
     },
     showAlltr(){ //查看更多
         if(this.trHide == 'tr-hide'){

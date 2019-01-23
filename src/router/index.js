@@ -10,7 +10,7 @@ import store from '../store/store'
 // import Echart6 from '@/components/Echart6'
 import Tips from '@/components/Tips' //评论demo
 import Tree from '@/components/Tree' //评论demo
-import Test from '@/components/Test' //评论demo
+import ReFresh from '@/common/ReFresh' //评论demo
 import Draw from '@/components/Draw'//找回密码
 // 路由start
 import SelectId from '@/pages/SelectId'//注册
@@ -71,12 +71,12 @@ import CourseSet from '@/pages/CourseSet'    // 课后安排设置
 Vue.use(Router)
 
 const router = new Router({
-  mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
+  // mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
   routes: [
     {
       path: '/test',
-      name: 'Test',
-      component: Test,
+      name: 'ReFresh',
+      component: ReFresh,
       meta: {
         title: '测试页面'
       }
