@@ -6,7 +6,7 @@
     <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>线线关系</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
-        <h3 class="title">探索正三棱锥</h3>
+        <h3 class="title">探索正三棱锥<a class="refresh-btn" href="javascript:void(0)"><img @click="getrefresh" src="../../assets/images/refresh.png" alt="refresh.png"></a></h3>
         <div class="main-box clearfix">
             <div class="pic-box" id="pic-box">
                 <div class="container" id="container"></div>
@@ -72,6 +72,7 @@ var container = '', clock = '', camera = '', scene = '', renderer = '', controls
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
+inject:['reload'],
 data() {
 //这里存放数据
 return {
@@ -125,6 +126,9 @@ watch: {
 },
 //方法集合
 methods: {
+    getrefresh(){
+        this.reload();
+    },
     goBack(){
         this.$router.go(-1)
     },
@@ -523,7 +527,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 width: 100%;
                 height: 100%;
                 min-height: 800*0.4*0.02rem;
-                margin-top: -40%;
+                margin-top: -20%;
                 position: relative;
                 z-index: 0;
             }

@@ -6,7 +6,7 @@
     <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>在线测试</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
-        <h3 class="title">请写出您的答案</h3>
+        <h3 class="title">请写出您的答案<a class="refresh-btn" href="javascript:void(0)"><img @click="getrefresh" src="../../assets/images/refresh.png" alt="refresh.png"></a></h3>
         <div class="main-box">
             <div class="canvas-box">
                 <canvas class="canvas" id="canvas"></canvas>
@@ -30,6 +30,7 @@ import share from '../../router/http/share.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
+inject:['reload'],
 data() {
 //这里存放数据
 return {
@@ -58,6 +59,9 @@ computed: {
 watch: {},
 //方法集合
 methods: {
+    getrefresh(){
+        this.reload();
+    },
      goBack(){
         this.$router.go(-1)
     },

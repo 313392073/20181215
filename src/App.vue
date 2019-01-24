@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view v-if="isRouterAlive"></router-view>
   </div>
 </template>
 <script>
@@ -8,15 +8,28 @@
 export default {
   name: "App",
   components: { },
+  provide (){
+    return {
+      reload: this.reload
+    }
+  },
   data(){
     return {
+      isRouterAlive: true
       // isLogin:localStorage.getItem('loginInfo')?true:false
     }
-    
   },
   created(){
     // plus.screen.lockOrientation( 'landscape-primary');
       // this.$router.push('/reg')
+  },
+  methods: {
+    reload() {
+      this.isRouterAlive = false;
+      this.$nextTick(() => {
+        this.isRouterAlive = true
+      })
+    }
   }
 };
 </script>

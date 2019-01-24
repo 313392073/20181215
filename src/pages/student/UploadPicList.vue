@@ -6,7 +6,7 @@
     <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>寻找棱锥</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
-         <h3 class="title">图片上传列表</h3>
+         <h3 class="title">图片上传列表<a class="refresh-btn" href="javascript:void(0)"><img @click="getrefresh" src="../../assets/images/refresh.png" alt="refresh.png"></a></h3>
         <div class="main-box">
             <div class="group-wrapper clearfix">
                 <div class="item" v-for="(item, key, index) in setItem" :key="index">
@@ -53,6 +53,7 @@ import store from '../../store/store.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
+inject:['reload'],
 data() {
 //这里存放数据
 return {
@@ -101,8 +102,27 @@ methods: {
         this.$router.push({name:'PicDetail',params:{attids:attId,groupInfo:group,headImage:headImage}})
     },
     showTips(){
-        alert("暂未上传图片，不可查看详情")
-    }
+        let self = this;
+        self.$layer.open({
+            type:0,
+            content: '暂未上传图片，不可查看详情',
+            shade:true,
+            time:2,
+            anim:'scale',
+            success(layer) {
+                console.log('layer id is:',layer.id)
+            },
+            yes(index) {
+                self.$layer.close(index)
+            },
+            end() {
+                console.log('end')
+            }
+        });
+    },
+    getrefresh(){
+        this.reload();
+    },
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
@@ -117,7 +137,9 @@ created() {
                 batch:res.obj,
                 listtype:1*1
             }
+            console.log(params)
             base.getUrl(API.allUrl.uploadList,params).then((res) => {
+                console.log(res)
                 if(res.code == 200 && res.success == 1) {
                     self.groupList = res.obj;
                 }

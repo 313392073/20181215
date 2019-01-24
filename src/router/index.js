@@ -56,6 +56,7 @@ import JobResults from '@/pages/student/JobResults'   // 作业结果(学生)
 import StuHomeworkShare from '@/pages/student/StuHomeworkShare'   // 作业分享
 import StuShareDetail from '@/pages/student/StuShareDetail'   // 作业分享详情
 import VideoShare from '@/pages/student/VideoShare'//视频分享
+import UploadVideoList from '@/pages/student/UploadVideoList'//视频分享
 import SideAreaFormula from '@/pages/student/SideAreaFormula'//侧面积公式
 import RegularAreaFormula from '@/pages/student/RegularAreaFormula'//表面积公式
 import VolumeFormula from '@/pages/student/VolumeFormula'//体积公式
@@ -386,6 +387,24 @@ const router = new Router({
       component: VideoShare,
       meta: {
         title: '视频分享',
+        auth: true
+      }
+    },
+    {
+      path: '/teavidedetail',
+      name: 'VideDetail',
+      component: VideDetail,
+      meta: {
+        title: '视频详情',
+        auth: true
+      }
+    },
+    {
+      path: '/stuvidedetail',
+      name: 'UploadVideoList',
+      component: UploadVideoList,
+      meta: {
+        title: '视频详情',
         auth: true
       }
     },

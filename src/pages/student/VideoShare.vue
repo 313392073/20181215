@@ -6,7 +6,7 @@
     <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>视频分享</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
-        <h3 class="title">视频上传</h3>
+        <h3 class="title">视频上传<a class="refresh-btn" href="javascript:void(0)"><img @click="getrefresh" src="../../assets/images/refresh.png" alt="refresh.png"></a></h3>
         <div class="main-box">
             <p class="main-title">美美的包装盒做好啦~上传属于你的包装盒制作过程的视频，和同学们一起探讨棱锥的奥秘吧！</p>
             <div class="upload-box">
@@ -34,6 +34,7 @@ import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
+inject:['reload'],
 data() {
 //这里存放数据
 return {
@@ -47,6 +48,9 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
+    getrefresh(){
+        this.reload();
+    },
      goBack(){
         this.$router.go(-1)
     },
@@ -81,15 +85,31 @@ methods: {
                 }).then((res) => {
                     console.log(res)
                     if(res.data.code == 200 && res.data.success == 1) {
-                        self.$router.push('/stuuploadpicList')
+                        self.$router.push('/stuvidedetail')
                     }else{
-                    self.tipsMsg = '网络错误，上传头像失败'
-                    self.toggleTips = true;
-                    return false;
+                        self.tipsMsg = '网络错误，上传头像失败'
+                        self.toggleTips = true;
+                        return false;
                     }
                 })
             }else{
-                alert('网络错误');
+                 let self = this;
+                self.$layer.open({
+                    type:0,
+                    content: '网络错误',
+                    shade:true,
+                    time:2,
+                    anim:'scale',
+                    success(layer) {
+                        console.log('layer id is:',layer.id)
+                    },
+                    yes(index) {
+                        self.$layer.close(index)
+                    },
+                    end() {
+                        console.log('end')
+                    }
+                });
             }
     }
 },

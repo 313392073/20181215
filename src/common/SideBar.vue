@@ -161,7 +161,7 @@ methods: {
     },
     getOut(){
         let self = this;
-        store.commit(types.LOGOUT)
+        
         self.$layer.open({
             type:0,
             content: '你确要退出登录么？',
@@ -175,8 +175,8 @@ methods: {
                 let params = {
                     token:store.state.token
                 }
+                store.commit(types.LOGOUT)
                 base.postUrl(API.allUrl.logout,params).then((res) => {
-                    console.log(res)
                     if(res.code == 200 && res.success == 1) {
                         self.$layer.close(index)
                         self.$router.push('/')

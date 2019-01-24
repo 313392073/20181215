@@ -6,7 +6,8 @@
     <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>课后习题</div>
     <!-- 主要内容 -->
     <div class="main-wrapper clearfix">
-       <div class="left-side">
+        <h3 class="title"><a class="refresh-btn" href="javascript:void(0)"><img @click="getrefresh" src="../../assets/images/refresh.png" alt="refresh.png"></a></h3>
+        <div class="left-side">
             <div class="search-box clearfix">
                 <i class="iconfont icon-xuanzhong"></i>
                 <input type="text" placeholder="搜索全部">
@@ -19,7 +20,7 @@
                     </a>
                 </li>
             </ul>
-       </div>
+        </div>
        <div class="right-main">
             <p class="main-title"> 
                 <a href="javascript:void(0)" class="active upload-btn" @click="goPraafter"> 
@@ -81,6 +82,7 @@ import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
+inject:['reload'],
 data() {
 //这里存放数据
 return {
@@ -127,6 +129,9 @@ computed: {
 watch: {},
 //方法集合
 methods: {
+    getrefresh(){
+        this.reload();
+    },
     goBack(){
         this.$router.go(-1)
     },

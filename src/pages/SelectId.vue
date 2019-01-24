@@ -47,6 +47,9 @@
                     <div class="login-btn">
                         <input type="submit" @click="goLogin" class="sbtn" :value="btnMsg">
                     </div>
+                    <div class="go-login">
+                        <a href="javascript:void(0)" @click="gotologin">返回登录</a>
+                    </div>
             </div>
             <div class="tips" v-show="toggleTips">
                 <div class="tips-wrapper">
@@ -100,6 +103,9 @@ watch: {
 },
 //方法集合
 methods: {
+    gotologin(){
+        this.$router.push('/')
+    },
     majorIdSelect(e){
         this.majorId = e.target.value
         
@@ -289,6 +295,13 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                     &:active{
                         background-color: #19ca55;
                     }
+                }
+            }
+            .go-login{
+                text-align: center;
+                &>a{
+                   font-size: 16px;
+                    color: #ffffff;
                 }
             }
         }

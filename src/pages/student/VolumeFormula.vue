@@ -5,7 +5,7 @@
             <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>正棱锥体积</div>
             <!-- 主要内容 -->
             <div class="main-wrapper">
-                <h3 class="title">正棱锥体积</h3>
+                <h3 class="title">正棱锥体积<a class="refresh-btn" href="javascript:void(0)"><img @click="getrefresh" src="../../assets/images/refresh.png" alt="refresh.png"></a></h3>
                 <p class="answer-desc">注：请直接在答题框内答题或者修改答案</p>
                 <div class="list-box">
                     <div class="list" v-for="(item,index) in questList" :key="index+10">
@@ -106,6 +106,7 @@ import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar,WriteFormula},
+inject:['reload'],
 data() {
 //这里存放数据
 return {
@@ -373,7 +374,10 @@ methods: {
                 this.tipsMsg = '本轮结束';
             }
         })
-    }
+    },
+    getrefresh(){
+        this.reload();
+    },
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {

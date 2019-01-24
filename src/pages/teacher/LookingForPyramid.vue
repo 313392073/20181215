@@ -208,6 +208,7 @@ methods: {
         this.getInit(params)
     },   
     getInit(params){
+        console.log(params)
         base.postUrl(API.allUrl.getAssignTeam,params).then((res) => {
             console.log(res.obj)
             if(res.code == 200 && res.success == 1) {

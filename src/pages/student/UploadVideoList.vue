@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div class="video-box">
-                <video v-if="info.uploadNetUrl" :src="info.uploadNetUrl" autoplay controls="controls"></video>
+                <video v-if="info.uploadNetUrl" :src="info.uploadNetUrl"></video>
                 <div v-else class="video-desc">暂未上传视频</div>
             </div>
             <div class="back-btn"><button class="btn" @click="goBack">返回</button></div>
@@ -109,8 +109,8 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 //@import url(); 引入公共css类
 @fcolor:#5c5a5a;
 .left-box{
-   height: 100%;
-    width: 100%;
+    height: calc(~"100% - 1.6rem");
+    overflow-y:auto; 
     .title{
         height: 106*0.4*0.02rem;
         line-height: 106*0.4*0.02rem;

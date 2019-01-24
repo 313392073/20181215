@@ -106,6 +106,7 @@ import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar,WriteFormula},
+inject:['reload'],
 data() {
 //这里存放数据
 return {
@@ -375,7 +376,7 @@ methods: {
         })
     },
     getrefresh(){
-        this.getInit()
+        this.reload()
     },
     getInit() {
         let self = this;

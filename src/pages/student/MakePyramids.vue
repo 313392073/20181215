@@ -5,7 +5,7 @@
             <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>任务详情</div>
             <!-- 主要内容 -->
             <div class="main-wrapper">
-                <h3 class="title">制作棱锥</h3>
+                <h3 class="title">制作棱锥<a class="refresh-btn" href="javascript:void(0)"><img @click="getrefresh" src="../../assets/images/refresh.png" alt="refresh.png"></a></h3>
                 <p class="answer-desc">注：请直接在答题框内答题或者修改答案</p>
                 <div class="list-box">
                     <div class="list" v-for="(item,index) in questList" :key="index+10">
@@ -106,6 +106,7 @@ import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar,WriteFormula},
+inject:['reload'],
 data() {
 //这里存放数据
 return {
@@ -163,6 +164,9 @@ watch: {
 },
 //方法集合
 methods: {
+    getrefresh(){
+        this.reload();
+    },
     goBack(){
         this.$router.go(-1)
     },

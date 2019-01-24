@@ -6,7 +6,7 @@
     <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>寻找棱锥</div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
-        <h3 class="title">图片详情</h3>
+        <h3 class="title">图片详情<a class="refresh-btn" href="javascript:void(0)"><img @click="getrefresh" src="../../assets/images/refresh.png" alt="refresh.png"></a></h3>
         <div class="main-box">
             <div class="info-box clearfix">
                 <div class="info-left">
@@ -50,12 +50,8 @@ import store from '../../store/store.js';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
+inject:['reload'],
 // 提供reload方法
-provide: function () {
-    return {
-        reload: this.reload
-    }
-},
 data() {
 //这里存放数据
 return {
@@ -122,11 +118,9 @@ methods: {
             }
         })
     },
-    reload: function () {
-        this.isRouterAlive = false;
-        // 该方法会在dom更新后执行
-        this.$nextTick(function () { this.isRouterAlive = true })
-    }
+    getrefresh(){
+        this.reload();
+    },
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
@@ -135,7 +129,6 @@ created() {
     this.info.group = this.$route.params.groupInfo;
     this.info.headImage = this.$route.params.headImage;
     this.getDetail()
-    // console.log(this.$route.params.attid)
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
