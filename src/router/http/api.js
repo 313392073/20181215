@@ -23,6 +23,7 @@ const allUrl = {
     groupCondition:'/v1/api/tea/group/repart/condition', //获取分组条件
     getAssignTeam:'/v1/api/tea/group/repart', //获取分配小组
     courseList:'/v1/api/comm/uploadlist', //获取上传课件的列表
+    subConfirm:'/v1/api/tea/group/repartDiscuss/confirm',//老师提交小组分配
     userList:'/v1/api/tea/task/userlist', //老师分组 获取组员
     taskSubmit:'/v1/api/tea/task/repart', //分组完成
     courseSummary:'/v1/api/comm/work/result', //老师课堂总结

@@ -60,10 +60,12 @@
                             <div class="item-left">{{getZm(index)}}组</div>
                             <div class="box-item">
                                 <div class="item-right clearfix">
-                                    <div class="sub-item" v-for="(subItem,subIndex) in item" :key="getZm(subIndex)" @mousedown="dragdown($event)" @touchstart="dragdown($event)" @mousemove="dragmove($event)"  @touchmove="dragmove($event)" @mouseup="dragend" @touchend="dragend">
-                                        <img :src="subItem.userHeadImage" :alt="subIndex">
-                                        <p>{{subItem.userName}}</p>
-                                    </div>
+                                    <draggable :options="{item:item,group:'people',animation:50,scrollSensitivity:100}" @end="datadragEnd" v-model="groupList[index]">
+                                        <div class="sub-item" v-for="(subItem,subIndex) in item" :key="getZm(subIndex)">
+                                            <img :src="subItem.userHeadImage" :alt="subIndex">
+                                            <p>{{subItem.userName}}</p>
+                                        </div>
+                                    </draggable>
                                 </div>
                             </div>
                         </div>
@@ -71,10 +73,12 @@
                             <div class="item-left">男{{getZm(menIndex)}}组</div>
                             <div class="box-item">
                                 <div class="item-right clearfix">
-                                    <div class="sub-item" v-for="(subItem,mesubIndex) in item" :key="getZm(mesubIndex)" @mousedown="dragdown($event)" @touchstart="dragdown($event)" @mousemove="dragmove($event)"  @touchmove="dragmove($event)" @mouseup="dragend" @touchend="dragend">
-                                        <img :src="subItem.userHeadImage" :alt="mesubIndex">
-                                        <p>{{subItem.userName}}</p>
-                                    </div>
+                                    <draggable :options="{item:item,group:'people',animation:50,scrollSensitivity:100}" @end="datadragEnd" v-model="groupList['men'][menIndex]">
+                                        <div class="sub-item" v-for="(subItem,mesubIndex) in item" :key="getZm(mesubIndex)">
+                                            <img :src="subItem.userHeadImage" :alt="mesubIndex">
+                                            <p>{{subItem.userName}}</p>
+                                        </div>
+                                    </draggable>
                                 </div>
                              </div>
                         </div>
@@ -82,10 +86,12 @@
                             <div class="item-left">女{{getZm(womenindex)}}组</div>
                             <div class="box-item">
                                 <div class="item-right clearfix">
-                                    <div class="sub-item" v-for="(subItem,wosubIndex) in item" :key="subItem.userName" @mousedown="dragdown($event)" @touchstart="dragdown($event)" @mousemove="dragmove($event)"  @touchmove="dragmove($event)" @mouseup="dragend" @touchend="dragend">
-                                        <img :src="subItem.userHeadImage" :alt="wosubIndex">
-                                        <p>{{subItem.userName}}</p>
-                                    </div>
+                                    <draggable :options="{item:item,group:'people',animation:50,scrollSensitivity:100}" @end="datadragEnd" v-model="groupList['women'][womenindex]">
+                                        <div class="sub-item" v-for="(subItem,wosubIndex) in item" :key="subItem.userName">
+                                            <img :src="subItem.userHeadImage" :alt="wosubIndex">
+                                            <p>{{subItem.userName}}</p>
+                                        </div>
+                                    </draggable>
                                 </div>
                             </div>
                         </div>
@@ -113,11 +119,13 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
+import draggable from "vuedraggable";
 import SideBar from "@/common/SideBar";
 import share from '../../router/http/share.js'
 import base from '../../router/http/base.js'
 import API from '../../router/http/api.js';
 import store from '../../store/store.js';
+import Axios from 'axios';
 let grouptype = [
     {
         text:'随机分组',
@@ -146,7 +154,7 @@ let grouptype = [
 ]
 export default {
 //import引入的组件需要注入到对象中才能使用
-components: {SideBar},
+components: {SideBar,draggable},
 data() {
 //这里存放数据
 return {
@@ -179,6 +187,9 @@ computed: {
 watch: {},
 //方法集合
 methods: {
+    datadragEnd(evt) {
+      evt.preventDefault();
+    },
     goBack(){
         this.$router.go(-1)
     },
@@ -208,9 +219,7 @@ methods: {
         this.getInit(params)
     },   
     getInit(params){
-        console.log(params)
         base.postUrl(API.allUrl.getAssignTeam,params).then((res) => {
-            console.log(res.obj)
             if(res.code == 200 && res.success == 1) {
                 this.groupList = res.obj
             }
@@ -247,28 +256,68 @@ methods: {
     end(){
         this.move.tag = false;
     },
-    /**拖拽开始 */
-    dragdown(e){
-        console.log(e.currentTarget.parentElement.parentElement.parentElement);
-        if(this.flags) {
-            this.flags = false;
-            let ox = e.currentTarget.offsetLeft;
-            let oy = e.currentTarget.offsetTop;
-            let disx = e.touches[0].clientX - ox;
-            let disy = e.touches[0].clientX - oy;
-            let leftd,topd;
-            e.currentTarget.parentElement
-        }
-    },
-    dragmove(e){
-
-    },
-    dragend(){
-
-    },
     makeGroup(){ //确认分组
-        this.toggleTips = true;
-        this.tipsMsg =  `已完成小组分配，每${this.pnum}人，共${this.allmener}组！`;
+        let dataArr = [];
+        let self = this;
+        if(self.groupList.length>0) {
+            self.groupList.forEach((item,index) => {
+                if(item.length>0) {
+                    item.forEach((subItem,subIndex) => {
+                        let obj = {
+                            "groupRuleId": JSON.stringify(self.checkValue),
+                            "sysClassId": JSON.stringify(subItem.groupId),
+                            "sysGroupId": index+1,
+                            "userLoginname": subItem.userLoginname
+                        }
+                        dataArr.push(obj)
+                    })
+                }
+            })
+        }
+        Axios({
+            method:'post',
+            headers:{
+                'Content-Type': 'application/json',
+                'Accept':'application/json'
+            },
+            baseURL:base.baseURL,
+            url:API.allUrl.subConfirm+'?token='+store.state.token+'&batch='+self.batch+'&fileType=6',
+            data:JSON.stringify(dataArr),
+        })
+        .then((res) => {
+            let self = this;
+            if(res.data.code == 200 && res.data.success == 1) {
+                self.toggleTips = true;
+                self.tipsMsg =  `已完成小组分配，每${self.pnum}人，共${self.allmener}组！`;
+                setTimeout((function() {
+                    let params = {
+                        token:store.state.token,
+                        method:self.checkValue*1,
+                        gmaxPnum:self.pnum*1
+                    }
+                    self.getInit(params);
+                }),1000)
+            }else{
+                self.$layer.open({
+                    type:0,
+                    content: '网络错误,请稍后再试？',
+                    shade:true,
+                    time:2,
+                    anim:'scale',
+                    success(layer) {
+                        console.log('layer id is:',layer.id)
+                    },
+                    yes(index) {
+                        self.$layer.close(index)
+                    },
+                    end() {
+                        console.log('end')
+                    }
+                });
+            }
+        })
+        
+        
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
@@ -286,6 +335,10 @@ created() {
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
+    document.body.ondrop = function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+    };
     this.move.len = this.$refs.changeProcess.clientWidth;
     let params = {
         token:store.state.token,
@@ -511,6 +564,11 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                             width: 100%;
                             text-align: center;
                             font-size: 34*0.4*0.02rem;
+                            &>div{
+                                width: 100%;
+                                height: 100%;
+                                min-height: 300*0.4*0.02rem;
+                            }
                             .sub-item{
                                 float: left;
                                 width: 25%;
