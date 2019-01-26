@@ -11,6 +11,7 @@
     </div>
     <div class="list" style="margin-top:0.9rem;">
         <p v-if="isTea" class="side-title" @click="goRoute('/teaselectclass')">课程设置</p>
+        <p v-if="isTea" class="side-title" @click="goNext">下一环节</p>
     </div>
     <div class="list">
         <p class="side-title">{{beforetab.title}}</p>
@@ -161,7 +162,6 @@ methods: {
     },
     getOut(){
         let self = this;
-        
         self.$layer.open({
             type:0,
             content: '你确要退出登录么？',
@@ -187,7 +187,34 @@ methods: {
                 console.log('end')
             }
         });
-        
+    },
+    goNext(){
+        let self = this;
+        self.$layer.open({
+            type:0,
+            content: '确定开始下一环节？',
+            shade:true,
+            time:2,
+            anim:'scale',
+            success(layer) {
+                console.log('layer id is:',layer.id)
+            },
+            yes(index) {
+                let params = {
+                    token:store.state.token
+                }
+                store.commit(types.LOGOUT)
+                base.postUrl(API.allUrl.logout,params).then((res) => {
+                    if(res.code == 200 && res.success == 1) {
+                        self.$layer.close(index)
+                        self.$router.push('/')
+                    }
+                })
+            },
+            end() {
+                console.log('end')
+            }
+        });
     }
 },
 created(){
