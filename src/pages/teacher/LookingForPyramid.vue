@@ -3,7 +3,7 @@
 <div class="wrapper" @mouseup="end">
     <div class="left-wrapper">
     <div class="left-box">
-        <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>寻找棱锥</div>
+        <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>寻找棱锥<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
         <!-- 主要内容 -->
         <div class="main-wrapper">
             <h3 class="title">分配小组</h3>
@@ -54,7 +54,6 @@
                     </form>
                 </div>
                 <div class="main-right">
-                    <div class="refresh-box"><a href="javascript:void(0)"><img @click="getrefresh" src="../../assets/images/refresh.png" alt="refresh.png"></a></div>
                     <div class="group-wrapper clearfix">
                         <div v-if="checkValue != 4" class="item" v-for="(item,index) in groupList" :key="getZm(index)">
                             <div class="item-left">{{getZm(index)}}组</div>
@@ -525,14 +524,6 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
             float: left;
             width: 60.6%;
             margin-right: 4.8%;
-            .refresh-box{
-                height: 120*0.4*0.02rem;
-                text-align: right;
-                img{
-                    width: 60*0.4*0.02rem;
-                    height: 60*0.4*0.02rem;
-                }
-            }
             .group-wrapper{
                 width: 100%;
                 .item{

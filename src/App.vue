@@ -57,6 +57,7 @@ export default {
               font-size: 44*0.4*0.02rem;
               padding-left: 0.5rem;
               color: @fcolor;
+              position: relative;
               i{
                 position: relative;
                 color: #6c63ff;
@@ -65,22 +66,28 @@ export default {
                 top: -1px;
                 margin-right: 5px;
               }
+              .refresh-btn{
+                  position: absolute;
+                  right: 10px;
+                  top: 65*0.4*0.02rem;
+                  color: #6c63ff;
+                  border: 1px solid #6c63ff;
+                  height: 80*0.4*0.02rem;
+                  line-height: 80*0.4*0.02rem;
+                  padding: 0 20*0.4*0.02rem;
+                  border-radius: 6px;
+                  img{
+                    max-width: 20px;
+                    margin-right: 20*0.4*0.02rem;
+                    vertical-align: middle;
+                    margin-top: -8*0.4*0.02rem;
+                  }
+              }
           }
           .main-wrapper{
               width: 100%;
               height: calc(~"100% - 1.6rem");
               overflow: auto;
-              &>.title{
-                position: relative;
-                .refresh-btn{
-                   position: absolute;
-                   right: 10px;
-                   top: 5px;
-                   img{
-                      max-width: 20px;
-                   }
-                }
-              }
           }
       }
   }

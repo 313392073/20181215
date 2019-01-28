@@ -1,9 +1,9 @@
 <template>
   <div class="box">
-    <div v-for="(item,index) in colors" :key="index" class = "drag-div">
+    <div v-for="(item,index) in colors" :key="index" class="item">
       <div class="drag-div">
-        <draggable :options="{item:item,group:'people',animation:500}" @end="datadragEnd" v-model="colors[index]">
-          <div v-for="(element,subIndex) in item" :key="subIndex">{{element}}</div>
+        <draggable :clone="getdata" :options="{item:item,group:'prople',animation:500}" @end="datadragEnd" v-model="colors[index]" class="draggle">
+          <div @mouseenter="getIndex(subIndex)" v-for="(element,subIndex) in item" :key="subIndex" @dragstart="nohasDrag(subIndex)">{{element}}</div>
         </draggable>
       </div>
     </div>
@@ -33,11 +33,16 @@ export default {
   },
   methods: {
     getdata(evt) {
-      console.log(evt.draggedContext.element.text);
+      console.log(evt);
     },
     datadragEnd(evt) {
-      console.log(this.colors)
       evt.preventDefault();
+    },
+    nohasDrag(index){
+      console.log(index)
+    },
+    getIndex(index){
+      console.log(index)
     }
   },
   mounted() {
@@ -58,11 +63,16 @@ export default {
   padding:60px 0;
   float: left;
   width: 33.33%;
-  
-  div{
+  border: 1px solid red;
+  .draggle{
     line-height: 50px;
-    min-height: 50px;
+    min-height: 500px;
     border: 1px solid #cccccc;
+    div{
+      line-height: 50px;
+      height: 50px;
+      border: 1px solid #cccccc;
+    }
   }
 }
 .test {

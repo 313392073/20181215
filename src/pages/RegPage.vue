@@ -11,7 +11,7 @@
                         <label class="desc">上传头像</label>
                         <div class="header-box">
                             <img class="upload-pic" :src="defaultUrl" alt="default" @click="chooseImg">
-                            <input type="file" name="file" accept="image/png,image/jpg,image/jepg,image/gif" ref="filElem" class="upload-file" @change="uploadImg">
+                            <input type="file" name="file" accept="image/png,image/jpg,image/jepg,image/gif" capture="camera" ref="filElem" class="upload-file" @change="uploadImg">
                         </div>
                     </div>
                     <div class="item">

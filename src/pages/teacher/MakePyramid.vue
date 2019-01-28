@@ -3,10 +3,10 @@
 <div class="wrapper">
 <div class="left-wrapper">
  <div class="left-box">
-    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>寻找棱锥</div>
+    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>寻找棱锥<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
-        <h3 class="title">任务详情<a class="refresh-btn" href="javascript:void(0)"><img @click="getrefresh" src="../../assets/images/refresh.png" alt="refresh.png"></a></h3>
+        <h3 class="title">任务详情</h3>
         <div class="main-box">
             <div class="info-box">
                 <div class="info-left clearfix" v-for="(item,index) in questList" :key="index+10">

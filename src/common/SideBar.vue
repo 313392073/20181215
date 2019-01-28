@@ -10,8 +10,8 @@
         </div>
     </div>
     <div class="list" style="margin-top:0.9rem;">
-        <p v-if="isTea" class="side-title" @click="goRoute('/teaselectclass')">课程设置</p>
-        <p v-if="isTea" class="side-title" @click="goNext">下一环节</p>
+        <p v-if="isTea" class="spec-title" @click="goRoute('/teaselectclass')">课程设置</p>
+        <p v-if="isTea" class="spec-title" @click="goNext">下一环节</p>
     </div>
     <div class="list">
         <p class="side-title">{{beforetab.title}}</p>
@@ -32,7 +32,7 @@
                     </a>
                  </template>
                  <template v-else>
-                     <a @click="goRoute(item.url)">{{item.name}}</a>
+                     <a @click="goRoute(item.url)" :class="item.url == '/stulearningreport'?'tabborder-bottom':''">{{item.name}}</a>
                  </template>
                 <template v-if="item.list">
                      <ul class="secondary" v-if="item.tag">
@@ -68,9 +68,11 @@ import base from '../router/http/base';
 import API from '../router/http/api.js';
 import * as types from '../store/types';
 import store from '../store/store';
+
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {},
+inject:['reload'],
 data() {
 //这里存放数据
 return {
@@ -203,11 +205,11 @@ methods: {
                 let params = {
                     token:store.state.token
                 }
-                store.commit(types.LOGOUT)
-                base.postUrl(API.allUrl.logout,params).then((res) => {
+                base.postUrl(API.allUrl.nextStep,params).then((res) => {
+                    console.log(res)
                     if(res.code == 200 && res.success == 1) {
+                        self.reload()
                         self.$layer.close(index)
-                        self.$router.push('/')
                     }
                 })
             },
@@ -262,6 +264,17 @@ created(){
     .list{
         text-indent: 70*0.4*0.02rem;
         .side-title{
+            font-size: 0.28rem;
+            color: @fcolor;
+            margin: 0.2rem 0;
+            background-color: rgba(0,0, 0, 0.1);
+            height: 80*0.4*0.02rem;
+            line-height: 80*0.4*0.02rem;
+            &.first-title{
+                margin-top: 150*0.4*0.02rem;
+            }
+        }
+        .spec-title{
             font-size: 0.28rem;
             color: @fcolor;
             margin: 0.2rem 0;
