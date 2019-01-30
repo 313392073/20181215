@@ -59,7 +59,7 @@
                             <div class="item-left">{{getZm(index)}}组</div>
                             <div class="box-item">
                                 <div class="item-right clearfix">
-                                    <draggable :options="{item:item,group:'people',animation:50,scrollSensitivity:100}" @end="datadragEnd" v-model="groupList[index]">
+                                    <draggable :move="moveStart" :options="{item:item,group:'people',animation:200,draggable:'.sub-item',sort:true}" @end="datadragEnd" v-model="groupList[index]">
                                         <div class="sub-item" v-for="(subItem,subIndex) in item" :key="getZm(subIndex)">
                                             <img :src="subItem.userHeadImage" :alt="subIndex">
                                             <p>{{subItem.userName}}</p>
@@ -72,7 +72,7 @@
                             <div class="item-left">男{{getZm(menIndex)}}组</div>
                             <div class="box-item">
                                 <div class="item-right clearfix">
-                                    <draggable :options="{item:item,group:'people',animation:50,scrollSensitivity:100}" @end="datadragEnd" v-model="groupList['men'][menIndex]">
+                                    <draggable :move="moveStart" :options="{item:item,group:'people',animation:200,draggable:'.sub-item',sort:true}" @end="datadragEnd" v-model="groupList['men'][menIndex]">
                                         <div class="sub-item" v-for="(subItem,mesubIndex) in item" :key="getZm(mesubIndex)">
                                             <img :src="subItem.userHeadImage" :alt="mesubIndex">
                                             <p>{{subItem.userName}}</p>
@@ -85,7 +85,7 @@
                             <div class="item-left">女{{getZm(womenindex)}}组</div>
                             <div class="box-item">
                                 <div class="item-right clearfix">
-                                    <draggable :options="{item:item,group:'people',animation:50,scrollSensitivity:100}" @end="datadragEnd" v-model="groupList['women'][womenindex]">
+                                    <draggable :move="moveStart" :options="{item:item,group:'people',animation:200,draggable:'.sub-item',sort:true}" @end="datadragEnd" v-model="groupList['women'][womenindex]">
                                         <div class="sub-item" v-for="(subItem,wosubIndex) in item" :key="subItem.userName">
                                             <img :src="subItem.userHeadImage" :alt="wosubIndex">
                                             <p>{{subItem.userName}}</p>
@@ -254,6 +254,9 @@ methods: {
     },
     end(){
         this.move.tag = false;
+    },
+    moveStart(evt,e) {
+        console.log(evt,e)
     },
     makeGroup(){ //确认分组
         let dataArr = [];
@@ -550,15 +553,13 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         display: flex;
                         justify-content: center;
                         align-items: center;
-                        padding: 40*0.4*0.02rem 20*0.4*0.02rem;
                         .item-right{
                             width: 100%;
                             text-align: center;
                             font-size: 34*0.4*0.02rem;
                             &>div{
                                 width: 100%;
-                                height: 100%;
-                                min-height: 300*0.4*0.02rem;
+                                min-height: 250*0.4*0.02rem;
                             }
                             .sub-item{
                                 float: left;

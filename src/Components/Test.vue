@@ -3,7 +3,7 @@
     <div v-for="(item,index) in colors" :key="index" class="item">
       <div class="drag-div">
         <draggable :clone="getdata" :options="{item:item,group:'prople',animation:500}" @end="datadragEnd" v-model="colors[index]" class="draggle">
-          <div @mouseenter="getIndex(subIndex)" v-for="(element,subIndex) in item" :key="subIndex" @dragstart="nohasDrag(subIndex)">{{element}}</div>
+          <div v-for="(element,subIndex) in item" :key="subIndex" @dragstart="nohasDrag(subIndex)">{{element}}</div>
         </draggable>
       </div>
     </div>
@@ -20,12 +20,6 @@ export default {
           ['linzhil','cjk','bdyjy'],
           ['linzhil0011','cjk0011','bdyjy0011'],
       ],
-      fruit:['apple','banana','orage'],
-      girl:['linzhil','cjk','bdyjy'],
-      boy:['linzhil0011','cjk0011','bdyjy0011'],
-      startArr: [],
-      endArr: [],
-      count: 0
     };
   },
   components: {

@@ -11,7 +11,7 @@ import iconfont from '@/assets/style/iconfont.css'
 import common from '@/assets/style/common.css'
 import layer from 'vue-layer'
 import VueDND from 'awe-dnd'
-
+ 
 Vue.use(VueDND)
 Vue.config.productionTip = false
 Vue.prototype.$layer = layer(Vue);
