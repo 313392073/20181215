@@ -5,6 +5,7 @@ const allUrl = {
     submitCourse:'/v1/api/stu/course_info/submit', //课程设置提交
     uploadfile:'/v1/api/comm/uploadfile', //上传头像
     upload:'/v1/api/comm/upload', //上传附件
+    uploadPic:'/v1/api/comm/just/uploadfile',
     registInfo:'/v1/api/user/regist_info',//获取信息去注册
     regist:'/v1/api/user/regist',//注册
     login:'/v1/api/user/login',//登陆

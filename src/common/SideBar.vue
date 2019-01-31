@@ -16,8 +16,8 @@
     <div class="list">
         <p class="side-title">{{beforetab.title}}</p>
         <ul class="before-class menu">
-            <li v-for="(item,index) in beforetab.list" :key="item.name" :class="nowUrl == item.url?'active':''">
-                <a href="javascript:void(0);" @click="goRoute(item.url)" :class="index == beforetab.list.length-1?'tabborder-bottom':''">{{ item.name}}</a>
+            <li v-for="(item,index) in beforetab.list" :key="index" :class="nowUrl == item.url?'active':''">
+                <a href="javascript:void(0);" @click="goRoute(item.url)" :class="item.name == '制作棱锥'?'tabborder-bottom':''">{{ item.name}}</a>
             </li>
         </ul>
     </div>
@@ -32,14 +32,14 @@
                     </a>
                  </template>
                  <template v-else>
-                     <a @click="goRoute(item.url)" :class="item.url == '/stulearningreport'?'tabborder-bottom':''">{{item.name}}</a>
+                     <a @click="goRoute(item.url)" :class="item.name == '课堂总结' ?'tabborder-bottom':''">{{item.name}}</a>
                  </template>
                 <template v-if="item.list">
-                     <ul class="secondary" v-if="item.tag">
-                         <li v-for="sub in item.list" :key="sub.name" :class="nowUrl == sub.target?'active':''">
+                    <ul class="secondary" v-if="item.tag">
+                        <li v-for="sub in item.list" :key="sub.name" :class="nowUrl == sub.target?'active':''">
                             <a href="javascript:void(0);" @click="goRoute(sub.target)">{{ sub.name }}</a>
                         </li>
-                     </ul>
+                    </ul>
                 </template>
             </li>
             <!-- <li><a class="tabborder-bottom">课堂总结</a></li> -->

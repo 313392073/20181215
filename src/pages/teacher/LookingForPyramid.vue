@@ -163,7 +163,7 @@ return {
         left:0,
         len:0
     },
-    pnum:5, //默认分组人数
+    pnum:4, //默认分组人数
     pwidth:30,
     checkValue:2,
     toggleTips:false,

@@ -83,8 +83,12 @@ computed: {
         this.groupList.forEach((item,index) => {
             obj[item['groupname']].push(item)
         })
-        console.log(obj)
-        return obj;
+        let newkey = Object.keys(obj).sort();
+        let newObj = {};
+        for (var i = 0; i < newkey.length; i++) {//遍历newkey数组
+            newObj[newkey[i]] = obj[newkey[i]];//向新创建的对象中按照排好的顺序依次增加键值对
+        }
+        return newObj;
     }
 },
 //监控data中的数据变化
@@ -184,12 +188,13 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
             width: 100%;
             .item{
                 float: left;
-                width: calc(~"23.5% - 2px");
+                width: calc(~"23.5% - 4px");
                 min-height: 8.2rem;
                 margin-right: 2%;
                 border: 1px solid #6c63ff;
                 box-shadow: 0 0 5px 3px rgba(0,0, 0,0.1);
                 padding: 100*0.4*0.02rem 20*0.4*0.02rem 20*0.4*0.02rem;
+                margin-bottom: 100*0.4*0.02rem;
                 position: relative;
                 .group-name{
                     position: absolute;

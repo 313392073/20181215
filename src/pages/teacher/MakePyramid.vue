@@ -36,7 +36,7 @@
             <h3 class="title">任务分组</h3>
             <div class="info-group clearfix">
                 <div class="item" v-for="(item,index) in groupList" :key="index">
-                    <p class="item-title">A组</p>
+                    <p class="item-title">{{orderd(index)}}组</p>
                     <div class="item-member clearfix">
                         <div v-if="item" class="tips-item" v-for="(subitem,subIndex) in item" :key="subIndex">
                             <img :src="subitem.userHeadImage"  :alt="item.userName">
@@ -166,6 +166,9 @@ export default {
   },
   //方法集合
   methods: {
+      orderd(num) {
+          return share.order[num] 
+      },
       getrefresh(){
         this.reload();
       },
