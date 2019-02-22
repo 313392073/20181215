@@ -96,7 +96,7 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
-     getrefresh(){
+    getrefresh(){
         this.reload();
     },
     goBack(){

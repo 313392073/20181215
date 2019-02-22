@@ -12,7 +12,10 @@
                 <span>{{item.majorname}}<b>·</b>{{item.classname}}</span>
             </label>
         </div>
-       <div class="submitBtn" @click="submitMajor">确认</div>
+        <div class="btns-box">
+            <a href="javascript:void(0)" @click="submitChange">模块调整</a>
+            <a href="javascript:void(0)" @click="submitMajor">重新开课</a>
+        </div>
     </div>
   </div>
   </div>
@@ -46,6 +49,10 @@ methods: {
     submitMajor(){
         let self = this;
         self.$router.push({name:'SelectUnit',params:{classid:self.sysclassId}})
+    },
+    submitChange() {
+        let self = this;
+        self.$router.push({name:'SelectChange',params:{classid:self.sysclassId}})
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
@@ -136,16 +143,21 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 }
             }
         }
-         .submitBtn{
-            width:260*0.4*0.02rem;
-            height:120*0.4*0.02rem;
-            line-height:120*0.4*0.02rem;
-            text-align: center;
-            color:#fff;
-            background-color:#1c94ed;
-            border-radius: 5px;
-            margin:1rem auto;
-            font-size:0.36rem;
+        .btns-box{
+            text-align: right;
+            padding-right: 80*0.4*0.02rem;
+            a{
+                display: inline-block;
+                margin-right: 30*0.4*0.02rem;
+                width:220*0.4*0.02rem;
+                height:100*0.4*0.02rem;
+                line-height:100*0.4*0.02rem;
+                text-align: center;
+                color:#fff;
+                background-color:#1c94ed;
+                border-radius: 5px;
+                font-size: 30*0.4*0.02rem;
+            }
         }
     }
 }

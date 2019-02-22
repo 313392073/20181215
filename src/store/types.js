@@ -6,3 +6,4 @@ export const CHOOSECOURSE = ' CHOOSECOURSE' //选课
 export const LOGIN = 'LOGIN'; //登录
 export const LOGOUT = 'LOGOUT'; //退出
 export const TITLE = ' TITLE' //页面的title
+export const BATCH = ' TITLE' //获取batch

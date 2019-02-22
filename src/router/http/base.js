@@ -3,10 +3,11 @@ import store from '../../store/store';
 import router from '../index';
 import * as types from '../../store/types';
 import qs from 'qs';
+import API from './api'
+import vue from '../../main.js';
 const baseURL = 'http://118.31.8.72:83';
 // const baseURL = 'http://192.168.1.56';
 const timeout = 5000;
-
 //请求的拦截
 axios.interceptors.request.use(
     config => {
@@ -58,12 +59,23 @@ function checkCode(res){
     if(res.status === -404){
         console.log(res.msg)
     }
-    if(res && (!res.data.success)){
-        console.log(res.error_msg)
-    }
     return res.data
 }
 
+function showError(msg) {
+    vue.$layer.open({
+        type:0,
+        title:'温馨提示',
+        content: msg,
+        shade:true,
+        time:2,
+        anim:'scale',
+        yes() {
+            vue.$layer.closeAll()
+            vue.$router.push('/');
+        }
+    });
+}
 
 function postUrl(url,data){
     return axios({
@@ -102,8 +114,66 @@ function getUrl(url,params){
         return checkCode(res)
     })
 }
+
+function getBatch () {
+    let num = 0
+    if(store.state.token == '') {
+        showError("登录超时，请重新登录")
+    }
+    let params = {
+        token:store.state.token
+    }
+    getUrl(API.allUrl.batch,params).then((res) => {
+        if(res.code == 200 && res.success ==  1) {
+            store.commit(types.BATCH,res.obj)
+            localStorage.setItem("batch", res.obj);
+        }else{
+            num++;
+            if(num < 4) {
+                setTimeout(() => {
+                    getBatch()
+                },1000)
+            }
+        }
+    })
+}
+//初始化菜单
+function h5plushGoInitMenu() {
+    if(window.plus) {
+        plusReady();
+    }else{
+        document.addEventListener('plusready',plusReady,false);
+    }
+}
+
+function plusReady() {
+    let loginFlag = store.state.userType;
+    let rolelastmenu = plus.storage.getItem("rolemenu_"+loginFlag)
+    if(loginFlag == '') {
+        vue.$router.push('/')
+    }else if(loginFlag == 0){
+        //学生的路由
+        if(rolelastmenu) {
+            vue.$router.push('/stu'+rolelastmenu)
+        }else{
+            vue.$router.push('/stu')
+        }
+    }else if(loginFlag == 1) {
+        if(rolelastmenu) {
+            vue.$router.push('/tea'+rolelastmenu)
+        }else{
+            vue.$router.push('/tea')
+        }
+    }else{
+        vue.$router.push('/')
+    }
+}
+
+
 export default  {
     baseURL,
     getUrl,
-    postUrl 
+    postUrl,
+    getBatch,
+    showError 
 }

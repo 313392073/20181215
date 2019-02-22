@@ -152,7 +152,8 @@ watch: {
 methods: {
     goRoute(url) {
         this.$router.push(url)
-        localStorage.setItem('hisurl',url);
+        //访问菜单url历史记录
+        // plus.storage.setItem("rolemenu_"+store.state.userType,url)
     },
     slideToggle(tag,index) {
         let self = this;
@@ -206,10 +207,11 @@ methods: {
                     token:store.state.token
                 }
                 base.postUrl(API.allUrl.nextStep,params).then((res) => {
-                    console.log(res)
                     if(res.code == 200 && res.success == 1) {
-                        self.reload()
                         self.$layer.close(index)
+                        self.reload()
+                    }else{
+                        base.showError(res.msg+"<br /><p style='text-align:center'>重新登录</p>")
                     }
                 })
             },
@@ -217,6 +219,15 @@ methods: {
                 console.log('end')
             }
         });
+    },
+    getMenu() {
+        let params = {
+            token:store.state.token,
+            batch:store.state.batch
+        }
+        base.getUrl(API.allUrl.course_m_info,params).then((res) => {
+            console.log(res)
+        })
     }
 },
 created(){
@@ -230,6 +241,8 @@ created(){
         this.lessontab.list = menu.teamenu.lessontab
         this.aftertab.list = menu.teamenu.aftertab
     }
+    //获取菜单
+    // this.getMenu()
 }
 }
 </script>

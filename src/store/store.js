@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import * as types from './types';
+import { stat } from 'fs';
 Vue.use(Vuex);
 
 const kuser = 'user';
@@ -9,6 +10,7 @@ const store = new Vuex.Store({
     state:{
         user:null,
         token:null,
+        batch:'',
         title:'',
         userType:'', //0 学生  1老师
         chooseCourse:''
@@ -34,6 +36,9 @@ const store = new Vuex.Store({
         },
         [types.TITLE]:(state,data) => {
             state.title = data;
+        },
+        [types.BATCH]:(state,data) => {
+            state.batch = data
         }
     }
 })

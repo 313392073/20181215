@@ -1,4 +1,4 @@
- <!--  -->
+<!--  -->
 <template>
 <div class="wrapper">
 <div class="left-wrapper">
@@ -29,8 +29,8 @@
 
             <div class="last-step">
                 <div class="lastcontent clearfix">
-                    <draggable @update="datadragEnd">
-                        <div class="item" v-for="(item,index) in getOrder" :key="index" v-if="item.tag">
+                    <draggable>
+                        <div v-for="(item,index) in getOrder" :key="index" v-if="item.tag" :class="item.state == 2?'item unable':'item'">
                             <i>{{index+1}}</i>
                             <span>{{item.menuName}}</span>
                         </div>
@@ -53,15 +53,15 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
+import draggable from "vuedraggable";
 import base from '../../router/http/base.js'
 import share from '../../router/http/share.js'
 import API from '../../router/http/api.js';
 import store from '../../store/store.js';
 import Axios from 'axios';
-import draggable from "vuedraggable";
 export default {
 //import引入的组件需要注入到对象中才能使用
-components:{ draggable },
+components :{ draggable },
 data() {
 //这里存放数据
 return {
@@ -92,12 +92,6 @@ watch: {
 },
 //方法集合
 methods: {
-    datadragEnd (evt) {
-        evt.preventDefault();
-        console.log('拖动前的索引 :' + evt.oldIndex)
-        console.log('拖动后的索引 :' + evt.newIndex)
-        console.log(this.getOrder);
-    },
     formatTime(time){
         return share.formatTime(time/1000)
     },
@@ -105,18 +99,24 @@ methods: {
         this.$router.go(-1)
     },
     makeChoose(pindex,index,courseId,menuId,menuLevel,menuName,menuOrder,menuUrlStu,menuUrlTeacher,pmenuId,state,sysclassId){
-        let self = this;
-        let str = pindex + '_' + index
-        if(self.courseList[pindex]['menuList'][index]['tag']) {
-            self.$set(self.courseList[pindex]['menuList'][index],'state',0) //取消样式
-            self.$set(self.courseList[pindex]['menuList'][index],'tag',false) //取消样式
-            let arrIndex = self.setList.indexOf(str)
-            self.setList.splice(arrIndex,1)
+        if(state == 2) {
+            return;
         }else{
-            self.setList.push(str)
-            self.$set(self.courseList[pindex]['menuList'][index],'state',1) //添加样式
-            self.$set(self.courseList[pindex]['menuList'][index],'tag',true) //添加样式
+            let self = this;
+            let str = pindex + '_' + index
+            if(self.courseList[pindex]['menuList'][index]['tag']) {
+                self.$set(self.courseList[pindex]['menuList'][index],'flag',0) //取消样式
+                self.$set(self.courseList[pindex]['menuList'][index],'tag',false) //取消样式
+                let arrIndex = self.setList.indexOf(str)
+                self.setList.splice(arrIndex,1)
+            }else{
+                self.setList.push(str)
+                self.$set(self.courseList[pindex]['menuList'][index],'flag',1) //添加样式
+                self.$set(self.courseList[pindex]['menuList'][index],'tag',true) //添加样式
+            }
         }
+        
+        
     },
     compare(property){
          return function(obj1,obj2){
@@ -147,7 +147,7 @@ methods: {
                         menuUrlStu:subItem['menuUrlStu'],
                         menuUrlTeacher:subItem['menuUrlTeacher'],
                         pmenuId:subItem['state'],
-                        state:subItem['state'],
+                        state:subItem['state']==2?1:subItem['state'],
                         sysclassId:subItem['sysclassId']
                     }
                     obj['menuOrder']?obj['menuOrder']:delete obj['menuOrder']
@@ -155,6 +155,8 @@ methods: {
                 })
             }
         })
+        console.log(arr)
+        return;
         Axios({
             method:'post',
             baseURL:base.baseURL,
@@ -162,10 +164,9 @@ methods: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Content-Type': 'application/json; charset=UTF-8'
             },
-            url:API.allUrl.submitCourse+'?token='+store.state.token+'&batch='+store.state.batch+'&classId='+self.classId*1+'&courseId='+self.courseId*1+'&flag=1',
+            url:API.allUrl.submitCourse+'?token='+store.state.token+'&classId='+self.classId*1+'&courseId='+self.courseId*1,
             data:JSON.stringify(arr),
         }).then((res) => {
-            console.log(res)
             if(res.data.code == 200 && res.data.success == 1) {
                 self.$layer.open({
                     type:0,
@@ -201,7 +202,7 @@ created() {
     let params = {
         token:store.state.token,
         batch:store.state.batch,
-        flag:1
+        flag:2
     }
     base.getUrl(API.allUrl.getCourseInfo,params).then((res) => {
         if(res.code == 200 && res.success == 1) {
@@ -210,7 +211,13 @@ created() {
                     if(item.menuList.length>0){
                         item.menuList.forEach((subItem,subIndex) => {
                             res.obj[index]['menuList'][subIndex]['tag'] = false;
-                            res.obj[index]['menuList'][subIndex]['state'] = 0;
+                            res.obj[index]['menuList'][subIndex]['flag'] = 0;
+                            if(res.obj[index]['menuList'][subIndex]['state'] == 2) {
+                                res.obj[index]['menuList'][subIndex]['flag'] = 1;
+                                res.obj[index]['menuList'][subIndex]['tag'] = true;
+                                let str = index + '_' + subIndex
+                                self.setList.push(str)
+                            }
                             delete res.obj[index]['menuList'][subIndex]['menuOrder'];
                         })
                     }
@@ -417,6 +424,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                             background: url('../../assets/images/orders.png') no-repeat;
                             background-size: cover;
                             color: #fff;
+                        }
+                        &.unable{
+                           opacity: 0.6; 
                         }
                     }
                 }

@@ -12,6 +12,7 @@ import Tips from '@/components/Tips' //评论demo
 import Tree from '@/components/Tree' //评论demo
 import Test from '@/components/Test' //评论demo
 import Draw from '@/components/Draw'//找回密码
+import Upload from '@/components/Upload'//找回密码
 // 路由start
 import SelectId from '@/pages/SelectId'//注册
 import RegPage from '@/pages/RegPage'//注册
@@ -19,8 +20,11 @@ import Login from '@/pages/Login'//登录
 import FindPwd from '@/pages/FindPwd'//找回密码
 
 //老师 start
-import SelectClass from '@/pages/teacher/SelectClass'// 课程设置
-import SelectUnit from '@/pages/teacher/SelectUnit'// 课程设置
+import SelectClass from '@/pages/teacher/SelectClass'// 开课选择
+import SelectUnit from '@/pages/teacher/SelectUnit'// 课程重开
+import SelectChange from '@/pages/teacher/SelectChange'// 课程模块调整
+import CourseHistory from '@/pages/teacher/CourseHistory'// 课程历史
+
 import PracticReport from '@/pages/teacher/PracticReport'// 在线测试(学生)
 import LookingForPyramid from '@/pages/teacher/lookingforpyramid'    // 寻找棱锥
 import MakePyramid from '@/pages/teacher/MakePyramid'// 制作棱锥
@@ -72,8 +76,24 @@ import CourseSet from '@/pages/CourseSet'    // 课后安排设置
 Vue.use(Router)
 
 const router = new Router({
-  // mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
+  mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
   routes: [
+    {
+      path: '/tips',
+      name: 'Tips',
+      component: Tips,
+      meta: {
+        title: '拍照上传'
+      }
+    },
+    {
+      path: '/upload',
+      name: 'Upload',
+      component: Upload,
+      meta: {
+        title: '拍照上传'
+      }
+    },
     {
       path: '/test',
       name: 'Test',
@@ -133,6 +153,15 @@ const router = new Router({
       }
     },
     { //老师 start
+      path: '/teacoursehistory',
+      name: 'CourseHistory',
+      component: CourseHistory,
+      meta: {
+        title: '课程历史',
+        auth: true
+      }
+    },
+    { 
       path: '/teaselectclass',
       name: 'SelectClass',
       component: SelectClass,
@@ -146,7 +175,16 @@ const router = new Router({
       name: 'SelectUnit',
       component: SelectUnit,
       meta: {
-        title: '老师选课',
+        title: '老师重开',
+        auth: true
+      }
+    },
+    { 
+      path: '/teaselectchange',
+      name: 'SelectChange',
+      component: SelectChange,
+      meta: {
+        title: '老师模块调整',
         auth: true
       }
     },

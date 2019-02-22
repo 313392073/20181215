@@ -3,6 +3,8 @@ const allUrl = {
     getInfo:'/v1/api/user/regist_info', //获取注册信息
     getCourseInfo:'/v1/api/tea/course_info', //老师课程设置获取
     submitCourse:'/v1/api/stu/course_info/submit', //课程设置提交
+    courseHistory:'/v1/api/comm/course/batchhist/list', //获取历史课程批次
+    backHistory:'/v1/api/comm/course/batchhist/submit', //回退历史批次
     uploadfile:'/v1/api/comm/uploadfile', //上传头像
     upload:'/v1/api/comm/upload', //上传附件
     uploadPic:'/v1/api/comm/just/uploadfile',
@@ -12,7 +14,7 @@ const allUrl = {
     logout:'/v1/api/user/logout', //退出
     find:'/v1/api/user/pswd/find',//登陆
     batch:'/v1/api/course/batch',//批次（学生）
-    nextStep:'/v1/api/tea/nextstep',//下一环节（老师）
+    nextStep:'/v1/api/curstep/get',//下一环节（老师）
     course_m_info:'/v1/api/comm/course_m_info',//批次（学生）
     course_list:'/v1/api/course/list',//获取题型(学生)
     courseSubmit:'/v1/api/course/submit', //提交答案
