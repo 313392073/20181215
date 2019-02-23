@@ -77,6 +77,20 @@ function showError(msg) {
     });
 }
 
+function showMsg(msg) {
+    vue.$layer.open({
+        type:0,
+        title:'温馨提示',
+        content: msg,
+        shade:true,
+        time:2,
+        anim:'scale',
+        yes() {
+            vue.$layer.closeAll()
+        }
+    });
+}
+
 function postUrl(url,data){
     return axios({
         method:'post',
@@ -175,5 +189,6 @@ export default  {
     getUrl,
     postUrl,
     getBatch,
-    showError 
+    showError,
+    showMsg 
 }

@@ -49,6 +49,7 @@ import AfterExpTotal from '@/pages/teacher/AfterExpTotal'    // 课后实验成�
 // 老师-end
 
 //学生start
+import CourseShistory from '@/pages/student/CourseShistory'// 学生课程历史
 import OnlineTest from '@/pages/student/OnlineTest'//在线测试
 import TestReport from '@/pages/student/TestReport'//课堂学习成绩报告(学生) 
 import AssignGroupCase from '@/pages/student/AssignGroupCase'    // 寻找棱锥（学生）
@@ -331,8 +332,17 @@ const router = new Router({
         title: '课后实验成绩统计',
         auth: true
       }
-    }, //老师end 
+    }, //老师end
     { //学生start
+      path: '/stucoursehistory',
+      name: 'CourseShistory',
+      component: CourseShistory,
+      meta: {
+        title: '课程历史',
+        auth: true
+      }
+    }, 
+    { 
       path: '/stuonlinetest',
       name: 'OnlineTest',
       component: OnlineTest,

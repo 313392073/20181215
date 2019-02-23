@@ -204,11 +204,13 @@ methods: {
             },
             yes(index) {
                 let params = {
-                    token:store.state.token
+                    token:store.state.token,
+                    batch:store.state.batch
                 }
                 base.postUrl(API.allUrl.nextStep,params).then((res) => {
                     if(res.code == 200 && res.success == 1) {
-                        self.$layer.close(index)
+                        self.$layer.close(index);
+                        base.showMsg(res.msg)
                         self.reload()
                     }else{
                         base.showError(res.msg+"<br /><p style='text-align:center'>重新登录</p>")
