@@ -155,8 +155,6 @@ methods: {
                 })
             }
         })
-        console.log(arr)
-        return;
         Axios({
             method:'post',
             baseURL:base.baseURL,
@@ -164,7 +162,7 @@ methods: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Content-Type': 'application/json; charset=UTF-8'
             },
-            url:API.allUrl.submitCourse+'?token='+store.state.token+'&classId='+self.classId*1+'&courseId='+self.courseId*1,
+            url:API.allUrl.submitCourse+'?token='+store.state.token+'&classId='+self.classId*1+'&courseId='+self.courseId*1+'&batch='+store.state.batch+'&flag=2',
             data:JSON.stringify(arr),
         }).then((res) => {
             if(res.data.code == 200 && res.data.success == 1) {

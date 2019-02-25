@@ -42,7 +42,7 @@
         </div>
         <div class="btn-box">
             <a href="javascript:void(0)" @click="submitData">回退至...</a>
-            <a href="javascript:void(0)">继续上课</a>
+            <a href="javascript:void(0)" @click="goOncourse">继续上课</a>
         </div>
     </div>
   </div>
@@ -59,7 +59,9 @@ import share from '../../router/http/share.js'
 import base from '../../router/http/base.js'
 import API from '../../router/http/api.js';
 import store from '../../store/store.js';
+import * as types from '../../store/types';
 import Axios from 'axios';
+import { Loading } from 'element-ui';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
@@ -195,56 +197,23 @@ methods: {
             });
             return;
         }
-        Axios({
-            method:'post',
-            baseURL:base.baseURL,
-            url:API.allUrl.backHistory+"?token="+store.state.token+"&batch="+self.checkedValue,
-            dataType:"json",
-            headers:{
-                'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/json; charset=UTF-8'
-            }
-        }).then((res) => {
-            if(res.data.success == 0 || res.data.code == 10000) {
-                self.$layer.open({
-                    type:0,
-                    title:'温馨提示',
-                    content: res.data.msg,
-                    shade:true,
-                    time:2,
-                    anim:'scale',
-                    success(layer) {
-                        console.log('layer id is:',layer.id)
-                    },
-                    yes(index) {
-                        self.$layer.close(index)
-                        self.$router.push('/')
-                        return;
-                    }
-                });
-            }else{
-                base.getBatch();
-                self.gocourse();
-            }
-        })
-        
+        let batch = store.state.batch;
+        store.commit(types.BATCH,self.checkedValue);
+        localStorage.setItem('batch',batch);
+        self.gocourse();
     },
     gocourse() {
-        if(window.plus) {
-            this.plusReady();
-        }else{
-            document.addEventListener('plusready',this.plusReady,false);
-        }
-    },
-    plusReady(){
         let self = this;
         let loginFlag = store.state.userType; //userType:'', //0 学生  1老师
-		let rolelastmenu = plus.storage.getItem("rolemenu_"+loginFlag)	
-			if(rolelastmenu) {
-                self.$router.push(rolelastmenu)
-            }else{
-                self.$router.push('/')
-            }
+        let rolelastmenu = localStorage.getItem("lasturl_"+loginFlag)
+        if(rolelastmenu) {
+            self.$router.push(rolelastmenu)
+        }else{
+            self.$router.push('/teapracticreport')
+        }
+    },
+    goOncourse() {
+        this.gocourse()
     },
     getInit() {
         return base.getBatch()

@@ -13,21 +13,47 @@
         <p v-if="isTea" class="spec-title" @click="goRoute('/teaselectclass')">课程设置</p>
         <p v-if="isTea" class="spec-title" @click="goNext">下一环节</p>
     </div>
+    <div class="list">
+        <p class="side-title">{{beforetab.title}}</p>
+        <ul class="before-class menu">
+            <li v-for="(item,index) in beforetab.list" :key="index" :class="nowUrl == item.url?'active':''">
+                <a href="javascript:void(0);" @click="goRoute(item.url)" :class="item.name == '制作棱锥'?'tabborder-bottom':''">{{ item.name}}</a>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="list">
+        <p class="side-title">{{lessontab.title}}</p>
+        <ul class="lesson-learn menu">
+            <li v-for="(item,index) in lessontab.list" :key="item.name" :class="nowUrl == item.url?'active':''">
+                 <template v-if="item.list">
+                    <a href="javascript:void(0);"  @click="slideToggle(item.tag,index)">{{item.name}}
+                        <span :class="item.tag? 'iconfont icon-sanjiaoxing':'iconfont icon-sanjiaoxing1'"></span>
+                    </a>
+                 </template>
+                 <template v-else>
+                     <a @click="goRoute(item.url)" :class="item.name == '课堂总结' ?'tabborder-bottom':''">{{item.name}}</a>
+                 </template>
+                <template v-if="item.list">
+                    <ul class="secondary" v-if="item.tag">
+                        <li v-for="sub in item.list" :key="sub.name" :class="nowUrl == sub.target?'active':''">
+                            <a href="javascript:void(0);" @click="goRoute(sub.target)">{{ sub.name }}</a>
+                        </li>
+                    </ul>
+                </template>
+            </li>
+            <!-- <li><a class="tabborder-bottom">课堂总结</a></li> -->
+        </ul>
+    </div>
 
-    <div class="list" v-if="menuList.length > 0" v-for="(item,index) in menuList" :key="index">
-        <p class="side-title">{{item.menu_name}}</p>
-            <ul class="menu" v-if="role == 0">
-                <li v-for="(subItem,subIndex) in item.child_menus" :key="subIndex" :class="nowUrl == subItem.menu_url_stu?'active':''">
-                    <a href="javascript:void(0);"  @click="goRoute(subItem.menu_url_stu)">{{subItem.menu_name}}</a>
-                </li>
-            </ul>
-            <ul class="menu" v-if="role == 1">
-                <li v-for="(subItem,subIndex) in item.child_menus" :key="subIndex" :class="nowUrl == subItem.menu_url_teacher?'active':''">
-                    <a href="javascript:void(0);"  @click="goRoute(subItem.menu_url_teacher)">{{subItem.menu_name}}</a>
-                </li>
-            </ul>
-    </div> 
-       
+    <div class="list">
+        <p class="side-title">{{aftertab.title}}</p>
+        <ul class="after-class menu">
+           <li v-for="item in aftertab.list" :key="item.name" :class="nowUrl == item.url?'active':''">
+                <a href="javascript:void(0);" @click="goRoute(item.url)">{{ item.name }}</a>
+            </li>
+        </ul>
+    </div>
     <div class="loginout list">
         <a href="javascript:void(0);" @click="getOut">退出登录</a>
     </div>
@@ -52,8 +78,60 @@ data() {
 return {
     tab:'',
     nowUrl:'',
-    role:0,
-    menuList:[]
+    beforetab: {
+        title:'课前预习',
+        list:[
+            {name:'在线测试',url:'/stuonlinetest'},
+            {name:'寻找棱锥',url:'/stuassigngroupcase'},
+            {name:'制作棱锥',url:'/stumakepyramids'}
+        ]
+    },
+    lessontab:{
+        title:'课堂学习',
+        list:[
+             {
+                name:'作业分享',
+                url:'/stuhomeworkshare',
+             },
+             {
+                name:'正棱锥表面积',
+                url:'/stusideareaformula',
+                tag:true,
+                list:[
+                    {name:'视频分享',target:'/stuvideoshare'},
+                    {name:'侧面积公式',target:'/stusideareaformula' },
+                    {name:'表面积公式',target:'/sturegularareaformula' },
+                    {name:'计算表面积',target:'/RegularAreaFormula' },
+                ]
+            },
+            {
+                name:'正棱锥体积',
+                url:'/show',
+                tag:true,
+                list:[
+                   {name:'体积公式',target:'/stuvolumeformula' },
+                    {name:'计算体积',target:'/stuexpregpyramid' },
+                ]
+            },
+            {
+                name:'在线关系',
+                url:'',
+                tag:true,
+                list:[
+                   {name:'分组讨论',target:'/stuclasslearning' },
+                    {name:'小组汇报',target:'/stuexercise' },
+                ]
+            },
+         ]
+    },
+    aftertab: {
+        title:'课后拓展',
+        list:[
+            {name:'课后习题',url:'/stuexercise'},
+            {name:'课后实验',url:'/stuaftclaexp'},
+            {name:'分享体会',url:'TeaHomeworkShare'}
+        ]
+    },
 };
 },
 //监听属性 类似于data概念
@@ -73,10 +151,19 @@ watch: {
 //方法集合
 methods: {
     goRoute(url) {
-        localStorage.setItem('lasturl_'+this.role,url);
+         console.log(url)
         this.$router.push(url)
+       
         //访问菜单url历史记录
         // plus.storage.setItem("rolemenu_"+store.state.userType,url)
+    },
+    slideToggle(tag,index) {
+        let self = this;
+        let tags = tag;
+        self.$set(self.lessontab['list'][index],'tag',!tags)
+        /**
+         * this.$set(self.lessontab['list'][index]) 数据数组对象的第index项  'tag' 数组对象的某一项的标记  tags要修改后的值
+         */
     },
     getOut(){
         let self = this;
@@ -138,26 +225,28 @@ methods: {
         });
     },
     getMenu() {
-        let self = this;
         let params = {
             token:store.state.token,
             batch:store.state.batch
         }
         base.getUrl(API.allUrl.course_m_info,params).then((res) => {
-           if(res.success == 1 && res.code == 200) {
-                self.menuList = res.obj
-            }else{
-                base.showMsg(res.msg)
-            }
+            console.log(res)
         })
     }
 },
 created(){
     this.nowUrl = this.$route.path
-    this.role = store.state.userType
+    if(store.state.userType == 0) {
+        this.beforetab.list = menu.stumenu.beforetab
+        this.lessontab.list = menu.stumenu.lessontab
+        this.aftertab.list = menu.stumenu.aftertab
+    }else if(store.state.userType == 1) {
+        this.beforetab.list = menu.teamenu.beforetab
+        this.lessontab.list = menu.teamenu.lessontab
+        this.aftertab.list = menu.teamenu.aftertab
+    }
     //获取菜单
     this.getMenu();
-    //获取环节标记点
     base.getMenuStep()
 }
 }

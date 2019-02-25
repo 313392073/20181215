@@ -28,6 +28,7 @@ axios.interceptors.response.use(
         return config
     },
     error => {
+        console.log(error)
         if(error.response){
             switch(error.response.status){
                 case 401:
@@ -45,6 +46,9 @@ axios.interceptors.response.use(
 function checkStatus(response){
     //如果http状态码正常 则直接返回数据
     if(response && (response.status === 200) || (response.status === 304) || (response.status === 400)){
+        if(response.data.success == 0 && response.data.code == 401) {
+            showError(response.data.msg)
+        }
         return response
     }
     //异常状态  把错误信息返回去
@@ -103,8 +107,17 @@ function postUrl(url,data){
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
         }
     }).then((res) => {
+        if(res.data.success == 0 && res.data.code == 401) {
+            console.log(11111111111111)
+            showError(res.data.msg);
+            return
+        }
         return checkStatus(res)
     }).then((res) => {
+        if(res.data.success == 0 && res.data.code == 401) {
+            showError(res.data.msg)
+            return
+        }
         return checkCode(res)
     }).catch((error) => {
         return Promise.reject(error)
@@ -123,8 +136,16 @@ function getUrl(url,params){
             'X-Requested-With': 'XMLHttpRequest'
         }
     }).then((res) => {
+        if(res.data.success == 0 && res.data.code == 401) {
+            showError(res.data.msg);
+            return;
+        }
         return checkStatus(res)
     }).then((res) => {
+        if(res.data.success == 0 && res.data.code == 401) {
+            showError(res.data.msg);
+            return;
+        }
         return checkCode(res)
     })
 }
@@ -183,6 +204,36 @@ function plusReady() {
     }
 }
 
+function getMenuStep() {
+    let params = {
+        token:store.state.token,
+        batch:store.state.batch
+    }
+    postUrl(API.allUrl.curstep,params).then((res) => {
+        if(res.success == 1 && res.code == 200) {
+            store.commit('MENUSTEP',res.obj)
+        }else{
+            showMsg(res.msg)
+        }
+    }) 
+}
+
+Array.prototype.in_array = function(e)
+{
+	for(i=0;i<this.length && this[i]!=e;i++);
+	return !(i==this.length);
+}
+
+//判断一个元素在不在数组内
+function arrContain(arr,element) {
+    for(var i=0;i<arr.length;i++) {
+        if(arr[i] == element) {
+            return true
+        }else{
+            return false;
+        }
+    }
+}
 
 export default  {
     baseURL,
@@ -190,5 +241,7 @@ export default  {
     postUrl,
     getBatch,
     showError,
-    showMsg 
+    showMsg,
+    getMenuStep, 
+    arrContain
 }

@@ -13,7 +13,8 @@ const store = new Vuex.Store({
         batch:'',
         title:'',
         userType:'', //0 学生  1老师
-        chooseCourse:''
+        chooseCourse:'',
+        menuStep:[]
     },
     mutations:{
         [types.USERTYTPE]:(state,data) => {
@@ -39,6 +40,9 @@ const store = new Vuex.Store({
         },
         [types.BATCH]:(state,data) => {
             state.batch = data
+        },
+        [types.MENUSTEP]:(state,data) => {
+            state.menuStep = data
         }
     }
 })
