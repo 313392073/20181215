@@ -70,11 +70,11 @@
                     <div class="upload-picbox">
                         <img v-for="(item,index) in picList" :key="index" class="upload-default" :src="item">
                         <img src="../../assets/images/add.png" @click="chooseImg($event)">
-                        <input type="file" name="file" accept="image/png,image/jpg,image/jepg,image/gif" ref="filElem" class="upload-file" @change="uploadImg">
+                        <input type="file" name="file" accept="image/png,image/jpg,image/jepg,image/gif" ref="filElem" class="upload-file" @change="uploadImg" v-if="isInArray">
                     </div>
                     <div class="tips-btn">
                         <button class="btn" @click="HideUpload">取消</button>
-                        <button class="btn active" @click="shareUpload">分享</button>
+                        <button class="btn active" @click="shareUpload" v-if="isInArray">分享</button>
                     </div>
                 </div>
                 <!-- 取消是否保存 -->
@@ -120,6 +120,7 @@ return {
     groupList:[],
     toggleTips:false,
     tipsMsg:'',
+    isInArray:false
 };
 },
 //监听属性 类似于data概念
@@ -270,10 +271,13 @@ created() {
             base.getUrl(API.allUrl.uploadList,params).then((res) => {
                 if(res.code == 200 && res.success == 1) {
                     self.groupList = res.obj;
-                    console.log(res.obj)
                 }
             })
         }
+    })
+    let num = 4
+    base.getMenuStep().then((res) => {
+        self.isInArray = base.arrContain(res,num)
     })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）

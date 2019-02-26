@@ -23,7 +23,7 @@
                 </div>
                 <div class="item-tag"><i class="iconfont icon-xuanzhong"></i></div>
             </div>
-            <div class="back-btn"><button class="btn" @click="save">上传</button></div>
+            <div class="back-btn" v-if="isInArray"><button class="btn" @click="save">上传</button></div>
         </div>
     </div>
   </div>
@@ -48,7 +48,8 @@ data() {
 //这里存放数据
 return {
     batch:'',
-    chooseFile:'选择文件'
+    chooseFile:'选择文件',
+    isInArray:false
 };
 },
 //监听属性 类似于data概念
@@ -121,6 +122,11 @@ created() {
         if(res.code == 200 && res.success ==  1) {
             self.batch = res.obj;
         }
+    })
+
+    let num = 9
+    base.getMenuStep().then((res) => {
+        self.isInArray = base.arrContain(res,num)
     })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）

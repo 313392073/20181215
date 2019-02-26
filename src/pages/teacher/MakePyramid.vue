@@ -46,7 +46,7 @@
                     <div class="item-add" @click="showAddList(index)"></div>
                 </div>
             </div>
-            <div class="back-btn"><button class="btn" @click="setTask">任务布置</button></div>
+            <div class="back-btn" v-if="isInArray"><button class="btn" @click="setTask">任务布置</button></div>
         </div>
         <div class="tips-wrapper" v-show="isaddList">
             <div class="tips-box">
@@ -116,7 +116,8 @@ export default {
             list:[],
             order:''
         },
-        unCheckUsers:[]
+        unCheckUsers:[],
+        isInArray:false
     };
   },
   //监听属性 类似于data概念
@@ -287,6 +288,10 @@ export default {
       console.log(params)
       Axios.all([self.getUserList(params1)],self.getCourseList(params2))
     });
+    let num = 3
+    base.getMenuStep().then((res) => {
+        self.isInArray = base.arrContain(res,num)
+    })
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {

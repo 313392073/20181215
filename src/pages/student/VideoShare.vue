@@ -13,7 +13,7 @@
                 <input type="file" name="file" accept="video/mp4,video/ogg,video/WebM" ref="filElem" class="upload-file" @change="uploadVideo">
                 <img @click="chooseVideo" :src="defaultUrl" alt="upload" class="default-bg">
             </div>
-            <div class="btn-box"><a href="javascript:void(0)" @click="saveVideo">保存并上传</a></div>
+            <div class="btn-box" v-if="isInArray"><a href="javascript:void(0)" @click="saveVideo">保存并上传</a></div>
         </div>
     </div>
   </div>
@@ -40,6 +40,7 @@ data() {
 return {
     defaultUrl:defaultUrls,
     batch:'',
+    isInArray:false
 };
 },
 //监听属性 类似于data概念
@@ -115,7 +116,10 @@ methods: {
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    let num = 5
+    base.getMenuStep().then((res) => {
+        self.isInArray = base.arrContain(res,num)
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

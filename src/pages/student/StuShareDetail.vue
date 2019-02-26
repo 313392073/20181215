@@ -18,7 +18,7 @@
                         <img :src="info.uploadNetUrl" alt="group-pic">
                     </div>
                     <div class="desc-btns">
-                        <a v-if="isZan" href="javascript:void(0)"><i style="color:red" class="iconfont icon-xin"></i>赞</a>
+                        <a v-if="isZan || isInArray == false" href="javascript:void(0)"><i style="color:red" class="iconfont icon-xin"></i>赞</a>
                         <a v-else href="javascript:void(0)" @click="getZan"><i class="iconfont icon-xin"></i>赞</a>
                         <a href="javascript:void(0)"><i class="iconfont icon-guanbi"></i>评论</a>
                     </div>
@@ -51,7 +51,7 @@
                 <div class="input-box clearfix">
                     <p v-if="type"> 你回复 <span class="old-comment">{{oldComment}}</span></p>
                     <textarea placeholder="请填写评论内容" v-model="comments"></textarea>
-                    <a href="javascript:void(0)" @click="getComment"><i class="iconfont icon-xiaolian"></i></a>
+                    <a href="javascript:void(0)" v-if="isInArray" @click="getComment"><i class="iconfont icon-xiaolian"></i></a>
                 </div>
             </div>
         </div>
@@ -88,7 +88,8 @@ return {
     initInfo:{
         headImage:'',
         useName:''
-    }
+    },
+    isInArray:false
 };
 },
 //监听属性 类似于data概念
@@ -182,6 +183,10 @@ created() {
     }
     this.getBatch(params)
     this.getDetail()
+    let num = 4
+    base.getMenuStep().then((res) => {
+        self.isInArray = base.arrContain(res,num)
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

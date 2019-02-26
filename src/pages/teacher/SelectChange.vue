@@ -8,7 +8,7 @@
     <div class="main-wrapper">
         <div class="unit-wrapper">
             <div class="unit-box">
-                <label class="label-box active" v-for="(item,index) in courseList" :key="index">
+                <label v-for="(item,index) in courseList" :key="index"  @click="doChoose(item.courseId)" :class="item.courseId == courseId ? 'label-box active':'label-box'">
                     <div class="unit-list">
                         <h3>{{item.courseName}}</h3>
                         <p>发布者：{{item.createUsername}}</p>
@@ -20,8 +20,8 @@
         <p class="order-step" style="">第 <span>01</span>步：选择课程内容</p>
         <div class="next-step">
             <div class="second-step">
-                <div class="second-content clearfix" v-for="(item,index) in courseList" :key="index">
-                    <div class="citem" v-for="(subItem,subIndex) in item.menuList" :class="subItem.tag?'active':0" :key="subIndex" @click="makeChoose(index,subIndex,subItem.courseId,subItem.menuId,subItem.menuLevel,subItem.menuName,subItem.menuOrder,subItem.menuUrlStu,subItem.menuUrlTeacher,subItem.pmenuId,subItem.state,subItem.sysClassId)">
+                <div class="second-content clearfix" v-for="(item,index) in courseList" :key="index" v-if="item.courseId == courseId">
+                    <div class="citem" v-for="(subItem,subIndex) in item.menuList" :class="subItem.tag?'active':''" :key="subIndex" @click="makeChoose(index,subIndex,subItem.courseId,subItem.menuId,subItem.menuLevel,subItem.menuName,subItem.menuOrder,subItem.menuUrlStu,subItem.menuUrlTeacher,subItem.pmenuId,subItem.state,subItem.sysClassId)">
                         <i></i><span>{{subItem.menuName}}</span>
                     </div>
                 </div>
@@ -136,7 +136,7 @@ methods: {
             })
         }
         self.courseList.forEach((item,index) => {
-            if(item['menuList'].length > 0) {
+            if(item['menuList'].length > 0 && item['courseId'] == self.courseId) {
                 item['menuList'].forEach((subItem,subIndex) => {
                     let obj = {
                         courseId:subItem['courseId'],
@@ -191,6 +191,24 @@ methods: {
                 });
             }
         })
+    },
+    doChoose(courseId) {
+        let self = this;
+        self.courseId = courseId;
+        self.arr = [];
+        self.setList = [];
+        self.courseList.forEach((item,index) => {
+            if(item.menuList.length > 0 && item['courseId'] == self.courseId) {
+                for(var i=0;i<item.menuList.length;++i) {
+                    if(item.menuList[i]['state'] == 2) {
+                        item.menuList[i]['flag'] = 1;
+                        item.menuList[i]['tag'] = true;
+                        let str = index + '_' + i
+                        self.setList.push(str)
+                    }
+                }
+            }
+        })
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
@@ -205,6 +223,7 @@ created() {
     base.getUrl(API.allUrl.getCourseInfo,params).then((res) => {
         if(res.code == 200 && res.success == 1) {
             if(res.obj.length > 0) {
+                self.courseId = res.obj[0]['courseId'];
                 res.obj.forEach((item,index) => {
                     if(item.menuList.length>0){
                         item.menuList.forEach((subItem,subIndex) => {

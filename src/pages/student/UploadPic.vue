@@ -13,7 +13,7 @@
                 <input type="file" name="file" accept="image/png,image/jpg,image/jepg,image/gif" ref="filElem" class="upload-file" @change="uploadImg">
                 <img @click="chooseImg" :src="defaultUrl" alt="upload" class="default-bg">
             </div>
-            <div class="btn-box"><a href="javascript:void(0)" @click="saveImg">保存并上传图片</a></div>
+            <div class="btn-box" v-if="isInArray"><a href="javascript:void(0)" @click="saveImg">保存并上传图片</a></div>
         </div>
     </div>
   </div>
@@ -40,6 +40,7 @@ data() {
 return {
     defaultUrl:defaultUrls,
     batch:'',
+    isInArray:false
 };
 },
 //监听属性 类似于data概念
@@ -111,6 +112,10 @@ created() {
         if(res.code == 200 && res.success ==  1) {
             self.batch = res.obj;
         }
+    })
+    let num = 2
+    base.getMenuStep().then((res) => {
+        self.isInArray = base.arrContain(res,num)
     })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）

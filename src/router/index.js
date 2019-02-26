@@ -25,7 +25,7 @@ import SelectUnit from '@/pages/teacher/SelectUnit'// 课程重开
 import SelectChange from '@/pages/teacher/SelectChange'// 课程模块调整
 import CourseHistory from '@/pages/teacher/CourseHistory'// 课程历史
 
-import PracticReport from '@/pages/teacher/PracticReport'// 在线测试(学生)
+import PracticReport from '@/pages/teacher/PracticReport'// 在线测试(老师)
 import LookingForPyramid from '@/pages/teacher/lookingforpyramid'    // 寻找棱锥
 import MakePyramid from '@/pages/teacher/MakePyramid'// 制作棱锥
 import HomeworkShare from '@/pages/teacher/HomeworkShare'    //作业分享1
@@ -77,7 +77,7 @@ import CourseSet from '@/pages/CourseSet'    // 课后安排设置
 Vue.use(Router)
 
 const router = new Router({
-  mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
+  // mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
   routes: [
     {
       path: '/tips',

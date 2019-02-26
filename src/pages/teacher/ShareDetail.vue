@@ -89,7 +89,8 @@ return {
     initInfo:{
         headImage:'',
         useName:''
-    }
+    },
+    isInArray:false
 };
 },
 //监听属性 类似于data概念
@@ -154,22 +155,24 @@ methods: {
                 replyUserLoginname:this.oldComment
             }
         }
-        Axios({
-            method:'post',
-            headers:{
-                'Content-Type': 'application/json',
-                'Accept':'application/json'
-            },
-            baseURL:base.baseURL,
-            url:API.allUrl.homeComment+'?token='+store.state.token+'&batch='+this.batch,
-            data:params,
-        }).then((res) => {
-            if(res.data.code == 200 && res.data.success == 1) {
-                this.type = 0;
-                this.comments = '';
-                this.getDetail();
-            }
-        })
+        if(isInArray) {
+             Axios({
+                method:'post',
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Accept':'application/json'
+                },
+                baseURL:base.baseURL,
+                url:API.allUrl.homeComment+'?token='+store.state.token+'&batch='+this.batch,
+                data:params,
+            }).then((res) => {
+                if(res.data.code == 200 && res.data.success == 1) {
+                    this.type = 0;
+                    this.comments = '';
+                    this.getDetail();
+                }
+            })
+        }
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
@@ -183,6 +186,10 @@ created() {
     }
     this.getBatch(params)
     this.getDetail()
+    let num = 4
+    base.getMenuStep().then((res) => {
+        self.isInArray = base.arrContain(res,num)
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

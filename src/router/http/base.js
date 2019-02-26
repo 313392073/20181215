@@ -108,7 +108,6 @@ function postUrl(url,data){
         }
     }).then((res) => {
         if(res.data.success == 0 && res.data.code == 401) {
-            console.log(11111111111111)
             showError(res.data.msg);
             return
         }
@@ -205,17 +204,19 @@ function plusReady() {
 }
 
 function getMenuStep() {
+    let arr = []
     let params = {
         token:store.state.token,
         batch:store.state.batch
     }
-    postUrl(API.allUrl.curstep,params).then((res) => {
+    return postUrl(API.allUrl.curstep,params).then((res) => {
         if(res.success == 1 && res.code == 200) {
-            store.commit('MENUSTEP',res.obj)
+            arr = res.obj
         }else{
             showMsg(res.msg)
         }
-    }) 
+        return arr
+    })
 }
 
 Array.prototype.in_array = function(e)

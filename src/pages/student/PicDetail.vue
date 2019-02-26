@@ -27,8 +27,10 @@
                     <span>{{info.likesUserNum}}</span>
                 </div>
                 <div v-else class="bg-btn" @click="getZan">
-                    <p><i class="iconfont icon-xin"></i></p>
-                    <span>{{info.likesUserNum}}</span>
+                    <template v-if="isInArray">
+                        <p><i class="iconfont icon-xin"></i></p>
+                        <span>{{info.likesUserNum}}</span>
+                    </template>
                 </div>
             </div>
         </div>
@@ -63,7 +65,8 @@ return {
         likesUserNum:0,
         uploadNetUrl:'',
         headImage:'',
-        likesUserLoginname:''
+        likesUserLoginname:'',
+        isInArray:false
     }
 };
 },
@@ -93,7 +96,6 @@ methods: {
             attid:this.attId
         }   
         base.getUrl(API.allUrl.lookSingPic,params).then((res) => {
-            console.log(res)
             if(res.code == 200 && res.success == 1) {
                 this.info.userLoginname = res.obj.userLoginname;
                 this.info.createTime = res.obj.createTime;
@@ -128,7 +130,11 @@ created() {
     this.attId = attId;
     this.info.group = this.$route.params.groupInfo;
     this.info.headImage = this.$route.params.headImage;
-    this.getDetail()
+    this.getDetail();
+    let num = 2
+    base.getMenuStep().then((res) => {
+        self.isInArray = base.arrContain(res,num)
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

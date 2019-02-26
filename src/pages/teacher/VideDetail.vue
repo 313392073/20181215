@@ -82,7 +82,6 @@ created() {
         attid:attId
     }
     base.getUrl(API.allUrl.lookSingPic,params).then((res) => {
-        console.log(res)
         if(res.code == 200 && res.success == 1) {
             this.info.userLoginname = res.obj.userLoginname;
             this.info.createTime = res.obj.createTime;

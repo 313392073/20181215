@@ -71,7 +71,7 @@
                         </div>
                     </div>
                     <div class="ansowerd-btn">
-                        <button class="btn" @click="subForm">提交答案</button>
+                        <button class="btn" v-if="isInArray" @click="subForm">提交答案</button>
                     </div>
                 </div>
             </div>
@@ -127,7 +127,8 @@ return {
         type:''
     },
     list:{},
-    test:''
+    test:'',
+    isInArray:false
 };
 },
 //监听属性 类似于data概念
@@ -263,11 +264,6 @@ methods: {
             window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
         })
     },
-    getMenu(params) { //获取menu
-        base.getUrl(API.allUrl.course_m_info,params).then(res => {
-            console.log('获取menu'+res)
-        })
-    },
     getCourseList(params){ //获取题型
         base.getUrl(API.allUrl.course_list,params).then(res => {
             if(res.code == 200 && res.success == 1){
@@ -393,15 +389,15 @@ created() {
             this.classBatch = res.obj;
             let params1 = {
                 token:store.state.token,
-                batch:res.obj
-            }
-            let params2 = {
-                token:store.state.token,
                 batch:res.obj,
                 type:6*1
             }
-            Axios.all([self.getMenu(params1)],self.getCourseList(params2))
+            self.getCourseList(params1)
         }
+    })
+    let num = 6
+    base.getMenuStep().then((res) => {
+        self.isInArray = base.arrContain(res,num)
     })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）

@@ -50,7 +50,7 @@
                             <p>2、“分组人数”和“小组数量”中确顶一个参数，另外一个参数会自动调整</p>
                             <p>3、点击学生头像即可指定组长</p>
                         </div>
-                        <div class="group-submit"><a href="javascript:void(0)" class="sbtn" @click="makeGroup">确认分组</a></div>
+                        <div class="group-submit" v-if="isInArray"><a href="javascript:void(0)" class="sbtn" @click="makeGroup">确认分组</a></div>
                     </form>
                 </div>
                 <div class="main-right">
@@ -174,6 +174,7 @@ return {
     groupList:[],
     flags:false, //拖拽
     position: { x: 0, y: 0 },
+    isInArray:false
 };
 },
 //监听属性 类似于data概念
@@ -331,8 +332,11 @@ created() {
     base.getUrl(API.allUrl.groupCondition,params).then((res) => { //获取班级的选项
         if(res.code == 200 && res.success == 1) {
             self.sel_class = res.obj.sel_class;
-            console.log(res.obj)
         }
+    })
+    let num = 3
+    base.getMenuStep().then((res) => {
+        self.isInArray = base.arrContain(res,num)
     })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）

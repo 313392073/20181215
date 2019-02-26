@@ -204,9 +204,7 @@ created() {
                 token:store.state.token,
                 batch:res.obj
             }
-            console.log(params)
             base.getUrl(API.allUrl.stuClassTest,params).then((res) => {
-                console.log(res)
                 if(res.code == 200 && res.success == 1) {
                     self.scoreRank = res.obj.score_rank;
                     self.scoreReport = res.obj.score_report;

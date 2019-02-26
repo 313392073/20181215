@@ -21,7 +21,7 @@
             </ul>
         </div>
        <div class="right-main">
-            <p class="main-title"> 
+            <p class="main-title" v-if="isInArray"> 
                 <a href="javascript:void(0)" class="active upload-btn" @click="goPraafter"> 
                     <i class="iconfont icon-shangchuan1"></i>上传
                 </a>
@@ -118,7 +118,8 @@ return {
     list:[],
     isActive:0,
     typeList:[],
-    deleteList:[]
+    deleteList:[],
+    isInArray:false
 };
 },
 //监听属性 类似于data概念
@@ -213,7 +214,6 @@ methods: {
         self.deleteList.forEach((item) => {
             arr.push(item)
         })
-        console.log(arr)
         Axios({
             method:'post',
             baseURL:base.baseURL,
@@ -257,7 +257,10 @@ created() {
         }
         self.getCourseList()
     })
-   
+    let num = 9
+    base.getMenuStep().then((res) => {
+        self.isInArray = base.arrContain(res,num)
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

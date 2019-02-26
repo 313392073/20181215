@@ -8,7 +8,7 @@
     <div class="main-wrapper">
         <div class="unit-wrapper">
             <div class="unit-box">
-                <label class="label-box active" v-for="(item,index) in courseList" :key="index">
+                <label v-for="(item,index) in courseList" :key="index" @click="doChoose(item.courseId)" :class="item.courseId == courseId ? 'label-box active':'label-box'">
                     <div class="unit-list">
                         <h3>{{item.courseName}}</h3>
                         <p>发布者：{{item.createUsername}}</p>
@@ -20,8 +20,8 @@
         <p class="order-step" style="">第 <span>01</span>步：选择课程内容</p>
         <div class="next-step">
             <div class="second-step">
-                <div class="second-content clearfix" v-for="(item,index) in courseList" :key="index">
-                    <div class="citem" v-for="(subItem,subIndex) in item.menuList" :class="subItem.tag?'active':0" :key="subIndex" @click="makeChoose(index,subIndex,subItem.courseId,subItem.menuId,subItem.menuLevel,subItem.menuName,subItem.menuOrder,subItem.menuUrlStu,subItem.menuUrlTeacher,subItem.pmenuId,subItem.state,subItem.sysClassId)">
+                <div v-for="(item,index) in courseList" :key="index" v-if="item.courseId == courseId" class="second-content clearfix">
+                    <div v-for="(subItem,subIndex) in item.menuList" :class="subItem.tag?'citem active':'citem'" :key="subIndex" @click="makeChoose(index,subIndex,subItem.courseId,subItem.menuId,subItem.menuLevel,subItem.menuName,subItem.menuOrder,subItem.menuUrlStu,subItem.menuUrlTeacher,subItem.pmenuId,subItem.state,subItem.sysClassId)">
                         <i></i><span>{{subItem.menuName}}</span>
                     </div>
                 </div>
@@ -68,7 +68,8 @@ return {
     courseList:[],
     classId:'',
     courseId:'',
-    setList:[]
+    setList:[],
+    arr:[]
 };
 },
 //监听属性 类似于data概念
@@ -94,9 +95,6 @@ watch: {
 methods: {
     datadragEnd (evt) {
         evt.preventDefault();
-        console.log('拖动前的索引 :' + evt.oldIndex)
-        console.log('拖动后的索引 :' + evt.newIndex)
-        console.log(this.getOrder);
     },
     formatTime(time){
         return share.formatTime(time/1000)
@@ -127,7 +125,6 @@ methods: {
     },
     submitCouese(){
         let self = this;
-        let arr = [];
         if(self.setList.length>0){
             self.setList.forEach((item,index) => {
                 let pindexd = item.split('_')[0]
@@ -136,7 +133,7 @@ methods: {
             })
         }
         self.courseList.forEach((item,index) => {
-            if(item['menuList'].length > 0) {
+            if(item['menuList'].length > 0 && item['courseId'] == self.courseId) {
                 item['menuList'].forEach((subItem,subIndex) => {
                     let obj = {
                         courseId:subItem['courseId'],
@@ -151,7 +148,7 @@ methods: {
                         sysclassId:subItem['sysclassId']
                     }
                     obj['menuOrder']?obj['menuOrder']:delete obj['menuOrder']
-;                   arr.push(obj)
+;                   self.arr.push(obj)
                 })
             }
         })
@@ -163,9 +160,8 @@ methods: {
                 'Content-Type': 'application/json; charset=UTF-8'
             },
             url:API.allUrl.submitCourse+'?token='+store.state.token+'&batch='+store.state.batch+'&classId='+self.classId*1+'&courseId='+self.courseId*1+'&flag=1',
-            data:JSON.stringify(arr),
+            data:JSON.stringify(self.arr),
         }).then((res) => {
-            console.log(res)
             if(res.data.code == 200 && res.data.success == 1) {
                 self.$layer.open({
                     type:0,
@@ -192,6 +188,18 @@ methods: {
                 });
             }
         })
+    },
+    doChoose(courseId) {
+        this.courseId = courseId;
+        this.arr = [];
+        this.setList = [];
+        this.courseList.forEach((item) => {
+            if(item.menuList.length >0 ) {
+                for(var i=0;i<item.menuList.length;i++) {
+                    item.menuList[i].tag = false;
+                }
+            }
+        })
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
@@ -206,6 +214,7 @@ created() {
     base.getUrl(API.allUrl.getCourseInfo,params).then((res) => {
         if(res.code == 200 && res.success == 1) {
             if(res.obj.length > 0) {
+                self.courseId = res.obj[0]['courseId'];
                 res.obj.forEach((item,index) => {
                     if(item.menuList.length>0){
                         item.menuList.forEach((subItem,subIndex) => {
@@ -392,6 +401,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                             background:url('../../assets/images/checked.png');
                             background-size: cover;
                         }
+                    }
+                    &.hide{
+                        display: none;
                     }
                 }
             }

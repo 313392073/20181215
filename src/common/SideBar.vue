@@ -11,19 +11,44 @@
     </div>
     <div class="list" style="margin-top:0.9rem;">
         <p v-if="isTea" class="spec-title" @click="goRoute('/teaselectclass')">课程设置</p>
-        <p v-if="isTea" class="spec-title" @click="goNext">下一环节</p>
+        <p v-if="isTea" class="spec-title spec-next" @click="goNext">下一环节</p>
     </div>
 
     <div class="list" v-if="menuList.length > 0" v-for="(item,index) in menuList" :key="index">
+        <p :class="role == 0 && index == 0?'line line-hide':'line'"></p>
         <p class="side-title">{{item.menu_name}}</p>
             <ul class="menu" v-if="role == 0">
                 <li v-for="(subItem,subIndex) in item.child_menus" :key="subIndex" :class="nowUrl == subItem.menu_url_stu?'active':''">
-                    <a href="javascript:void(0);"  @click="goRoute(subItem.menu_url_stu)">{{subItem.menu_name}}</a>
+                    <template v-if="subItem.child_menus.length>0">
+                        <a href="javascript:void(0);"  @click="slideToggle(subItem.tag,index+'_'+subIndex)">{{subItem.menu_name}}
+                            <span :class="subItem.tag? 'iconfont icon-sanjiaoxing':'iconfont icon-sanjiaoxing1'"></span>
+                        </a>
+                        <ul class="secondary" v-if="subItem.tag">
+                            <li v-for="sub in subItem.child_menus" :key="sub.menu_name" :class="nowUrl == sub.menu_url_stu?'active':''">
+                                <a href="javascript:void(0);" @click="goRoute(sub.menu_url_stu)">{{ sub.menu_name }}</a>
+                            </li>
+                        </ul>
+                    </template>
+                    <template v-else>
+                        <a href="javascript:void(0);"  @click="goRoute(subItem.menu_url_stu)">{{subItem.menu_name}}</a>
+                    </template>
                 </li>
             </ul>
             <ul class="menu" v-if="role == 1">
                 <li v-for="(subItem,subIndex) in item.child_menus" :key="subIndex" :class="nowUrl == subItem.menu_url_teacher?'active':''">
-                    <a href="javascript:void(0);"  @click="goRoute(subItem.menu_url_teacher)">{{subItem.menu_name}}</a>
+                    <template v-if="subItem.child_menus.length>0">
+                        <a href="javascript:void(0);"  @click="slideToggle(subItem.tag,index+'_'+subIndex)">{{subItem.menu_name}}
+                            <span :class="subItem.tag? 'iconfont icon-sanjiaoxing':'iconfont icon-sanjiaoxing1'"></span>
+                        </a>
+                        <ul class="secondary" v-if="subItem.tag">
+                            <li v-for="sub in subItem.child_menus" :key="sub.menu_name" :class="nowUrl == sub.menu_url_teacher?'active':''">
+                                <a href="javascript:void(0);" @click="goRoute(sub.menu_url_teacher)">{{ sub.menu_name }}</a>
+                            </li>
+                        </ul>
+                    </template>
+                    <template v-else>
+                        <a href="javascript:void(0);"  @click="goRoute(subItem.menu_url_teacher)">{{subItem.menu_name}}</a>
+                    </template>
                 </li>
             </ul>
     </div> 
@@ -145,11 +170,30 @@ methods: {
         }
         base.getUrl(API.allUrl.course_m_info,params).then((res) => {
            if(res.success == 1 && res.code == 200) {
+                if(res.obj.length > 0) {
+                    res.obj.forEach((item,index) => {
+                        if(item.child_menus.length > 0) {
+                            item.child_menus.forEach((subItem,subIndex) => {
+                                if(subItem.child_menus.length > 0) {
+                                    res.obj[index]['child_menus'][subIndex]['tag'] = true
+                                }
+                            })
+                        }
+                    })
+                }
                 self.menuList = res.obj
             }else{
                 base.showMsg(res.msg)
             }
         })
+    },
+    slideToggle(tag,sub) {
+        let self = this;
+        let tags = tag;
+        let index = sub.split('_')[0]*1;
+        let pindex = sub.split('_')[1]*1;
+        console.log(tag,index)
+        self.$set(self.menuList[index]['child_menus'][pindex],'tag',!tags)
     }
 },
 created(){
@@ -192,10 +236,20 @@ created(){
     }
     .list{
         text-indent: 70*0.4*0.02rem;
+        .line{
+            margin-left: 10%;
+            width: 80%;
+            height: 0;
+            border-top: 1px solid #5c5a5a;
+            margin-top: 0.1rem;
+            &.line-hide{
+                display: none;
+            }
+        }
         .side-title{
             font-size: 0.28rem;
             color: @fcolor;
-            margin: 0.2rem 0;
+            margin: 0.1rem 0 0.2rem;
             background-color: rgba(0,0, 0, 0.1);
             height: 80*0.4*0.02rem;
             line-height: 80*0.4*0.02rem;
@@ -209,6 +263,10 @@ created(){
             margin: 0.2rem 0;
             &.first-title{
                 margin-top: 150*0.4*0.02rem;
+            }
+            &.spec-next{
+                color: #6c63ff;
+                font-weight: bold;
             }
         }
         .menu{
@@ -262,9 +320,10 @@ created(){
             }
         }
         &.loginout{
-             line-height: 60*0.4*0.02rem;
+            line-height: 60*0.4*0.02rem;
             min-height: 60*0.4*0.02rem;
-             background-color: rgba(0,0, 0, 0.1);
+            background-color: rgba(0,0, 0, 0.3);
+            margin-bottom: 50*0.4*0.02rem;
             a{
                 display: block;
                 width: 2.04rem;
@@ -272,7 +331,7 @@ created(){
                 height: 0.8rem;
                 margin: 0 auto;
                 line-height: 0.8rem;
-                color: @fcolor;
+                color: #ffffff;
                 font-size: 0.24rem;
                 text-align: left;
                 font-size: 0.28rem;
