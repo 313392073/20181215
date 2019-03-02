@@ -2,7 +2,7 @@
 <div class="wrapper">
     <div class="left-wrapper">
         <div class="left-box">
-            <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>正棱锥侧面积<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
+            <div class="desc-menu">正棱锥侧面积<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
             <!-- 主要内容 -->
             <div class="main-wrapper">
                 <h3 class="title">侧面积公式</h3>
@@ -165,9 +165,6 @@ watch: {
 },
 //方法集合
 methods: {
-    goBack(){
-        this.$router.go(-1)
-    },
     toAsync(str){
         if(str){
             return '$'+str+'$';

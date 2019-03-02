@@ -3,7 +3,7 @@
 <div class="wrapper">
 <div class="left-wrapper">
 <div class="left-box">
-    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>线线关系<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
+    <div class="desc-menu">线线关系<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
         <h3 class="title">探索正三棱锥</h3>
@@ -128,9 +128,6 @@ watch: {
 methods: {
     getrefresh(){
         this.reload();
-    },
-    goBack(){
-        this.$router.go(-1)
     },
     init() {			
         container = document.getElementById("container");
@@ -513,6 +510,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         text-align: center;
         font-size: 44*0.4*0.02rem;
         color: @fcolor;
+        text-indent: 120px;
     }
     .main-box{
         width: 87.55%;

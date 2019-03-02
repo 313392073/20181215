@@ -3,7 +3,7 @@
 <div class="wrapper">
 <div class="left-wrapper">
 <div class="left-box">
-    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>寻找棱锥<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
+    <div class="desc-menu">作业分享<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
         <div class="main-box">
@@ -144,9 +144,6 @@ watch: {},
 methods: {
     getrefresh(){
         this.reload();
-    },
-    goBack(){
-        this.$router.go(-1)
     },
     showTips(){
         this.tipsMsg = '暂无评论，无法查看详情';

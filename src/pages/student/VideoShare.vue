@@ -3,7 +3,7 @@
 <div class="wrapper">
 <div class="left-wrapper">
 <div class="left-box">
-    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>视频分享<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
+    <div class="desc-menu">视频分享<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
         <h3 class="title">视频上传</h3>
@@ -51,9 +51,6 @@ watch: {},
 methods: {
     getrefresh(){
         this.reload();
-    },
-     goBack(){
-        this.$router.go(-1)
     },
     chooseVideo(){
         this.$refs.filElem.dispatchEvent(new MouseEvent('click'))

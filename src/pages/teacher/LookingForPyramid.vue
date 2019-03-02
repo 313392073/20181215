@@ -3,7 +3,7 @@
 <div class="wrapper" @mouseup="end">
     <div class="left-wrapper">
     <div class="left-box">
-        <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>寻找棱锥<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
+        <div class="desc-menu">寻找棱锥<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
         <!-- 主要内容 -->
         <div class="main-wrapper">
             <h3 class="title">分配小组</h3>
@@ -190,9 +190,6 @@ methods: {
     datadragEnd(evt) {
       evt.preventDefault();
     },
-    goBack(){
-        this.$router.go(-1)
-    },
     getrefresh(){
         let params = {
             token:store.state.token,
@@ -334,7 +331,7 @@ created() {
             self.sel_class = res.obj.sel_class;
         }
     })
-    let num = 3
+    let num = 2
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
     })

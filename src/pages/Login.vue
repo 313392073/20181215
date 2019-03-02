@@ -74,11 +74,11 @@ methods: {
             return false;
         }
 
-        if(!common.checkStrong(self.dataObj.pwd)){
-            self.tipsMsg = '请注意密码格式:6-20位数字、大小写字母'
-            self.toggleTips = true;
-            return false;
-        }
+        // if(!common.checkStrong(self.dataObj.pwd)){
+        //     self.tipsMsg = '请注意密码格式:6-20位数字、大小写字母'
+        //     self.toggleTips = true;
+        //     return false;
+        // }
 
         if(self.dataObj.username.length < 2 || self.dataObj.username.length > 20) {
             self.tipsMsg = '请注意输入合法长度的用户名'
@@ -96,7 +96,6 @@ methods: {
                     userInfo:res.obj.user,
                     token:res.obj.token
                 }
-                console.log(res.obj)
                 store.commit(types.BATCH,res.obj.batch)
                 store.commit(types.LOGIN,obj)
                 store.commit(types.USERTYTPE,JSON.parse(res.obj.user).userType)

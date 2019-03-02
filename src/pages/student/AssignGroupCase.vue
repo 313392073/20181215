@@ -3,10 +3,10 @@
 <div class="wrapper">
     <div class="left-wrapper">
     <div class="left-box">
-        <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>寻找棱锥<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
+        <div class="desc-menu">寻找棱锥<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
         <!-- 主要内容 -->
         <div class="main-wrapper">
-            <h3 class="title">分配小组</h3>
+            <h3 class="title">小组分配情况</h3>
             <div class="main-box">
                 <div class="group-wrapper">
                     <div class="item" v-for="(item,index) in groupList" :key="index">
@@ -58,9 +58,6 @@ watch: {},
 methods: {
     getrefresh(){
         this.reload();
-    },
-    goBack(){
-        this.$router.go(-1)
     },
     goNext(){
         this.$router.push('/stuuploadpic')

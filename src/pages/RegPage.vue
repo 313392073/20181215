@@ -202,11 +202,11 @@ methods: {
             self.toggleTips = true;
             return false;
         }
-        if(!common.checkStrong(self.dataObj.pwd) || !common.checkStrong(self.dataObj.repwd)){
-            self.tipsMsg = '6-20位数字、大小写字'
-            self.toggleTips = true;
-            return false;
-        }
+        // if(!common.checkStrong(self.dataObj.pwd) || !common.checkStrong(self.dataObj.repwd)){
+        //     self.tipsMsg = '6-20位数字、大小写字'
+        //     self.toggleTips = true;
+        //     return false;
+        // }
         if(self.dataObj.pwd != self.dataObj.repwd){
             self.tipsMsg = '输入的密码不一致'
             self.toggleTips = true;

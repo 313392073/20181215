@@ -3,7 +3,7 @@
 <div class="wrapper">
 <div class="left-wrapper">
  <div class="left-box">
-    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>课堂学习<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
+    <div class="desc-menu">课堂学习<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
         <h3 class="title">课堂练习成绩报告单</h3>
@@ -89,9 +89,6 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
-    goBack(){
-        this.$router.go(-1)
-    },
     showAlltr(){ //查看更多
         if(this.trHide == 'tr-hide'){
             this.trHide = 'tag';

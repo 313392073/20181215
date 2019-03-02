@@ -3,7 +3,7 @@
 <div class="wrapper">
 <div class="left-wrapper">
 <div class="left-box">
-    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>在线测试<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
+    <div class="desc-menu">在线测试<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
         <h3 class="title">在线测试学生练习结果</h3>
@@ -99,10 +99,7 @@ methods: {
     getrefresh(){
         this.reload();
     },
-    goBack(){
-        this.$router.go(-1)
-    },
-     showAlltr(){ //查看更多
+    showAlltr(){ //查看更多
         if(this.trHide == 'tr-hide'){
             this.trHide = 'tag';
             this.btnMsg = '隐藏'
