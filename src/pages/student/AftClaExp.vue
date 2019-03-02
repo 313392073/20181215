@@ -258,11 +258,6 @@ methods: {
             window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
         })
     },
-    getMenu(params) { //获取menu
-        base.getUrl(API.allUrl.course_m_info,params).then(res => {
-            console.log('获取menu'+res)
-        })
-    },
     getCourseList(params){ //获取题型
         base.getUrl(API.allUrl.course_list,params).then(res => {
             if(res.code == 200 && res.success == 1){
@@ -381,21 +376,26 @@ methods: {
         let params = {
             token:store.state.token
         }
-        base.getUrl(API.allUrl.batch,params).then(res => {
-            if(res.code == 200 && res.success == 1){
-                this.classBatch = res.obj;
-                let params1 = {
+        if(store.state.batch) {
+            let params2 = {
                     token:store.state.token,
-                    batch:res.obj
-                }
-                let params2 = {
-                    token:store.state.token,
-                    batch:res.obj,
+                    batch:store.state.batch,
                     type:7*1
                 }
-                Axios.all([self.getMenu(params1)],self.getCourseList(params2))
-            }
-        })
+                self.getCourseList(params2)
+        }else{
+            base.getUrl(API.allUrl.batch,params).then(res => {
+                if(res.code == 200 && res.success == 1){
+                    this.classBatch = res.obj;
+                    let params2 = {
+                        token:store.state.token,
+                        batch:res.obj,
+                        type:7*1
+                    }
+                    self.getCourseList(params2)
+                }
+            })
+        }
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
@@ -403,6 +403,7 @@ created() {
     if (share.isMathjaxConfig === false) { // 如果：没有配置MathJax
         share.initMathjaxConfig();
     }
+    let self = this
     let num = 10
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)

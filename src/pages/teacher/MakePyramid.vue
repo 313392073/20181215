@@ -269,22 +269,35 @@ export default {
     let params = {
       token: store.state.token
     };
-    base.getUrl(API.allUrl.batch, params).then(res => {
-      if (res.code == 200 && res.success == 1) {
-        self.batch = res.obj;
-      }
-      let params1 = {
-        token: store.state.token,
-        batch: res.obj
-      };
-      let params2 = {
-          token: store.state.token,
-          batch: res.obj,
-          type:1
-      }
-      console.log(params)
-      Axios.all([self.getUserList(params1)],self.getCourseList(params2))
-    });
+    if(store.state.batch) {
+        let params1 = {
+                token: store.state.token,
+                batch: store.state.batch
+            };
+            let params2 = {
+                token: store.state.token,
+                batch: store.state.batch,
+                type:1
+            }
+            Axios.all([self.getUserList(params1)],self.getCourseList(params2))
+    }else{
+         base.getUrl(API.allUrl.batch, params).then(res => {
+            if (res.code == 200 && res.success == 1) {
+                self.batch = res.obj;
+            }
+            let params1 = {
+                token: store.state.token,
+                batch: res.obj
+            };
+            let params2 = {
+                token: store.state.token,
+                batch: res.obj,
+                type:1
+            }
+            Axios.all([self.getUserList(params1)],self.getCourseList(params2))
+        });
+    }
+   
     let num = 3
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)

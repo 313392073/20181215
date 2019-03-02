@@ -195,20 +195,34 @@ created() {
     let params = {
         token:store.state.token
     }
-    base.getUrl(API.allUrl.batch,params).then(res => {
-        if(res.code == 200 && res.success ==  1) {
-            let params = {
-                token:store.state.token,
-                batch:res.obj
-            }
-            base.getUrl(API.allUrl.stuClassTest,params).then((res) => {
-                if(res.code == 200 && res.success == 1) {
-                    self.scoreRank = res.obj.score_rank;
-                    self.scoreReport = res.obj.score_report;
-                }
-            })
+    if(store.state.batch) {
+        let params = {
+            token:store.state.token,
+            batch:store.state.batch
         }
-    })
+        base.getUrl(API.allUrl.stuClassTest,params).then((res) => {
+            if(res.code == 200 && res.success == 1) {
+                self.scoreRank = res.obj.score_rank;
+                self.scoreReport = res.obj.score_report;
+            }
+        })
+    }else{
+         base.getUrl(API.allUrl.batch,params).then(res => {
+            if(res.code == 200 && res.success ==  1) {
+                let params = {
+                    token:store.state.token,
+                    batch:res.obj
+                }
+                base.getUrl(API.allUrl.stuClassTest,params).then((res) => {
+                    if(res.code == 200 && res.success == 1) {
+                        self.scoreRank = res.obj.score_rank;
+                        self.scoreReport = res.obj.score_report;
+                    }
+                })
+            }
+        })
+    }
+   
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

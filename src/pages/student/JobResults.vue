@@ -259,13 +259,11 @@ created() {
     let params = {
         token:store.state.token
     }
-    base.getUrl(API.allUrl.batch,params).then(res => {
-        if(res.code == 200 && res.success ==  1) {
-            let params = {
+    if(store.state.batch) {
+        let params = {
                 token:store.state.token,
-                batch:res.obj
+                batch:store.state.batch
             }
-            console.log(params)
             base.getUrl(API.allUrl.courseSummary,params).then((res) => {
                 console.log(res)
                 if(res.code == 200 && res.success == 1) {
@@ -285,8 +283,35 @@ created() {
                     this.lineEchart('linechart',optionx,optiont,optionb)
                 }
             })
-        }
-    })
+    }else{
+        base.getUrl(API.allUrl.batch,params).then(res => {
+            if(res.code == 200 && res.success ==  1) {
+                let params = {
+                    token:store.state.token,
+                    batch:res.obj
+                }
+                base.getUrl(API.allUrl.courseSummary,params).then((res) => {
+                    console.log(res)
+                    if(res.code == 200 && res.success == 1) {
+                        self.groupScore = res.obj.group_score;
+                        self.groupResult = res.obj.group_result;
+                        let optionx = [];
+                        let optiont = [];
+                        let optionb = [];
+
+                        if(self.groupResult && self.groupResult.length > 0) {
+                            self.groupResult.forEach((item) => {
+                                optionx.push(item['group_name']+'组')
+                                optiont.push(item['group_bmj_range']*100)
+                                optionb.push(item['group_tj_range'])
+                            })
+                        }
+                        this.lineEchart('linechart',optionx,optiont,optionb)
+                    }
+                })
+            }
+        })
+    }
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

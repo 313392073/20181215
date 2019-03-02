@@ -134,20 +134,34 @@ created() {
    let params = {
         token:store.state.token
     }
-    base.getUrl(API.allUrl.batch,params).then(res => {
-        if(res.code == 200 && res.success ==  1) {
-            let params = {
-                token:store.state.token,
-                batch:res.obj,
-                listtype:11*1
-            }
-            base.getUrl(API.allUrl.uploadList,params).then((res) => {
-                if(res.code == 200 && res.success == 1) {
-                    self.groupList = res.obj;
-                }
-            })
+    if(store.state.batch) {
+        let params = {
+            token:store.state.token,
+            batch:store.state.batch,
+            listtype:11*1
         }
-    })
+        base.getUrl(API.allUrl.uploadList,params).then((res) => {
+            if(res.code == 200 && res.success == 1) {
+                self.groupList = res.obj;
+            }
+        })
+    }else{
+         base.getUrl(API.allUrl.batch,params).then(res => {
+            if(res.code == 200 && res.success ==  1) {
+                let params = {
+                    token:store.state.token,
+                    batch:res.obj,
+                    listtype:11*1
+                }
+                base.getUrl(API.allUrl.uploadList,params).then((res) => {
+                    if(res.code == 200 && res.success == 1) {
+                        self.groupList = res.obj;
+                    }
+                })
+            }
+        })
+    }
+   
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

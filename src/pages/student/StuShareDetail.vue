@@ -109,11 +109,15 @@ methods: {
         this.oldComment = name;
     },
     getBatch(params){
-        base.getUrl(API.allUrl.batch,params).then((res) => {
-            if(res.code == 200 && res.success == 1) {
-                this.batch = res.obj
-            }
-        })
+        if(store.state.batch) {
+            this.batch = store.state.batch
+        }else{
+            base.getUrl(API.allUrl.batch,params).then((res) => {
+                if(res.code == 200 && res.success == 1) {
+                    this.batch = res.obj
+                }
+            })
+        }
     },
     getDetail(){
         let params = {
@@ -183,6 +187,7 @@ created() {
     }
     this.getBatch(params)
     this.getDetail()
+    let self = this
     let num = 4
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)

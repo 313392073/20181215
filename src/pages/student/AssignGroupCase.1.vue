@@ -87,20 +87,33 @@ created() {
     let params = {
         token:store.state.token
     }
-    base.getUrl(API.allUrl.batch,params).then(res => {
-        if(res.code == 200 && res.success ==  1) {
-            let params1 = {
+    if(store.state.batch) {
+        let params1 = {
                 token:store.state.token,
-                batch:res.obj
+                batch:store.state.batch
             }
             base.getUrl(API.allUrl.findPyramid,params1).then((res) => {
-                console.log(res)
                 if(res.code == 200 && res.success == 1) {
                     this.groupList = res.obj;
                 }
             })
-        }
-    })
+    }else{
+        base.getUrl(API.allUrl.batch,params).then(res => {
+            if(res.code == 200 && res.success ==  1) {
+                let params1 = {
+                    token:store.state.token,
+                    batch:res.obj
+                }
+                base.getUrl(API.allUrl.findPyramid,params1).then((res) => {
+                    console.log(res)
+                    if(res.code == 200 && res.success == 1) {
+                        this.groupList = res.obj;
+                    }
+                })
+            }
+        })
+    }
+    
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

@@ -113,6 +113,7 @@ methods: {
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
+    let self = this
     let num = 5
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)

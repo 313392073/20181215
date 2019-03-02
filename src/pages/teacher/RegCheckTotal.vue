@@ -102,33 +102,60 @@ created() {
     let params = {
         token:store.state.token
     }
-    base.getUrl(API.allUrl.batch,params).then((res) => {
-        if(res.code == 200 && res.success == 1) {
-            let paramd = {
-                 token:store.state.token,
-                 batch:res.obj,
-                 courseType:4*1
-            }
-            base.getUrl(API.allUrl.checkSum,paramd).then((res) => {
-                if(res.success == 1 && res.code == 200) {
-                    res.obj.alltest_error.forEach((item,index) => {
-                        if(item.is_right == 0) {
-                            this.rightnum = item.usernum
-                        }else{
-                            this.wrongnum = item.usernum?item.usernum:0
-                        }
-                    })
-                    this.nodonum = res.obj.class_usernum - this.rightnum - this.wrongnum;
-                    this.optionX[0]['value'] = this.nodonum;
-                    this.optionX[1]['value'] = this.rightnum;
-                    this.optionX[2]['value'] = this.wrongnum;
-                    this.$nextTick(function(){
-                        this.initEchart('echart')
-                    })
-                }
-            })
+    if(store.state.batch) {
+        let paramd = {
+            token:store.state.token,
+            batch:store.state.batch,
+            courseType:4*1
         }
-    })
+        base.getUrl(API.allUrl.checkSum,paramd).then((res) => {
+            if(res.success == 1 && res.code == 200) {
+                res.obj.alltest_error.forEach((item,index) => {
+                    if(item.is_right == 0) {
+                        this.rightnum = item.usernum
+                    }else{
+                        this.wrongnum = item.usernum?item.usernum:0
+                    }
+                })
+                this.nodonum = res.obj.class_usernum - this.rightnum - this.wrongnum;
+                this.optionX[0]['value'] = this.nodonum;
+                this.optionX[1]['value'] = this.rightnum;
+                this.optionX[2]['value'] = this.wrongnum;
+                this.$nextTick(function(){
+                    this.initEchart('echart')
+                })
+            }
+        })
+    }else{
+        base.getUrl(API.allUrl.batch,params).then((res) => {
+            if(res.code == 200 && res.success == 1) {
+                let paramd = {
+                    token:store.state.token,
+                    batch:res.obj,
+                    courseType:4*1
+                }
+                base.getUrl(API.allUrl.checkSum,paramd).then((res) => {
+                    if(res.success == 1 && res.code == 200) {
+                        res.obj.alltest_error.forEach((item,index) => {
+                            if(item.is_right == 0) {
+                                this.rightnum = item.usernum
+                            }else{
+                                this.wrongnum = item.usernum?item.usernum:0
+                            }
+                        })
+                        this.nodonum = res.obj.class_usernum - this.rightnum - this.wrongnum;
+                        this.optionX[0]['value'] = this.nodonum;
+                        this.optionX[1]['value'] = this.rightnum;
+                        this.optionX[2]['value'] = this.wrongnum;
+                        this.$nextTick(function(){
+                            this.initEchart('echart')
+                        })
+                    }
+                })
+            }
+        })
+    }
+    
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

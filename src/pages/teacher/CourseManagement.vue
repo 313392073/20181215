@@ -248,12 +248,17 @@ created() {
     let params = {
         token:store.state.token
     }
-    base.getUrl(API.allUrl.batch,params).then(res => {
-        if(res.code == 200 && res.success ==  1) {
-            self.batch = res.obj;
-        }
+    if(store.state.batch) {
         self.getCourseList()
-    })
+        self.batch = store.state.batch
+    }else{
+        base.getUrl(API.allUrl.batch,params).then(res => {
+            if(res.code == 200 && res.success ==  1) {
+                self.batch = res.obj;
+            }
+        })
+    }
+    self.getCourseList()
     let num = 9
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)

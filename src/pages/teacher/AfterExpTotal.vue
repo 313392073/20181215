@@ -117,11 +117,10 @@ created() {
     let params = {
         token:store.state.token
     }
-    base.getUrl(API.allUrl.batch,params).then(res => {
-        if(res.code == 200 && res.success ==  1) {
-            let params = {
+    if(store.state.batch) {
+         let params = {
                 token:store.state.token,
-                batch:res.obj
+                batch:store.state.batch
             }
             base.getUrl(API.allUrl.afterClassTest,params).then((res) => {
                 if(res.code == 200 && res.success == 1) {
@@ -139,8 +138,33 @@ created() {
                     })
                 }
             })
-        }
-    })
+    }else{
+        base.getUrl(API.allUrl.batch,params).then(res => {
+            if(res.code == 200 && res.success ==  1) {
+                let params = {
+                    token:store.state.token,
+                    batch:res.obj
+                }
+                base.getUrl(API.allUrl.afterClassTest,params).then((res) => {
+                    if(res.code == 200 && res.success == 1) {
+                        self.infoList = res.obj;
+                        res.obj.score_rank.forEach((item) => {
+                            let obj = {
+                                name:item.user_name,
+                                value:item.sum_score,
+                            }
+                            this.opinionX.push(item.sum_score);
+                            this.opinionY.push(item.user_name);
+                        })
+                        this.$nextTick(function(){
+                            this.initEchart('tchart')
+                        })
+                    }
+                })
+            }
+        })
+    }
+    
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

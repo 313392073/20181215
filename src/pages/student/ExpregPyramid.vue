@@ -470,17 +470,27 @@ created() {
     let params = {
         token:store.state.token
     }
-    base.getUrl(API.allUrl.batch,params).then(res => {
-        if(res.code == 200 && res.success == 1){
-            this.classBatch = res.obj;
-            let params2 = {
+    if(store.state.batch) {
+        let params2 = {
                 token:store.state.token,
-                batch:res.obj,
+                batch:store.state.batch,
                 type:5*1
             }
-           self.getCourseList(params2)
-        }
-    })
+            self.getCourseList(params2)
+    }else{
+        base.getUrl(API.allUrl.batch,params).then(res => {
+            if(res.code == 200 && res.success == 1){
+                this.classBatch = res.obj;
+                let params2 = {
+                    token:store.state.token,
+                    batch:res.obj,
+                    type:5*1
+                }
+                self.getCourseList(params2)
+            }
+        })
+    }
+    
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

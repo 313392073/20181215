@@ -381,17 +381,27 @@ created() {
     let params = {
         token:store.state.token
     }
-    base.getUrl(API.allUrl.batch,params).then(res => {
-        if(res.code == 200 && res.success == 1){
-            this.classBatch = res.obj;
-            let params1 = {
-                token:store.state.token,
-                batch:res.obj,
-                type:6*1
-            }
-            self.getCourseList(params1)
+    if(store.state.batch) {
+        let params1 = {
+            token:store.state.token,
+            batch:store.state.batch,
+            type:6*1
         }
-    })
+        self.getCourseList(params1)
+    }else{
+        base.getUrl(API.allUrl.batch,params).then(res => {
+            if(res.code == 200 && res.success == 1){
+                this.classBatch = res.obj;
+                let params1 = {
+                    token:store.state.token,
+                    batch:res.obj,
+                    type:6*1
+                }
+                self.getCourseList(params1)
+            }
+        })
+    }
+    
     let num = 6
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)

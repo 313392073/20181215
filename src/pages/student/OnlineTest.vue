@@ -139,7 +139,6 @@ computed: {
     getChangeClass(){
         return this.classNames;
     }
-    
 },
 //监控data中的数据变化
 watch: {
@@ -375,28 +374,38 @@ methods: {
         let params = {
             token:store.state.token
         }
-        base.getUrl(API.allUrl.batch,params).then(res => {
-            if(res.code == 200 && res.success == 1){
-                this.classBatch = res.obj;
-                let params1 = {
-                    token:store.state.token,
-                    batch:res.obj,
-                    type:0*1
-                }
-                self.getCourseList(params1)
+        if(store.state.batch) {
+            let params1 = {
+                token:store.state.token,
+                batch:store.state.batch,
+                type:0*1
             }
-        })
+            self.getCourseList(params1)
+        }else{
+            base.getUrl(API.allUrl.batch,params).then(res => {
+                if(res.code == 200 && res.success == 1){
+                    this.classBatch = res.obj;
+                    let params1 = {
+                        token:store.state.token,
+                        batch:res.obj,
+                        type:0*1
+                    }
+                    self.getCourseList(params1)
+                }
+            })
+        }
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
+    let self = this;
     if (share.isMathjaxConfig === false) { // 如果：没有配置MathJax
         share.initMathjaxConfig();
     }
-   this.getInit();
-   let num = 1
+    this.getInit();
+    let num = 1
     base.getMenuStep().then((res) => {
-        self.isInArray = base.arrContain(res,num)
+       self.isInArray = base.arrContain(res,num)
     })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）

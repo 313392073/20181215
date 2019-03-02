@@ -293,35 +293,64 @@ created() {
     let params = {
         token:store.state.token
     }
-    base.getUrl(API.allUrl.batch,params).then(res => {
-        if(res.code == 200 && res.success ==  1) {
-            let params = {
-                token:store.state.token,
-                batch:res.obj
-            }
-            base.getUrl(API.allUrl.classTest,params).then((res) => {
-                if(res.code == 200 && res.success == 1) {
-                    this.alltest_error = res.obj.alltest_error
-                    this.alltest_error_remark = res.obj.alltest_coursetype_remark?res.obj.alltest_coursetype_remark.split(','):''
-                    this.alltest_item = res.obj.alltest_item
-                    this.alltest_user = res.obj.alltest_user
-                    this.allTestUsernum = res.obj.alltest_user.length
-                    this.alltest_user.forEach((item) => {
-                        let obj = {
-                            name:item.user_name,
-                            value:item.sum_score
+    if(store.state.batch) {
+        let params = {
+            token:store.state.token,
+            batch:store.state.batch
+        }
+        base.getUrl(API.allUrl.classTest,params).then((res) => {
+            if(res.code == 200 && res.success == 1) {
+                this.alltest_error = res.obj.alltest_error
+                this.alltest_error_remark = res.obj.alltest_coursetype_remark?res.obj.alltest_coursetype_remark.split(','):''
+                this.alltest_item = res.obj.alltest_item
+                this.alltest_user = res.obj.alltest_user
+                this.allTestUsernum = res.obj.alltest_user.length
+                this.alltest_user.forEach((item) => {
+                    let obj = {
+                        name:item.user_name,
+                        value:item.sum_score
+                    }
+                    this.opinionX.push(item.user_name)
+                    this.opinionY.push(obj)
+                })
+                let self = this;
+                let remark = [];
+                // console.log(this.alltest_error)
+                let str = '';
+                let wrong = '';
+                let arr = [];
+                this.alltest_error.forEach((item) => {
+                    if(item.course_type == 2) {
+                            str = '侧面积公式'
+                        } else if(item.course_type == 3) {
+                            str = '表面积公式'
+                        } else if(item.course_type == 4) {
+                            str = '体积公式'
+                        }  else if(item.course_type == 5) {
+                            str = '线线关系'
                         }
-                        this.opinionX.push(item.user_name)
-                        this.opinionY.push(obj)
-                    })
-                    let self = this;
-                    let remark = [];
-                    // console.log(this.alltest_error)
-                    let str = '';
-                    let wrong = '';
-                    let arr = [];
-                    this.alltest_error.forEach((item) => {
-                          if(item.course_type == 2) {
+                        if(item.is_right == 0 && item.is_right_num) {
+                        wrong = item.usernum - item.is_right_num
+                        }
+                        if(item.is_right == -1) {
+                            wrong = 0
+                        }
+                        let obj = {
+                            name:str,
+                            value:wrong
+                        }
+                        arr.push(obj)
+                })
+                self.$nextTick(function(){
+                    setTimeout(function(){
+                        self.barEchart('bechart')
+                        self.alltest_error_remark.forEach((item) => {
+                            remark.push(item)
+                        })
+                        self.pieEchart('echart1',remark,arr)
+                        self.alltest_item.forEach((item,index) => {
+                            let str = '';
+                            if(item.course_type == 2) {
                                 str = '侧面积公式'
                             } else if(item.course_type == 3) {
                                 str = '表面积公式'
@@ -329,29 +358,43 @@ created() {
                                 str = '体积公式'
                             }  else if(item.course_type == 5) {
                                 str = '线线关系'
-                            }
-                            if(item.is_right == 0 && item.is_right_num) {
-                               wrong = item.usernum - item.is_right_num
-                            }
-                            if(item.is_right == -1) {
-                                wrong = 0
-                            }
+                            } 
+                            self.rightEchart('rechart'+(index*1+1),str,item.is_right_num)
+                        })
+                    },500)
+                })
+            }
+        })
+    }else{
+        base.getUrl(API.allUrl.batch,params).then(res => {
+            if(res.code == 200 && res.success ==  1) {
+                let params = {
+                    token:store.state.token,
+                    batch:res.obj
+                }
+                base.getUrl(API.allUrl.classTest,params).then((res) => {
+                    if(res.code == 200 && res.success == 1) {
+                        this.alltest_error = res.obj.alltest_error
+                        this.alltest_error_remark = res.obj.alltest_coursetype_remark?res.obj.alltest_coursetype_remark.split(','):''
+                        this.alltest_item = res.obj.alltest_item
+                        this.alltest_user = res.obj.alltest_user
+                        this.allTestUsernum = res.obj.alltest_user.length
+                        this.alltest_user.forEach((item) => {
                             let obj = {
-                                name:str,
-                                value:wrong
+                                name:item.user_name,
+                                value:item.sum_score
                             }
-                            arr.push(obj)
-                    })
-                    self.$nextTick(function(){
-                        setTimeout(function(){
-                            self.barEchart('bechart')
-                            self.alltest_error_remark.forEach((item) => {
-                                remark.push(item)
-                            })
-                            self.pieEchart('echart1',remark,arr)
-                            self.alltest_item.forEach((item,index) => {
-                                let str = '';
-                                if(item.course_type == 2) {
+                            this.opinionX.push(item.user_name)
+                            this.opinionY.push(obj)
+                        })
+                        let self = this;
+                        let remark = [];
+                        // console.log(this.alltest_error)
+                        let str = '';
+                        let wrong = '';
+                        let arr = [];
+                        this.alltest_error.forEach((item) => {
+                            if(item.course_type == 2) {
                                     str = '侧面积公式'
                                 } else if(item.course_type == 3) {
                                     str = '表面积公式'
@@ -359,15 +402,46 @@ created() {
                                     str = '体积公式'
                                 }  else if(item.course_type == 5) {
                                     str = '线线关系'
-                                } 
-                                self.rightEchart('rechart'+(index*1+1),str,item.is_right_num)
-                            })
-                        },500)
-                    })
-                }
-            })
-        }
-    })
+                                }
+                                if(item.is_right == 0 && item.is_right_num) {
+                                wrong = item.usernum - item.is_right_num
+                                }
+                                if(item.is_right == -1) {
+                                    wrong = 0
+                                }
+                                let obj = {
+                                    name:str,
+                                    value:wrong
+                                }
+                                arr.push(obj)
+                        })
+                        self.$nextTick(function(){
+                            setTimeout(function(){
+                                self.barEchart('bechart')
+                                self.alltest_error_remark.forEach((item) => {
+                                    remark.push(item)
+                                })
+                                self.pieEchart('echart1',remark,arr)
+                                self.alltest_item.forEach((item,index) => {
+                                    let str = '';
+                                    if(item.course_type == 2) {
+                                        str = '侧面积公式'
+                                    } else if(item.course_type == 3) {
+                                        str = '表面积公式'
+                                    } else if(item.course_type == 4) {
+                                        str = '体积公式'
+                                    }  else if(item.course_type == 5) {
+                                        str = '线线关系'
+                                    } 
+                                    self.rightEchart('rechart'+(index*1+1),str,item.is_right_num)
+                                })
+                            },500)
+                        })
+                    }
+                })
+            }
+        })
+    }
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

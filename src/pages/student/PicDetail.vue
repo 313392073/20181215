@@ -131,6 +131,7 @@ created() {
     this.info.group = this.$route.params.groupInfo;
     this.info.headImage = this.$route.params.headImage;
     this.getDetail();
+    let self = this
     let num = 2
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)

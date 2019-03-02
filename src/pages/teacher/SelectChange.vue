@@ -43,7 +43,7 @@
             <p class="order-step" style="width: 50%;margin-right: 2rem;">第 <span>02</span>步：选择课程模块</p>
             <p class="order-step" style="flex: 1;">第 <span>03</span>步：调整模块顺序</p>
         </div>
-        <div class="submitBtn" @click="submitCouese">确认</div>
+        <div class="submitBtn" @click="submitCouese" v-if="flag">确认</div>
     </div>
   </div>
   </div>
@@ -58,6 +58,7 @@ import base from '../../router/http/base.js'
 import share from '../../router/http/share.js'
 import API from '../../router/http/api.js';
 import store from '../../store/store.js';
+import * as types from '../../store/types';
 import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
@@ -68,7 +69,8 @@ return {
     courseList:[],
     classId:'',
     courseId:'',
-    setList:[]
+    setList:[],
+    flag:true
 };
 },
 //监听属性 类似于data概念
@@ -127,6 +129,7 @@ methods: {
     },
     submitCouese(){
         let self = this;
+        self.flag = false;
         let arr = [];
         if(self.setList.length>0){
             self.setList.forEach((item,index) => {
@@ -166,6 +169,7 @@ methods: {
             data:JSON.stringify(arr),
         }).then((res) => {
             if(res.data.code == 200 && res.data.success == 1) {
+                store.commit(types.BATCH,res.data.obj)
                 self.$layer.open({
                     type:0,
                     content: '设置成功',
@@ -177,6 +181,7 @@ methods: {
                         console.log('layer id is:',layer.id)
                     },
                     yes(index) {
+                        self.flag = true;
                         self.$layer.close(index);
                         self.$router.push('/teapracticreport')
                     },
@@ -241,6 +246,7 @@ created() {
                 })
             }
             self.courseList = res.obj
+            console.log(self.courseList)
         }else{
             self.$layer.open({
                 type:0,

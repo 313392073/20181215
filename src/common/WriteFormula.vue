@@ -188,15 +188,23 @@ created() {
     let params = {
         token:store.state.token
     }
-    base.getUrl(API.allUrl.batch,params).then(res => {
-        if(res.code == 200 && res.success ==  1) {
-            let params1 = {
-                token:store.state.token,
-                userType:store.state.userType*1,
-                batch:res.obj
-            }
+    if(store.state.batch) {
+        let params1 = {
+            token:store.state.token,
+            userType:store.state.userType*1,
+            batch:store.state.batch
         }
-    })
+    }else{
+        base.getUrl(API.allUrl.batch,params).then(res => {
+            if(res.code == 200 && res.success ==  1) {
+                let params1 = {
+                    token:store.state.token,
+                    userType:store.state.userType*1,
+                    batch:res.obj
+                }
+            }
+        })
+    }
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

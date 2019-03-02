@@ -201,12 +201,12 @@ methods: {
     gocourse() {
         let self = this;
         let loginFlag = store.state.userType; //userType:'', //0 学生  1老师
-        let rolelastmenu = plus.storage.getItem("lasturl_"+loginFlag)
-        if(rolelastmenu) {
-            self.$router.push(rolelastmenu)
-        }else{
+        // let rolelastmenu = plus.storage.getItem("lasturl_"+loginFlag)
+        // if(rolelastmenu) {
+        //     self.$router.push(rolelastmenu)
+        // }else{
             self.$router.push('/stuonlinetest')
-        }
+        // }
     },
     goOncourse() {
         this.gocourse()

@@ -377,21 +377,26 @@ created() {
     let params = {
         token:store.state.token
     }
-    base.getUrl(API.allUrl.batch,params).then(res => {
-        if(res.code == 200 && res.success == 1){
-            this.classBatch = res.obj;
-            let params1 = {
-                token:store.state.token,
-                batch:res.obj
+    if(store.state.batch) {
+
+    }else{
+         base.getUrl(API.allUrl.batch,params).then(res => {
+            if(res.code == 200 && res.success == 1){
+                this.classBatch = res.obj;
+                let params1 = {
+                    token:store.state.token,
+                    batch:res.obj
+                }
+                let params2 = {
+                    token:store.state.token,
+                    batch:res.obj,
+                    type:2
+                }
+                Axios.all([self.getMenu(params1)],self.getCourseList(params2))
             }
-            let params2 = {
-                token:store.state.token,
-                batch:res.obj,
-                type:2
-            }
-            Axios.all([self.getMenu(params1)],self.getCourseList(params2))
-        }
-    })
+        })
+    }
+   
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

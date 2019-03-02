@@ -61,10 +61,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item,index) in scoreDetail" :key="index" :class="index>4?trHide:''">
+                            <tr v-for="(item,index) in scoreRank" :key="index" :class="index>4?trHide:''">
                                 <td><i>{{index+1}}</i><img :src="item.user_head_image" class="head-pic" :alt="item.user_name"><span>{{item.user_name}}</span></td>
-                                <td>{{item.score}}分</td>
-                                <td class="use-time">{{getMinute(item.usetime)}}</td>
+                                <td>{{item.sum_score}}分</td>
+                                <td class="use-time">{{getMinute(item.sum_usetime)}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -102,7 +102,8 @@ return {
     },
     btnMsg:'查看全部',
     trHide:'tr-hide',
-    scoreDetail:[]
+    scoreDetail:[],
+    scoreRank:[]
 };
 },
 //监听属性 类似于data概念
@@ -151,27 +152,65 @@ created() {
     let params = {
         token:store.state.token
     }
-    base.getUrl(API.allUrl.batch,params).then(res => {
-        if(res.code == 200 && res.success ==  1) {
-            let params1 = {
-                token:store.state.token,
-                userType:store.state.userType*1,
-                batch:res.obj
-            }
-            base.getUrl(API.allUrl.onlineTest,params1).then((res) => {
-                if(res.code == 200 && res.success == 1) {
-                    this.resSituation.score = res.obj.score_rank[0]['sum_score']
-                    this.resSituation.rank = res.obj.score_rank[0]['sys_class_id']
-                    this.resSituation.rightPercent = res.obj.score_rank[0]['test_user_rightnum']
-                    this.resSituation.useTime = res.obj.score_rank[0]['sum_usetime']
-                    this.scoreDetail = res.obj.score_report
-                    this.$nextTick(() => {
-                        window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
+    if(store.state.batch) {
+        let params1 = {
+            token:store.state.token,
+            userType:store.state.userType*1,
+            batch:store.state.batch
+        }
+        base.getUrl(API.allUrl.onlineTest,params1).then((res) => {
+            console.log(res)
+            if(res.code == 200 && res.success == 1) {
+                if(res.obj.score_rank.length > 0) {
+                    let user_loginname = JSON.parse(store.state.user)['userLoginname']
+                    res.obj.score_rank.forEach((item,index) =>{
+                        if(item['user_loginname'] == user_loginname) {
+                            this.resSituation.score = item['sum_score']?item['sum_score']:0
+                            this.resSituation.rank = item['sys_class_id']?item['sys_class_id']:0
+                            this.resSituation.rightPercent = item['test_user_rightnum']?item['test_user_rightnum']:0
+                            this.resSituation.useTime = item['sum_usetime']?item['sum_usetime']:0
+                        }
                     })
                 }
-            })
-        }
-    })
+                this.scoreDetail = res.obj.score_report
+                this.scoreRank = res.obj.score_rank
+                this.$nextTick(() => {
+                    window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
+                })
+            }
+        })
+    }else{
+        base.getUrl(API.allUrl.batch,params).then(res => {
+            if(res.code == 200 && res.success ==  1) {
+                let params1 = {
+                    token:store.state.token,
+                    userType:store.state.userType*1,
+                    batch:res.obj
+                }
+                base.getUrl(API.allUrl.onlineTest,params1).then((res) => {
+                    if(res.code == 200 && res.success == 1) {
+                        if(res.obj.score_rank.length > 0) {
+                            let user_loginname = JSON.parse(store.state.user)['userLoginname']
+                            res.obj.score_rank.forEach((item,index) =>{
+                                if(item['user_loginname'] == user_loginname) {
+                                    this.resSituation.score = item['sum_score']?item['sum_score']:0
+                                    this.resSituation.rank = item['sys_class_id']?item['sys_class_id']:0
+                                    this.resSituation.rightPercent = item['test_user_rightnum']?item['test_user_rightnum']:0
+                                    this.resSituation.useTime = item['sum_usetime']?item['sum_usetime']:0
+                                }
+                            })
+                        }
+                        this.scoreDetail = res.obj.score_report
+                        this.scoreRank = res.obj.score_rank
+                        this.$nextTick(() => {
+                            window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
+                        })
+                    }
+                })
+            }
+        })
+    }
+    
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

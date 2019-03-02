@@ -257,21 +257,35 @@ created() {
    let params = {
         token:store.state.token
     }
-    base.getUrl(API.allUrl.batch,params).then(res => {
-        if(res.code == 200 && res.success ==  1) {
-            this.batch = res.obj;
-            let params = {
-                token:store.state.token,
-                batch:res.obj,
-                listtype:11*1
-            }
-            base.getUrl(API.allUrl.uploadList,params).then((res) => {
-                if(res.code == 200 && res.success == 1) {
-                    self.groupList = res.obj;
-                }
-            })
+    if(store.state.batch) {
+        let params = {
+            token:store.state.token,
+            batch:store.state.batch,
+            listtype:11*1
         }
-    })
+        base.getUrl(API.allUrl.uploadList,params).then((res) => {
+            if(res.code == 200 && res.success == 1) {
+                self.groupList = res.obj;
+            }
+        })
+    }else{
+         base.getUrl(API.allUrl.batch,params).then(res => {
+            if(res.code == 200 && res.success ==  1) {
+                this.batch = res.obj;
+                let params = {
+                    token:store.state.token,
+                    batch:res.obj,
+                    listtype:11*1
+                }
+                base.getUrl(API.allUrl.uploadList,params).then((res) => {
+                    if(res.code == 200 && res.success == 1) {
+                        self.groupList = res.obj;
+                    }
+                })
+            }
+        })
+    }
+   
     let num = 4
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
