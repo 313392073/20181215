@@ -38,14 +38,14 @@
                             <slot v-else>
                                 <p>暂未上传任何图片</p>
                             </slot>
-                            <!-- <img src="../../assets/images/group-pic.png" alt="group-pic">
-                            <img src="../../assets/images/group-pic.png" alt="group-pic">
-                            <img src="../../assets/images/group-pic.png" alt="group-pic">-->
                         </div>
                     </div>
-                    <div class="sub-item nosub-item">
-                        <div class="not-upload"><img @click="showUpload" src="../../assets/images/noupload.png" alt="noupload"></div>
+                    <div  v-for="pitem in item">
+                         <div class="sub-item nosub-item" v-if="pitem['inGroup']">
+                            <div class="not-upload"><img @click="showUpload" src="../../assets/images/noupload.png" alt="noupload"></div>
+                        </div>
                     </div>
+                   
                 </div>
             </div>
         </div>
@@ -126,8 +126,13 @@ return {
 //监听属性 类似于data概念
 computed: {
     setItem(){
+        let userLoginname = store.state.user?JSON.parse(store.state.user)['userLoginname']:''
         let obj = this.getAllkey();
         this.groupList.forEach((item,index) => {
+            item['inGroup'] = false
+            if(item['user_loginname'] == userLoginname) {
+                item['inGroup'] = true
+            }
             obj[item['groupname']].push(item)
         })
         let newkey = Object.keys(obj).sort();
@@ -135,6 +140,7 @@ computed: {
         for (var i = 0; i < newkey.length; i++) {//遍历newkey数组
             newObj[newkey[i]] = obj[newkey[i]];//向新创建的对象中按照排好的顺序依次增加键值对
         }
+        console.log(newObj)
         return newObj;
     }
 },

@@ -9,6 +9,13 @@ const timestampToTime = function(timestamp) {
     var s = date.getSeconds();
     return M+D+h+m+s;
 }
+const stableTime = function(timestamp) {
+    var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+    var Y = date.getFullYear() + '-';
+    var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+    var D = date.getDate()<10?'0'+date.getDate():date.getDate();
+    return Y+M+D;
+}
 const formatTime = function(timestamp) {
     var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
     var Y = date.getFullYear() + '-';
@@ -62,6 +69,7 @@ export default {
     timestampToTime:timestampToTime,
     getMinute:getMinute,
     formatTime:formatTime,
+    stableTime:stableTime,
     uniqArr:uniqArr,
     isMathjaxConfig:isMathjaxConfig,
     initMathjaxConfig:initMathjaxConfig

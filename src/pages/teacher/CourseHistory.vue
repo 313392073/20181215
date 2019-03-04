@@ -72,11 +72,7 @@ return {
     valuestart:'',
     valueend:'',
     checkedValue:'',
-    courseList:[
-        {id: 85, sysClassId: 1, batch: "sakeqri61v", creatTime: 1550295367000},
-        {id: 86, sysClassId: 1, batch: "pg3yn5cszc", creatTime: 1550296970000},
-        {id: 87, sysClassId: 1, batch: "w2bdiqxy8j", creatTime: 1550671984000}
-    ]
+    courseList:[]
 };
 },
 //监听属性 类似于data概念
@@ -219,7 +215,10 @@ methods: {
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-    console.log(store.state)
+    let time = share.stableTime(new Date()/1000)
+    this.valuestart = time
+    this.valueend = time
+    this.doSearch()
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

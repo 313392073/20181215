@@ -149,8 +149,7 @@ methods: {
                 }
                 base.postUrl(API.allUrl.nextStep,params).then((res) => {
                     if(res.code == 200 && res.success == 1) {
-                        self.$layer.close(index);
-                        base.showMsg(res.msg)
+                        self.$layer.close(index);   
                         self.reload()
                     }else{
                         base.showMsg("没有下一个流程模块!!!")

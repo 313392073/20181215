@@ -588,3 +588,72 @@ let person = {
 self.$layer.confirm('网络错误，请稍后再试',{
     title:'温馨提示'
 });
+
+//async 作为关键字 放在函数前面  表示函数是一个异步函数  因为anync是一个异步函数  因为async 就是异步的意思
+// 异步函数也就意味着该函数的执行不会阻塞后面代码的执行  
+async function timeout() {
+    return 'hello world'
+}
+
+timeout().then(result => {
+    console.log(result)
+})
+
+async function timeout(flag) {
+    if(flag) {
+        return 'hello world'
+    } else {
+        throw 'my god failure'
+    }
+}
+
+timeout(false).catch(err => {
+    console.log(err)
+})
+/**
+ * await 只能放到async 函数里面
+ */
+function doubleAfter2seconds(num) {
+    return new Promise((resolve,reject) => {
+        setTimeout(() => {
+            resolve(2*num)
+        },2000)
+    })
+}
+
+/**
+ * 再写一个async 函数  从而可以使用await 关键字  await 后面放置的就是返回promise对象的一个表达式 
+ */
+
+ async function testResult() {
+     let result = await doubleAfter2seconds(30);
+     console.log(result)
+ }
+
+async function testResult() {
+    let first = await doubleAfter2seconds(30);
+    let second = await doubleAfter2seconds(50);
+    let third = await doubleAfter2seconds(30);
+    console.log(first+second+third)
+}
+
+const express = require('express');
+const app = express();
+app.use(express.static('public'));
+app.listen(3000, () => {
+    console.log('server start')
+})
+
+app.post('/phoneLocation',(req,res) => {
+    setTimeout(() => {
+        res.json({
+            success:true,
+            obj:{
+                provice:'广东',
+                city:'深圳'
+            }
+        },1000)
+    })
+})
+
+app.post()

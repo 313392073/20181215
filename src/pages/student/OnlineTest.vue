@@ -361,6 +361,7 @@ methods: {
             data:JSON.stringify(arr),
         }).then((res) => {
             if(res.data.code = 200 && res.data.success == 1){
+                localStorage.setItem('hasSubmit',true)
                 this.toggleTips = true;
                 this.tipsMsg = '本轮结束';
             }
@@ -399,14 +400,18 @@ methods: {
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
     let self = this;
-    if (share.isMathjaxConfig === false) { // 如果：没有配置MathJax
-        share.initMathjaxConfig();
+    if(localStorage.getItem('hasSubmit')) {
+        self.$router.push('/stutestreport')
+    }else{
+        if (share.isMathjaxConfig === false) { // 如果：没有配置MathJax
+            share.initMathjaxConfig();
+        }
+        this.getInit();
+        let num = 4
+        base.getMenuStep().then((res) => {
+        self.isInArray = base.arrContain(res,num)
+        })
     }
-    this.getInit();
-    let num = 1
-    base.getMenuStep().then((res) => {
-       self.isInArray = base.arrContain(res,num)
-    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
