@@ -148,11 +148,16 @@ methods: {
                     batch:store.state.batch
                 }
                 base.postUrl(API.allUrl.nextStep,params).then((res) => {
+                    console.log(res)
                     if(res.code == 200 && res.success == 1) {
-                        self.$layer.close(index);   
-                        self.reload()
+                        if(res.obj == 0) {
+                            base.showMsg('没有下一个模块!')
+                        }else{
+                            self.$layer.close(index);   
+                            self.reload()
+                        }
                     }else{
-                        base.showMsg("没有下一个流程模块!!!")
+                        base.showError('网络错误，请稍后再试')
                     }
                 })
             },

@@ -74,7 +74,7 @@ methods: {
         this.toggleTips = false;
     },
     goLogin(){
-        this.$router.push('/login')
+        this.$router.push('/')
     },
     checkForm(){
         let self = this;
