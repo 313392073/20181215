@@ -10,8 +10,8 @@
                     <div class="item header-item">
                         <label class="desc">上传头像</label>
                         <div class="header-box">
-                            <img class="upload-pic" :src="defaultUrl" alt="default" @click="showActionSheet()">
-                            <input type="file" name="file" accept="image/png,image/jpg,image/jepg,image/gif" capture="camera" ref="filElem" class="upload-file"  @change="fileChange($event)">
+                            <img class="upload-pic" :src="defaultUrl" alt="default" @click="chooseImg">
+                            <input type="file" name="file" accept="image/*" ref="filElem" class="upload-file" @change="uploadImg">
                         </div>
                     </div>
                     <div class="item">
@@ -101,62 +101,8 @@ watch: {},
 //方法集合
 methods: {
     //选图片
-    //点击事件，弹出选择摄像头和相册的选项
-    showActionSheet() {
-        let bts = [{
-        title: "拍照"
-        }, {
-        title: "从相册选择"
-        }];
-        plus.nativeUI.actionSheet({
-            cancel: "取消",
-            buttons: bts
-        },
-        function(e) {
-            if (e.index == 1) {
-            this.getImage();
-            } else if (e.index == 2) {
-            this.galleryImgs();
-            }
-        }
-        );
-    },
-     //调用手机摄像头并拍照
-    getImage() {
-        let cmr = plus.camera.getCamera();
-        cmr.captureImage(function(p) {
-        plus.io.resolveLocalFileSystemURL(p, function(entry) {
-            compressImage(entry.toLocalURL(),entry.name);
-        }, function(e) {
-            plus.nativeUI.toast("读取拍照文件错误：" + e.message);
-        });
-        }, function(e) {
-        }, {
-        filter: 'image'
-        });
-    },
-    fileChange(el) {
-        this.files=$("#upload_file").get(0).files;
-        console.log(this.files.length);
-        for(let i=0;i<this.files.length;i++){
-        this.datas.append("file",this.files[i]);
-        }
-        this.show1=false;
-        console.log(typeof this.files);
-        console.log(this.files);
-        if (!el.target.files[0].size) return;
-        this.fileList(el.target);
-        el.target.value = ''
-    },
-    //从相册选择照片
-    galleryImgs() {
-        plus.gallery.pick(function(e) {
-        let name = e.substr(e.lastIndexOf('/') + 1);
-        compressImage(e,name);
-        }, function(e) {
-        }, {
-        filter: "image"
-        });
+    chooseImg(e){
+        this.$refs.filElem.dispatchEvent(new MouseEvent('click')) 
     },
     //图片上传的跟新头像
     uploadImg(){
@@ -202,11 +148,11 @@ methods: {
             self.toggleTips = true;
             return false;
         }
-        // if(!common.checkStrong(self.dataObj.pwd) || !common.checkStrong(self.dataObj.repwd)){
-        //     self.tipsMsg = '6-20位数字、大小写字'
-        //     self.toggleTips = true;
-        //     return false;
-        // }
+        if(!common.checkStrong(self.dataObj.pwd) || !common.checkStrong(self.dataObj.repwd)){
+            self.tipsMsg = '6-20位数字、大小写字'
+            self.toggleTips = true;
+            return false;
+        }
         if(self.dataObj.pwd != self.dataObj.repwd){
             self.tipsMsg = '输入的密码不一致'
             self.toggleTips = true;

@@ -173,6 +173,7 @@ methods: {
             batch:store.state.batch
         }
         base.getUrl(API.allUrl.course_m_info,params).then((res) => {
+            console.log(res)
            if(res.success == 1 && res.code == 200) {
                 if(res.obj.length > 0) {
                     res.obj.forEach((item,index) => {

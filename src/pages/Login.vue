@@ -12,7 +12,7 @@
                     </div>
                     <div class="item">
                         <label class="desc">密码</label>
-                        <input type="text" class="info" name="pwd" id="pwd" v-model="dataObj.pwd">
+                        <input type="password" class="info" name="pwd" id="pwd" v-model="dataObj.pwd">
                     </div>
                     <p class="forget-pwd"><router-link to='findpwd'><a>忘记密码？</a></router-link></p>
                     <div class="login-btn">
