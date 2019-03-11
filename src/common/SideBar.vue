@@ -1,17 +1,16 @@
 <template>
 <div class="right-wrapper">
-    <div class="user-info clearfix" style="display:none">
+    <div class="user-info clearfix">
         <div class="left-pic">
-            <img src="images/user.png" alt="headerpic" class="headerpic">
+            <img :src="headerUrl" alt="headerpic" class="headerpic">
         </div>
         <div class="right-info">
-            <p class="user-name">Jordon J</p>
-            <p class="user-name">Administrator</p>
+            <p class="user-name">{{userName}}</p>
         </div>
     </div>
-    <div class="list" style="margin-top:0.9rem;">
-        <p v-if="isTea" class="spec-title" @click="goRoute('/teaselectclass')">课程设置</p>
-        <p v-if="isTea" class="spec-title spec-next" @click="goNext">下一环节</p>
+    <div class="list" v-if="isTea">
+        <p class="spec-title" @click="goRoute('/teaselectclass')">课程设置</p>
+        <p class="spec-title spec-next" @click="goNext">下一环节</p>
     </div>
 
     <div class="list" v-if="menuList.length > 0" v-for="(item,index) in menuList" :key="index">
@@ -78,6 +77,8 @@ return {
     tab:'',
     nowUrl:'',
     role:0,
+    headerUrl:'',
+    userName:'',
     menuList:[]
 };
 },
@@ -205,6 +206,8 @@ created(){
     this.nowUrl = this.$route.path
     this.role = store.state.userType
     //获取菜单
+    this.headerUrl = store.state.user?JSON.parse(store.state.user)['userHeadImage']:''
+    this.userName = store.state.user?JSON.parse(store.state.user)['userName']:''
     this.getMenu();
     //获取环节标记点
     base.getMenuStep()
@@ -226,12 +229,15 @@ created(){
         .left-pic{
             position: absolute;
             left: 0rem;
-            width: 35%;
+            width: 40%;
+            text-align: center;
         }
         .right-info{
             position: absolute;
-            left: 35%;
-            width: 65%;
+            left: 40%;
+            width: 60%;
+            height: 0.6rem;
+            line-height: 0.6rem;
         }
        .headerpic{
            width: 0.65rem;

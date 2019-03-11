@@ -20,25 +20,25 @@
                         </label>
                     </div>
                     <div class="item">
-                        <label class="desc" >选择班级</label>
+                        <label class="desc" >选择课程</label>
                         <select name="majorId" class="majorId" @click="majorIdSelect($event)">
                             <option v-for="item in majorIds" :key="item.id" :value="item.id">{{item.name}}</option>
                         </select>
                         <i class="iconfont icon-icon_sanjiaoxing"></i>
                     </div>
                     <div class="item" v-if="(checkedValue == 0) && courseIds.length > 0">
-                        <label class="desc" >选择课程</label>
+                        <label class="desc" >选择班级</label>
                         <select name="courseId" class="majorId" @change="courseIdSelect($event)">
-                            <option value="no">请选择课程</option>
+                            <option value="no">请选择班级</option>
                             <option v-for="item in courseIds" :key="item.sys_class_id" :value="item.sys_class_id">{{item.classname}}</option>
                         </select>
                         <i class="iconfont icon-icon_sanjiaoxing"></i>
                     </div>
 
                     <div class="item" v-if="(checkedValue == 1) && courseIds.length > 0">
-                        <label class="desc" >选择课程</label>
+                        <label class="desc" >选择班级</label>
                         <select name="courseId" class="majorId" @change="courseIdSelect($event)">
-                            <option value="no">请选择课程</option>
+                            <option value="no">请选择班级</option>
                             <option v-for="item in courseIds" :key="item.schoolId" :value="item.schoolId">{{item.schoolName}}</option>
                         </select>
                         <i class="iconfont icon-icon_sanjiaoxing"></i>
@@ -133,7 +133,7 @@ methods: {
             }else{
                 let params = {
                     userType:self.checkedValue*1,
-                    majorId:self.majorId*1
+                    majorId:self.majorId?self.majorId*1:3
                 }
                 base.getUrl(API.allUrl.registInfo,params).then((res) => {
                     if(res.code == 200 && res.success == 1){

@@ -228,6 +228,8 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         height: 100%;
         background-color: #6058e5;
         position: relative;
+        min-height: 280*0.4*0.02rem;
+        overflow-y: scroll;
         .info-box{
             width: 67%;
             margin: 0 auto;

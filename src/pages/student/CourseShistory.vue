@@ -121,7 +121,6 @@ methods: {
             });
             return false;
         }
-        console.log(startTime,endTime)
         Axios({
             method:'post',
             baseURL:base.baseURL,
@@ -219,6 +218,7 @@ created() {
     this.valuestart = time
     this.valueend = time
     this.doSearch()
+    console.log(store.state)
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

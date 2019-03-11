@@ -23,6 +23,24 @@ export default {
     // plus.screen.lockOrientation( 'landscape-primary');
       // this.$router.push('/reg')
   },
+  mounted() {
+    //添加事件
+    let self = this;
+    //取消选中
+    document.addEventListener('touchstart',function() {
+      document.oncontextmenu = false
+    },false)
+
+    document.addEventListener('plusready',function() {
+      plus.key.addEventListener('backbutton',function() {
+        plus.nativeUI.confirm('是否要退出？',function(event) {
+          if(event.index) {
+            plus.runtime.quit()
+          }
+        },null,['取消','确定'])
+      })
+    })
+  },
   methods: {
     reload() {
       this.isRouterAlive = false;
