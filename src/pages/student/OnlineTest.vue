@@ -407,9 +407,10 @@ created() {
             share.initMathjaxConfig();
         }
         this.getInit();
-        let num = 4
+        let num = 1
         base.getMenuStep().then((res) => {
-        self.isInArray = base.arrContain(res,num)
+            console.log(res)
+         self.isInArray = base.arrContain(res,num)
         })
     }
 },

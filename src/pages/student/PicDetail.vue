@@ -58,6 +58,7 @@ data() {
 //这里存放数据
 return {
     attId:'',
+    isInArray:false,
     info:{
         group:'',
         userLoginname:'',
@@ -66,7 +67,6 @@ return {
         uploadNetUrl:'',
         headImage:'',
         likesUserLoginname:'',
-        isInArray:false
     }
 };
 },
@@ -135,6 +135,7 @@ created() {
     let num = 2
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
+        console.log(self.isInArray)
     })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）

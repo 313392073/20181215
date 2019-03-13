@@ -75,7 +75,12 @@ computed: {
             })
             this.zanTotal.push(sum)
         }
-        return obj;
+        let sortArr = Object.keys(obj).sort()
+        let sortObj = {}
+        sortArr.forEach(function (item,index) {
+            sortObj[item] = obj[item]
+        })
+        return sortObj;
     }
 },
 //监控data中的数据变化

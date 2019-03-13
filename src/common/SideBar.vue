@@ -119,6 +119,7 @@ methods: {
                 let params = {
                     token:store.state.token
                 }
+                localStorage.removeItem('hasSubmit')
                 store.commit(types.LOGOUT)
                 base.postUrl(API.allUrl.logout,params).then((res) => {
                     if(res.code == 200 && res.success == 1) {

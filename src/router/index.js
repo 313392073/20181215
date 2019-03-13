@@ -438,15 +438,6 @@ const router = new Router({
         auth: true
       }
     },
-    // {
-    //   path: '/teavidedetail',
-    //   name: 'VideDetail',
-    //   component: VideDetail,
-    //   meta: {
-    //     title: '视频详情',
-    //     auth: true
-    //   }
-    // },
     {
       path: '/stuvidedetail',
       name: 'UploadVideoList',
@@ -479,7 +470,7 @@ const router = new Router({
       name: 'VolumeFormula',
       component: VolumeFormula,
       meta: {
-        title: '课后习题',
+        title: '正棱锥体积',
         auth: true
       }
     },

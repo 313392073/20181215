@@ -657,3 +657,77 @@ app.post('/phoneLocation',(req,res) => {
 })
 
 app.post()
+
+var plusReady = function (callback) {
+    window.IsSureQuit = false;
+    plus.key.addEventListeener('backbutton',function() {
+       //得到当前窗口对象
+        var curentWebview = plus.webview.currentWebview()
+       //判断窗口是否有可后退的历史记录 如果有 则后退  没有就关闭当前窗口
+    //    如果是入口页面  就执行退出的逻辑
+        curentWebview.canBack(evt => {
+           if(evt.canBack) {
+               router.go(-1)
+           }else{
+               if(window.isSecurQuit) {
+                   plus.runtime.quit()
+               }else{
+                   window.isSecurQuit = true
+                   setTimeout(() => {
+                       window.isSecurQuit = false
+                   },2000)
+               }
+           }
+       }) 
+    })
+}
+
+
+
+var plusReady = function(callback) {
+    if(window.plus) {
+        callback()
+    }else{
+        document.addEventListener('plusready',callback)
+    }
+}
+
+plusReady(function() {
+    var firstBack = 0;
+    var hanleBack = function() {
+        var curentWebview = plus.webview.curentWebview();
+        var topWebview = plus.webview.getTopWebview();
+        var now = Date.now || function() {
+            return new Date().getTime()
+        }
+        //查看当前窗口对象有没有返回
+        curentWebview.callback(function(evt) {
+            if(curentWebview.id === plus.runtime.appid) {
+                if(!firstBack) {
+                    firstBack = now()
+                    plus.nativeUI.toast('再按一次退出应用')
+                    setTimeout((function() {
+                        firstBack = 0;
+                    },2000))
+                }else if(now() - firstBack < 2000){
+                    plus.runtime.quit()
+                }
+            } else {
+                if(evt.canBack) {
+                    history.back();
+                }else{
+                    currentWebview.close('auto')
+                }
+            }
+        })
+    }
+})
+
+//模式不同 需要取的值也不一样 
+var path = location.path;
+var hash = location.hash;
+if(path === '/') {
+    plus.runtime.quit();
+}else{
+    router.go(-1) //history.back()
+}
