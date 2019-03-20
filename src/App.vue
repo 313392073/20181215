@@ -1,5 +1,4 @@
 <template>
-import func from './vue-temp/vue-editor-bridge';
   <div id="app">
     <router-view v-if="isRouterAlive"></router-view>
   </div>

@@ -13,7 +13,7 @@
                 <div class="situation-detail clearfix">
                     <div class="item">分数: <span class="score">{{resSituation.score}}分</span></div>
                     <div class="item">班级排名: <span class="order">{{resSituation.rank}}</span></div>
-                    <div class="item">正确率: <span class="rights">{{Math.ceil(resSituation.rightPercent/100)*100+'%'}}</span></div>
+                    <div class="item">正确率: <span class="rights">{{resSituation.rightPercent?(resSituation.rightPercent.toFixed(2)*100):0}}%</span></div>
                     <div class="item">用时: <span class="time">{{getMinute(resSituation.useTime)}}</span></div>
                 </div>
             </div>
@@ -38,11 +38,18 @@
                                     <span v-for="(subItem,subIndex) in JSON.parse(item.my_answer).tj" :key="subIndex+15">{{subItem}}</span>
                                     <span class="gs-box" v-for="(subItem,subIndex) in JSON.parse(item.my_answer).gs" :key="subIndex+25">{{toAsync(subItem)}}</span>
                                 </td>
+                                <td v-else class="td-left"> 
+                                    <i>{{index+1}}</i>
+                                   
+                                </td>
                                 <td v-if="item.right_answer"> 
                                     <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).q" :key="rsubIndex+10">{{rsubItem}}</span>
                                     <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).bmj" :key="rsubIndex+20">{{rsubItem}}</span>
                                     <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).tj" :key="rsubIndex+30">{{rsubItem}}</span>
                                     <span class="gs-box" v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).gs" :key="rsubIndex+40">{{toAsync(rsubItem)}}</span>
+                                </td>
+                                <td v-else class="td-left">
+                                    
                                 </td>
                                 <td class="use-time">{{item.score}}分</td>
                             </tr>
@@ -158,8 +165,8 @@ created() {
             userType:store.state.userType*1,
             batch:store.state.batch
         }
+        let rightNum = 0;
         base.getUrl(API.allUrl.onlineTest,params1).then((res) => {
-            console.log(res)
             if(res.code == 200 && res.success == 1) {
                 if(res.obj.score_rank.length > 0) {
                     let user_loginname = JSON.parse(store.state.user)['userLoginname']
@@ -167,10 +174,11 @@ created() {
                         if(item['user_loginname'] == user_loginname) {
                             this.resSituation.score = item['sum_score']?item['sum_score']:0
                             this.resSituation.rank = item['sys_class_id']?item['sys_class_id']:0
-                            this.resSituation.rightPercent = item['test_user_rightnum']?item['test_user_rightnum']:0
+                             rightNum += item['test_user_rightnum'];
                             this.resSituation.useTime = item['sum_usetime']?item['sum_usetime']:0
                         }
                     })
+                    this.resSituation.rightPercent = rightNum/res.obj.score_rank.length;
                 }
                 this.scoreDetail = res.obj.score_report
                 this.scoreRank = res.obj.score_rank
@@ -187,6 +195,7 @@ created() {
                     userType:store.state.userType*1,
                     batch:res.obj
                 }
+                
                 base.getUrl(API.allUrl.onlineTest,params1).then((res) => {
                     if(res.code == 200 && res.success == 1) {
                         if(res.obj.score_rank.length > 0) {
@@ -195,10 +204,11 @@ created() {
                                 if(item['user_loginname'] == user_loginname) {
                                     this.resSituation.score = item['sum_score']?item['sum_score']:0
                                     this.resSituation.rank = item['sys_class_id']?item['sys_class_id']:0
-                                    this.resSituation.rightPercent = item['test_user_rightnum']?item['test_user_rightnum']:0
+                                    rightNum += item['test_user_rightnum'];
                                     this.resSituation.useTime = item['sum_usetime']?item['sum_usetime']:0
                                 }
                             })
+                            this.resSituation.rightPercent = rightNum/res.obj.score_rank.length;
                         }
                         this.scoreDetail = res.obj.score_report
                         this.scoreRank = res.obj.score_rank

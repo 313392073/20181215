@@ -31,7 +31,7 @@
                                 <div class="group-process change-process" ref="changeProcess" @mousedown="moveDown($event)" @mousemove="moveMove($event)" @touchstart="moveDown($event)" @touchmove="moveMove($event)" @mouseup="end" @touchend="end">
                                     <p :style="'width:' + pwidth + '%'"><i ref="elmove"></i></p>
                                 </div>
-                                <input type="text" readonly name="num" :value="pnum">
+                                <input type="text" readonly name="num" :value="pnum?pnum:1">
                             </div>
                         </div>
                         <div class="group-item">
@@ -40,8 +40,8 @@
                                 <div class="group-process change-process">
                                     <p :style="'width:' + groupList.length + '%'"><i ></i></p>
                                 </div>
-                                <input v-if="groupList.men || groupList.women" type="text" readonly name="num" :value="groupList.men.length+groupList.women.length">
-                                <input v-else type="text" readonly name="num" :value="groupList.length">
+                                <input v-if="groupList.men || groupList.women" type="text" readonly name="num" :value="(groupList.men.length+groupList.women.length)?(groupList.men.length+groupList.women.length):1">
+                                <input v-else type="text" readonly name="num" :value="groupList.length?groupList.length:1">
                             </div>
                         </div>
                         <div class="group-desc">
@@ -167,7 +167,7 @@ return {
     pwidth:30,
     checkValue:2,
     toggleTips:false,
-    tipsMsg:'已完成小组分配，每组4人，共4组！',
+    tipsMsg:'',
     grouptype:grouptype,
     sel_class:[],
     defaultValue:2, //默认分组方式
@@ -244,9 +244,9 @@ methods: {
             }else if(this.move.left > this.move.len){
                 this.move.left = this.move.len
             }
-            this.pwidth = this.move.left;
+            this.pwidth = this.move.left?this.move.left:1;
             let num = Math.floor((this.move.left*16)/this.move.len);
-            this.pnum = num;
+            this.pnum = num?num:1;
         }
         e.preventDefault();
     },
@@ -288,7 +288,7 @@ methods: {
             let self = this;
             if(res.data.code == 200 && res.data.success == 1) {
                 self.toggleTips = true;
-                self.tipsMsg =  `已完成小组分配，每${self.pnum}人，共${self.allmener}组！`;
+                self.tipsMsg =  `已完成小组分配，每${self.pnum?self.pnum:1}人，共${self.allmener?self.allmener:1}组！`;
                 setTimeout((function() {
                     let params = {
                         token:store.state.token,

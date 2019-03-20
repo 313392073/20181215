@@ -385,7 +385,7 @@ methods: {
         }else{
             base.getUrl(API.allUrl.batch,params).then(res => {
                 if(res.code == 200 && res.success == 1){
-                    this.classBatch = res.obj;
+                    this.classBatch = res.obj?res.obj:store.state.batch;
                     let params1 = {
                         token:store.state.token,
                         batch:res.obj,
@@ -400,6 +400,7 @@ methods: {
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
     let self = this;
+    self.classBatch = store.state.batch;
     if(localStorage.getItem('hasSubmit')) {
         self.$router.push('/stutestreport')
     }else{
@@ -407,7 +408,8 @@ created() {
             share.initMathjaxConfig();
         }
         this.getInit();
-        let num = 1
+        // let num = 1
+        let num = 3
         base.getMenuStep().then((res) => {
             console.log(res)
          self.isInArray = base.arrContain(res,num)

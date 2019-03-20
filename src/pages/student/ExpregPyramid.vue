@@ -467,6 +467,7 @@ created() {
         share.initMathjaxConfig();
     }
     let self = this;
+    self.classBatch = store.state.batch
     let params = {
         token:store.state.token
     }
