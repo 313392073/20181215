@@ -45,6 +45,7 @@ watch: {},
 methods: {
     submitMajor(){
         let self = this;
+        localStorage.setItem('sysclassId',self.sysclassId)
         self.$router.push({name:'SelectUnit',params:{classid:self.sysclassId}})
     },
     submitChange() {

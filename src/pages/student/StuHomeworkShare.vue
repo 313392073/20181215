@@ -40,7 +40,7 @@
                             </slot>
                         </div>
                     </div>
-                    <div  v-for="pitem in item">
+                    <div v-for="(pitem,index) in item" :key="index+20">
                          <div class="sub-item nosub-item" v-if="pitem['inGroup']">
                             <div class="not-upload"><img @click="showUpload" src="../../assets/images/noupload.png" alt="noupload"></div>
                         </div>
@@ -57,7 +57,7 @@
             <div class="tips-msg">
                 {{tipsMsg}}
             </div>
-            <div class="tips-btn"><button class="cbtn tbtn" @click="HideTip">好的</button></div>
+            <div class="tips-btn"><button class="cbtn tbtn" @click="refreshHide">好的</button></div>
             </div>
         </div>
         <!-- 上传时的弹窗 -->
@@ -158,6 +158,13 @@ methods: {
     HideTip(){
         this.tipsMsg = '';
         this.toggleTips = false;
+    },
+    refreshHide() {
+        let self = this;
+        self.HideTip();
+        setTimeout(function() {
+            self.reload();
+        },1000)
     },
      getAllkey(){
         let arr = [];
@@ -292,7 +299,8 @@ created() {
         })
     }
    
-    let num = 4
+    // let num = 4
+    let num = 10
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
     })

@@ -13,10 +13,7 @@
                         <div class="group-item">
                             <label>班级</label>
                             <div class="group-class">
-                                <select name="classd" id="className">
-                                    <option>请选择</option>
-                                    <option v-for="(item,index) in sel_class" :key="index" :value="item.sysClassId" >{{item.classname}}</option>
-                                </select>
+                                <p class="groupd" v-if="sel_class.length>0">{{sel_class[0]['classname']}}</p>
                             </div>
                         </div>
                         <div class="group-item">
@@ -217,6 +214,7 @@ methods: {
     },   
     getInit(params){
         base.postUrl(API.allUrl.getAssignTeam,params).then((res) => {
+            console.log(res)
             if(res.code == 200 && res.success == 1) {
                 this.groupList = res.obj
             }
@@ -289,14 +287,14 @@ methods: {
             if(res.data.code == 200 && res.data.success == 1) {
                 self.toggleTips = true;
                 self.tipsMsg =  `已完成小组分配，每${self.pnum?self.pnum:1}人，共${self.allmener?self.allmener:1}组！`;
-                setTimeout((function() {
-                    let params = {
-                        token:store.state.token,
-                        method:self.checkValue*1,
-                        gmaxPnum:self.pnum*1
-                    }
-                    self.getInit(params);
-                }),1000)
+                // setTimeout((function() {
+                //     let params = {
+                //         token:store.state.token,
+                //         method:self.checkValue*1,
+                //         gmaxPnum:self.pnum*1
+                //     }
+                //     self.getInit(params);
+                // }),1000)
             }else{
                 self.$layer.open({
                     type:0,
@@ -327,6 +325,7 @@ created() {
         token:store.state.token
     }
     base.getUrl(API.allUrl.groupCondition,params).then((res) => { //获取班级的选项
+        console.log(res)
         if(res.code == 200 && res.success == 1) {
             self.sel_class = res.obj.sel_class;
         }
@@ -391,10 +390,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                 }
                 .group-class{
                     border-bottom: 1px solid #d8d8d8;
-                    select{
-                        border: none;
-                        outline: none;
-                        display: block;
+                    .groupd{
                         width: 100%;
                         font-size: 14px;
                         line-height: 60*0.4*0.02rem;
@@ -402,11 +398,6 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                         padding-right: 80*0.4*0.02rem;
                         color: #9FA9BA;
                         overflow: hidden;
-                        appearance:none;
-                        -moz-appearance:none;
-                        -webkit-appearance:none;
-                        &::-ms-expand { display: none; }
-                        background: url("../../assets/images/downsj.png") no-repeat scroll 95% center transparent;
                     }
                 }
                 .group-type-box{

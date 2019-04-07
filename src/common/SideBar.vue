@@ -23,13 +23,13 @@
                             <span :class="subItem.tag? 'iconfont icon-sanjiaoxing':'iconfont icon-sanjiaoxing1'"></span>
                         </a>
                         <ul class="secondary" v-if="subItem.tag">
-                            <li v-for="sub in subItem.child_menus" :key="sub.menu_name" :class="nowUrl == sub.menu_url_stu?'active':''">
+                            <li v-for="sub in subItem.child_menus" :key="sub.menu_name" :class="nowUrl == sub.menu_url_stu?'active':''" v-if="sub.menu_url_stu">
                                 <a href="javascript:void(0);" @click="goRoute(sub.menu_url_stu)">{{ sub.menu_name }}</a>
                             </li>
                         </ul>
                     </template>
                     <template v-else>
-                        <a href="javascript:void(0);"  @click="goRoute(subItem.menu_url_stu)">{{subItem.menu_name}}</a>
+                        <a href="javascript:void(0);"  @click="goRoute(subItem.menu_url_stu)" v-if="subItem.menu_url_stu">{{subItem.menu_name}}</a>
                     </template>
                 </li>
             </ul>
@@ -40,13 +40,13 @@
                             <span :class="subItem.tag? 'iconfont icon-sanjiaoxing':'iconfont icon-sanjiaoxing1'"></span>
                         </a>
                         <ul class="secondary" v-if="subItem.tag">
-                            <li v-for="sub in subItem.child_menus" :key="sub.menu_name" :class="nowUrl == sub.menu_url_teacher?'active':''">
+                            <li v-for="sub in subItem.child_menus" :key="sub.menu_name" :class="nowUrl == sub.menu_url_teacher?'active':''" v-if="sub.menu_url_teacher">
                                 <a href="javascript:void(0);" @click="goRoute(sub.menu_url_teacher)">{{ sub.menu_name }}</a>
                             </li>
                         </ul>
                     </template>
                     <template v-else>
-                        <a href="javascript:void(0);"  @click="goRoute(subItem.menu_url_teacher)">{{subItem.menu_name}}</a>
+                        <a href="javascript:void(0);" v-if="subItem.menu_url_teacher"  @click="goRoute(subItem.menu_url_teacher)">{{subItem.menu_name}}</a>
                     </template>
                 </li>
             </ul>
