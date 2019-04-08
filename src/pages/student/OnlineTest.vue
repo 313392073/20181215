@@ -408,8 +408,7 @@ created() {
             share.initMathjaxConfig();
         }
         this.getInit();
-        // let num = 1
-        let num = 3
+        let num = 1
         base.getMenuStep().then((res) => {
             console.log(res)
          self.isInArray = base.arrContain(res,num)
