@@ -159,7 +159,7 @@ methods: {
                 replyUserLoginname:this.oldComment
             }
         }
-        if(isInArray) {
+        if(this.isInArray) {
              Axios({
                 method:'post',
                 headers:{

@@ -99,7 +99,7 @@ methods: {
         this.reload();
     },
     showTips(){
-        this.tipsMsg = '暂未上传图片，无法查看详情';
+        this.tipsMsg = '暂未上传视频，无法查看详情';
         this.toggleTips = true;
     },
     HideTip(){

@@ -82,7 +82,7 @@
           <div class="tips-msg">
               {{tipsMsg}}
           </div>
-          <div class="tips-btn"><button class="cbtn tbtn" @click="HideTip">好的</button></div>
+          <div class="tips-btn"><button class="cbtn tbtn" @click="goResult">好的</button></div>
         </div>
     </div>
   </div>
@@ -204,6 +204,11 @@ export default {
             this.tipsMsg = ''
             this.toggleTips = false
       },
+      goResult() {
+            this.tipsMsg = ''
+            this.toggleTips = false
+            this.$router.push('/teapracticreport')
+      },
       changeState(){
            var arr = this.unCheckUsers;
            for(var i=0;i<arr.length;i++){
@@ -298,7 +303,8 @@ export default {
         });
     }
    
-    let num = 3
+    // let num = 3
+    let num = 10
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
     })

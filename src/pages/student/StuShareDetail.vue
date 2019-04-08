@@ -25,15 +25,15 @@
                 </div>
             </div>
             <div class="detail-box">
-                <div class="zan-box">
+                <div class="zan-box" v-if="info.comments && info.comments.length>0">
                     <div class="icon-box clearfix">
                         <p class="left-icon"><i class="iconfont icon-xin"></i></p>
                         <div class="zan-wrapper">
-                            <img v-if="info.comments.length>0" v-for="(cItem,cIndex) in info.comments" :key="cIndex" :src="cItem.userHeadImage" alt="default">
+                            <img v-for="(cItem,cIndex) in info.comments" :key="cIndex" :src="cItem.userHeadImage" alt="default">
                         </div>
                     </div>
                 </div>
-                <div class="comment-box">
+                <div class="comment-box" v-if="info.comments && info.comments.length>0">
                     <div class="icon-box clearfix">
                         <p class="left-icon"><i class="iconfont icon-xin"></i></p>
                         <div class="comment-wrapper">
