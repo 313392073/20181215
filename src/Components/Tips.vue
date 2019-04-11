@@ -1,4 +1,6 @@
 <!--  -->
+import func from './vue-temp/vue-editor-bridge';
+import func from './vue-temp/vue-editor-bridge';
 <template>
  <div class="tips-msg">
      <div class="tips" @click="showTips">点我哈</div>
@@ -15,7 +17,10 @@ components: {},
 data() {
 //这里存放数据
 return {
-
+    timer:'',
+    start_time:new Date().getTime(),
+    mind:'',
+    secd:''
 };
 },
 //监听属性 类似于data概念
@@ -42,11 +47,27 @@ methods: {
                 console.log('end')
             }
         });
-    }
+    },
+    fmtTime() {
+        let dis_time = Math.round(this.getTime())
+        let  hours = dis_time % 60
+        let mins = Math.round((dis_time - 30)/60);
+        this.secd = "" +((hours > 9) ? hours : '0'+hours);
+        this.mind = "" +((mins > 9) ? mins : '0'+mins);
+        console.log(this.mind+":"+this.secd)
+        return this.mind+":"+this.secd
+    },
+    getTime:function() {
+        let now_time = new Date();
+        return ((now_time.getTime() - this.start_time)/1000)
+    },
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-
+    let self = this
+    self.timer = setInterval(function() {
+       self.fmtTime()
+    },1000)
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
@@ -56,7 +77,11 @@ beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前
 beforeUpdate() {}, //生命周期 - 更新之前
 updated() {}, //生命周期 - 更新之后
-beforeDestroy() {}, //生命周期 - 销毁之前
+beforeDestroy() {
+    if(this.timer) {
+        clearInterval(this.timer)
+    }
+}, //生命周期 - 销毁之前
 destroyed() {}, //生命周期 - 销毁完成
 activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 }

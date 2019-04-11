@@ -205,16 +205,15 @@ methods: {
         e.preventDefault();
         e.currentTarget.querySelector('input').dispatchEvent(new MouseEvent('click'))
         let getGrouptype = e.currentTarget.querySelector('input').value*1
-        let params = {
-            token:store.state.token,
-            method:getGrouptype*1?getGrouptype*1:this.checkValue*1,
-            gmaxPnum:this.pnum*1
-        }
-        this.getInit(params)
+        // let params = {
+        //     token:store.state.token,
+        //     method:getGrouptype*1?getGrouptype*1:this.checkValue*1,
+        //     gmaxPnum:this.pnum*1
+        // }
+        // this.getInit(params)
     },   
     getInit(params){
         base.postUrl(API.allUrl.getAssignTeam,params).then((res) => {
-            console.log(res)
             if(res.code == 200 && res.success == 1) {
                 this.groupList = res.obj
             }
