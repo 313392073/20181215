@@ -211,21 +211,36 @@ methods: {
         self.deleteList.forEach((item) => {
             arr.push(item)
         })
-        Axios({
-            method:'post',
-            baseURL:base.baseURL,
-            url:API.allUrl.deleteUploadfile+'?token='+store.state.token,
-            headers:{
-                'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/json; charset=UTF-8'
-            },
-            data:arr,
-        }).then((res) => {
-            if(res.data.code == 200 && res.data.success == 1) {
-                 this.toggleTips = true;
-                 this.tipsMsg = '删除成功';
-            }
-        })
+        console.log(arr)
+        if(arr.length < 1) {
+            self.$layer.open({
+                type:0,
+                title:'温馨提示',
+                content: '请选择要删除的文件',
+                shade:true,
+                time:2,
+                anim:'scale',
+                yes() {
+                    self.$layer.closeAll()
+                }
+            });
+        }else{
+             Axios({
+                    method:'post',
+                    baseURL:base.baseURL,
+                    url:API.allUrl.deleteUploadfile+'?token='+store.state.token,
+                    headers:{
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    },
+                    data:arr,
+                }).then((res) => {
+                    if(res.data.code == 200 && res.data.success == 1) {
+                        this.toggleTips = true;
+                        this.tipsMsg = '删除成功';
+                    }
+                })
+        }
     },
     getCourseList(){
         let params = {
@@ -261,6 +276,7 @@ created() {
     self.getCourseList()
     let num = 9
     base.getMenuStep().then((res) => {
+        console.log(res)
         self.isInArray = base.arrContain(res,num)
     })
 },

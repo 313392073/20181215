@@ -275,7 +275,7 @@ const router = new Router({
       name: 'RegCheckTotal',
       component: RegCheckTotal,
       meta: {
-        title: '正棱锥表面积检测数据统计',
+        title: '计算表面积',
         auth: true
       }
     },

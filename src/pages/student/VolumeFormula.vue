@@ -403,7 +403,7 @@ created() {
         })
     }
     
-    let num = 9
+    let num = 6
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
     })

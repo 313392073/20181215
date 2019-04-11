@@ -39,7 +39,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(item,index) in scoreDetail" :key="index" :class="index>4?trHide:''">
-                                <td><i>{{index+1}}</i><img :src="item.user_head_image" class="head-pic" :alt="item.user_name"><span>{{item.user_name}}</span></td>
+                                <td class="td-left"><i>{{index+1}}</i><img :src="item.user_head_image" class="head-pic" :alt="item.user_name"><span>{{item.user_name}}</span></td>
                                 <td>{{item.sum_score}}分</td>
                                 <td class="use-time">{{getMinute(item.sum_usetime)}}</td>
                             </tr>
@@ -408,6 +408,13 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                                 }
                                 &.use-time{
                                     color: #6c63ff;
+                                }
+                                &.td-left{
+                                    padding-left: 50*0.4*0.02rem;
+                                    text-align: left;
+                                    i{
+                                        text-align: center;
+                                    }
                                 }
                             }
                             &.tr-hide{

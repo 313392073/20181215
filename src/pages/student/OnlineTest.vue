@@ -401,19 +401,20 @@ methods: {
 created() {
     let self = this;
     self.classBatch = store.state.batch;
-    if(localStorage.getItem('hasSubmit')) {
-        self.$router.push('/stutestreport')
-    }else{
+    // if(localStorage.getItem('hasSubmit')) {
+    //     self.$router.push('/stutestreport')
+    // }else{
         if (share.isMathjaxConfig === false) { // 如果：没有配置MathJax
             share.initMathjaxConfig();
         }
         this.getInit();
-        let num = 1
+        // let num = 1
+        let num = 8
         base.getMenuStep().then((res) => {
             console.log(res)
          self.isInArray = base.arrContain(res,num)
         })
-    }
+    // }
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

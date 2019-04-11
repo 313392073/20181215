@@ -43,6 +43,7 @@
         <div class="btn-box">
             <a href="javascript:void(0)" @click="submitData">回退至...</a>
             <a href="javascript:void(0)" @click="goOncourse">继续上课</a>
+            <a href="javascript:void(0)" @click="goRestart">重新开课</a>
         </div>
     </div>
   </div>
@@ -83,6 +84,9 @@ watch: {},
 methods: {
     getrefresh(){
         this.reload();
+    },
+    goRestart() {
+        this.$router.push('/teaselectclass')
     },
     doSearch(){
         let self = this;

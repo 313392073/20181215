@@ -207,7 +207,6 @@ export default {
       goResult() {
             this.tipsMsg = ''
             this.toggleTips = false
-            this.$router.push('/teapracticreport')
       },
       changeState(){
            var arr = this.unCheckUsers;
@@ -302,9 +301,7 @@ export default {
             Axios.all([self.getUserList(params1)],self.getCourseList(params2))
         });
     }
-   
-    // let num = 3
-    let num = 10
+    let num = 3
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
     })

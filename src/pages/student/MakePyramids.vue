@@ -202,7 +202,7 @@ methods: {
     },
     lookReport(){
         this.toggleTips = false
-        this.$router.push('/stutestreport')
+        this.$router.push('/stujobresults')
     },
     HideTip(){
         this.tipsMsg = '';

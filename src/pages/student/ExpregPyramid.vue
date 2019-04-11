@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div class="btn-box">
-                    <button v-if="tag" class="btn" @click="showTips">提交答案0</button>
+                    <button v-if="tag" class="btn" @click="showTips">提交答案</button>
                     <button v-else class="btn" @click="subForm">提交答案</button>
                 </div>
             </div>
@@ -43,7 +43,7 @@
                 <!-- <p>恭喜你，已答完所有题目！</p>
                 <p>系统已自动帮你计算好分数，快快点击查看吧！</p> -->
             </div>
-            <div class="tips-btn"><button class="cbtn tbtn" @click="lookReport">查看成绩</button></div>
+            <div class="tips-btn"><button class="cbtn tbtn" @click="lookReport">确定</button></div>
         </div>
     </div>
     <write-formula v-if="isWrite" @onsub="childsub($event)" :msg="gsMsg" @closeTap="closePtap"></write-formula>
@@ -406,7 +406,7 @@ methods: {
     },
     lookReport(){
         this.toggleTips = false
-        this.$router.push('/stutestreport')
+        this.getrefresh()
     },
     subForm(){ //提交数据
         // this.list //所有的答案和得分情况
@@ -452,7 +452,6 @@ methods: {
             url:API.allUrl.courseSubmit+'?token='+store.state.token+'&batch='+this.classBatch,
             data:JSON.stringify(arr),
         }).then((res) => {
-             console.log(res)
             if(res.data.code = 200 && res.data.success == 1){
                 this.toggleTips = true;
                 this.tipsMsg = '本轮结束';
