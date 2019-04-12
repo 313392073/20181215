@@ -5,7 +5,7 @@
             <div class="desc-menu">在线测试<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
             <!-- 主要内容 -->
             <div class="main-wrapper">
-                <h3 class="title">棱锥相关概念的测试</h3>
+                <h3 class="title">棱锥相关概念的测试<span class="count-time">答题时间：{{fmtTime()}}</span></h3>
                 <p class="answer-desc">注：请直接在答题框内答题或者修改答案</p>
                 <div class="list-box">
                     <div class="list" v-for="(item,index) in questList" :key="index+10">
@@ -128,7 +128,12 @@ return {
     },
     list:{},
     test:'',
-    isInArray:false
+    isInArray:false,
+    timer:'',
+    start_time:new Date().getTime(),
+    mind:'',
+    secd:'',
+    timeStamp:0
 };
 },
 //监听属性 类似于data概念
@@ -164,6 +169,21 @@ watch: {
 },
 //方法集合
 methods: {
+    fmtTime() {
+        let dis_time = Math.round(this.getTime())
+        let  hours = dis_time % 60
+        let mins = Math.round((dis_time - 30)/60);
+        
+        this.secd = "" +((hours > 9) ? hours : '0'+hours);
+        this.mind = "" +((mins > 9) ? mins : '0'+mins);
+        console.log(this.mind+":"+this.secd)
+        return this.mind+"分"+this.secd+"秒"
+    },
+    getTime:function() {
+        let now_time = new Date();
+        this.timeStamp = Math.floor((now_time.getTime() - this.start_time)/1000)
+        return ((now_time.getTime() - this.start_time)/1000)
+    },
     toAsync(str){
         if(str){
             return '$'+str+'$';
@@ -275,6 +295,9 @@ methods: {
     },
     subForm(){ //提交数据
         // this.list //所有的答案和得分情况
+       if(this.timer) {
+            clearInterval(this.timer)
+        }
         let arr = []
         Object.keys(this.list).forEach((item,index) => {
             var obj = {};
@@ -415,12 +438,20 @@ created() {
          self.isInArray = base.arrContain(res,num)
         })
     // }
+    self.timer = setInterval(function() {
+       self.fmtTime()
+    },1000)
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
     this.$nextTick(() => {
         window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
     })
+},
+beforeDestroy() {
+    if(this.timer) {
+        clearInterval(this.timer)
+    }
 }
 }
 </script>
@@ -436,6 +467,11 @@ mounted() {
         text-align: center;
         font-size: 0.352rem;
         color: @fcolor;
+        position: relative;
+        .count-time{
+            position: absolute;
+            right: 0.4*0.02*20rem;
+        }
     }
     .answer-desc{
         color: #f32d2d;

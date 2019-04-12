@@ -54,7 +54,6 @@ computed: {
         return score;
     },
     gsMsg(){
-        console.log(this.msg)
         return this.msg;
     }
 },

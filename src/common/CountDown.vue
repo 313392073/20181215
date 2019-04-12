@@ -1,8 +1,8 @@
 <!--  -->
 <template>
- <div class="tips-msg">
-     <div class="tips" @click="showTips">点我哈{{timeStamp}}</div>
-  </div>
+<div class='time-box'>
+    答题时间：<span>{{fmtTime()}}</span>    
+</div>
 </template>
 
 <script>
@@ -28,25 +28,6 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
-    showTips(){
-        let self = this;
-        self.$layer.open({
-            type:0,
-            content: 'hello word',
-            shade:true,
-            time:2,
-            anim:'scale',
-            success(layer) {
-                console.log('layer id is:',layer.id)
-            },
-            yes(index) {
-                self.$layer.close(index)
-            },
-            end() {
-                console.log('end')
-            }
-        });
-    },
     fmtTime() {
         let dis_time = Math.round(this.getTime())
         let  hours = dis_time % 60
@@ -55,7 +36,7 @@ methods: {
         this.secd = "" +((hours > 9) ? hours : '0'+hours);
         this.mind = "" +((mins > 9) ? mins : '0'+mins);
         console.log(this.mind+":"+this.secd)
-        return this.mind+":"+this.secd
+        return this.mind+"分"+this.secd+"秒"
     },
     getTime:function() {
         let now_time = new Date();
@@ -89,13 +70,10 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 </script>
 <style lang='less' scoped>
 //@import url(); 引入公共css类
-    .tips-msg{
-        position: fixed;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.2);
+.time-box{
+    font-size: 16px;
+    span{
+        font-size: 20px;
     }
-    .notify-btn-primary[_v-6226f137]{
-        background-color: blueviolet!important;
-    }
+}
 </style>

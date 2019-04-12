@@ -13,6 +13,7 @@ import Tree from '@/components/Tree' //评论demo
 import Test from '@/components/Test' //评论demo
 import Draw from '@/components/Draw'//找回密码
 import Upload from '@/components/Upload'//找回密码
+import CountDown from '@/common/CountDown'//找回密码
 // 路由start
 import SelectId from '@/pages/SelectId'//注册
 import RegPage from '@/pages/RegPage'//注册
@@ -79,6 +80,14 @@ Vue.use(Router)
 const router = new Router({
   mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
   routes: [
+    {
+      path: '/time',
+      name: 'Times',
+      component: CountDown,
+      meta: {
+        title: '倒计时'
+      }
+    },
     {
       path: '/tips',
       name: 'Tips',
