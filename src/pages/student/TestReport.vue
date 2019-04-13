@@ -167,6 +167,7 @@ created() {
         }
         let rightNum = 0;
         base.getUrl(API.allUrl.onlineTest,params1).then((res) => {
+            console.log(res)
             if(res.code == 200 && res.success == 1) {
                 if(res.obj.score_rank.length > 0) {
                     let user_loginname = JSON.parse(store.state.user)['userLoginname']
