@@ -21,7 +21,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="btn-box"><a href="javascript:void(0)" class="cbtn" @click="goNext">下一步</a></div>
+                <div class="btn-box" v-if="isInArray"><a href="javascript:void(0)" class="cbtn" @click="goNext">下一步</a></div>
             </div>
         </div>
     </div>
@@ -45,7 +45,8 @@ inject:['reload'],
 data() {
 //这里存放数据
 return {
-    groupList:[]
+    groupList:[],
+    isInArray:false
 };
 },
 //监听属性 类似于data概念
@@ -95,6 +96,11 @@ created() {
             }
         })
     }
+      
+    let num = 2
+    base.getMenuStep().then((res) => {
+        self.isInArray = base.arrContain(res,num)
+    })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

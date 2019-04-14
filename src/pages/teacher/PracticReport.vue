@@ -41,7 +41,7 @@
                             <tr v-for="(item,index) in scoreDetail" :key="index" :class="index>4?trHide:''">
                                 <td class="td-left"><i>{{index+1}}</i><img :src="item.user_head_image" class="head-pic" :alt="item.user_name"><span>{{item.user_name}}</span></td>
                                 <td>{{item.sum_score}}分</td>
-                                <td class="use-time">{{getMinute(item.sum_usetime)}}</td>
+                                <td class="use-time">{{getMinute(item.avg_usetime)}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -212,8 +212,6 @@ created() {
                     this.dataArr.push(obj)
                 })
                 
-            }else{
-                console.log(res)
             }
         })
     }else{

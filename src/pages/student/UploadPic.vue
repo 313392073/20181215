@@ -10,7 +10,7 @@
         <div class="main-box">
             <p class="main-title">美美的包装盒做好啦~上传属于你的包装盒制作过程的视频，和同学们一起探讨棱锥的奥秘吧！</p>
             <div class="upload-box">
-                <input type="file" name="file" accept="image/*" ref="filElem" class="upload-file" @change="uploadImg">
+                <input type="file" name="file"  ref="filElem" class="upload-file" @change="uploadImg">
                 <img @click="chooseImg" :src="defaultUrl" alt="upload" class="default-bg">
             </div>
             <div class="btn-box" v-if="isInArray"><a href="javascript:void(0)" @click="saveImg">保存并上传图片</a></div>
@@ -120,7 +120,6 @@ created() {
     
     let num = 2
     base.getMenuStep().then((res) => {
-        console.log(res)
         self.isInArray = base.arrContain(res,num)
     })
 },

@@ -5,7 +5,7 @@ import * as types from '../../store/types';
 import qs from 'qs';
 import API from './api'
 import vue from '../../main.js';
-const baseURL = 'http://118.31.8.72:98';
+const baseURL = 'http://118.31.8.72:83';
 // const baseURL = 'http://192.168.1.56';
 const timeout = 5000;
 //请求的拦截

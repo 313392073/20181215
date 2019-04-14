@@ -173,10 +173,8 @@ methods: {
         let dis_time = Math.round(this.getTime())
         let  hours = dis_time % 60
         let mins = Math.round((dis_time - 30)/60);
-        
         this.secd = "" +((hours > 9) ? hours : '0'+hours);
         this.mind = "" +((mins > 9) ? mins : '0'+mins);
-        console.log(this.mind+":"+this.secd)
         return this.mind+"分"+this.secd+"秒"
     },
     getTime:function() {
@@ -278,6 +276,7 @@ methods: {
     },
     getCourseList(params){ //获取题型
         base.getUrl(API.allUrl.course_list,params).then(res => {
+            console.log(params)
             if(res.code == 200 && res.success == 1){
                 console.log(res.obj)
                 res.obj.forEach((item,index) => {
@@ -404,6 +403,7 @@ methods: {
             self.getCourseList(params1)
         }else{
             base.getUrl(API.allUrl.batch,params).then(res => {
+                console.log(res)
                 if(res.code == 200 && res.success == 1){
                     this.classBatch = res.obj?res.obj:store.state.batch;
                     let params1 = {
@@ -428,8 +428,7 @@ created() {
             share.initMathjaxConfig();
         }
         this.getInit();
-        // let num = 1
-        let num = 8
+        let num = 1
         base.getMenuStep().then((res) => {
             console.log(res)
          self.isInArray = base.arrContain(res,num)
