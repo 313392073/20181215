@@ -210,7 +210,6 @@ function getMenuStep() {
         batch:store.state.batch
     }
     return postUrl(API.allUrl.curstep,params).then((res) => {
-        console.log(res)
         if(res.success == 1 && res.code == 200) {
             arr = res.obj
         }else{

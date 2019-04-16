@@ -26,7 +26,7 @@
                         </span>
                     </div>
                 </div>
-                <div class="btn-box">
+                <div class="btn-box" v-if="isInArray">
                     <button v-if="tag" class="btn" @click="showTips">提交答案</button>
                     <button v-else class="btn" @click="subForm">提交答案</button>
                 </div>
@@ -93,7 +93,8 @@ return {
         courseItemId:'',
         type:''
     },
-    list:{}
+    list:{},
+    isInArray:false
 };
 },
 //监听属性 类似于data概念
@@ -490,6 +491,11 @@ created() {
             }
         })
     }
+
+    let num = 6
+    base.getMenuStep().then((res) => {
+        self.isInArray = base.arrContain(res,num)
+    })
     
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
