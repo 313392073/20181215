@@ -12,7 +12,7 @@
                 <div class="item" v-for="(item, key, index) in setItem" :key="index">
                     <p class="group-name">{{key != 'undefined'?key:ordered(index)}}组</p>
                     <div class="sub-item clearfix" v-for="(subitem,subIndex) in item" :key="subIndex">
-                        <div class="left-img" v-if="subitem['attid']" @click="goDetail(subitem['attid'],key,subitem['user_head_image'])">
+                        <div class="left-img" v-if="subitem['attid']" @click="goDetail(subitem['attid'],key != 'undefined'?key:ordered(index),subitem['user_head_image'])">
                             <img v-if="subitem.upload_net_url" :src="subitem.upload_net_url" :alt="subitem.user_name">
                             <p v-else class="img-desc">暂未上传图片</p>
                         </div>
@@ -80,7 +80,6 @@ computed: {
         sortArr.forEach(function (item,index) {
             sortObj[item] = obj[item]
         })
-        console.log(sortObj)
         return sortObj;
     }
 },

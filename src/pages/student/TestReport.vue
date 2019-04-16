@@ -167,16 +167,16 @@ created() {
         }
         let rightNum = 0;
         base.getUrl(API.allUrl.onlineTest,params1).then((res) => {
-            console.log(res)
             if(res.code == 200 && res.success == 1) {
                 if(res.obj.score_rank.length > 0) {
                     let user_loginname = JSON.parse(store.state.user)['userLoginname']
                     res.obj.score_rank.forEach((item,index) =>{
+                         rightNum += item['test_user_rightnum'];
                         if(item['user_loginname'] == user_loginname) {
                             this.resSituation.score = item['sum_score']?item['sum_score']:0
                             this.resSituation.rank = item['sys_class_id']?item['sys_class_id']:0
-                             rightNum += item['test_user_rightnum'];
-                            this.resSituation.useTime = item['sum_usetime']?item['sum_usetime']:0
+                            this.resSituation.useTime = item['avg_usetime']?item['avg_usetime']:0
+                            console.log(this.resSituation)
                         }
                     })
                     this.resSituation.rightPercent = rightNum/res.obj.score_rank.length;
@@ -202,11 +202,11 @@ created() {
                         if(res.obj.score_rank.length > 0) {
                             let user_loginname = JSON.parse(store.state.user)['userLoginname']
                             res.obj.score_rank.forEach((item,index) =>{
+                                 rightNum += item['test_user_rightnum'];
                                 if(item['user_loginname'] == user_loginname) {
                                     this.resSituation.score = item['sum_score']?item['sum_score']:0
                                     this.resSituation.rank = item['sys_class_id']?item['sys_class_id']:0
-                                    rightNum += item['test_user_rightnum'];
-                                    this.resSituation.useTime = item['sum_usetime']?item['sum_usetime']:0
+                                    this.resSituation.useTime = item['avg_usetime']?item['avg_usetime']:0
                                 }
                             })
                             this.resSituation.rightPercent = rightNum/res.obj.score_rank.length;

@@ -5,7 +5,7 @@
             <div class="desc-menu">在线测试<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
             <!-- 主要内容 -->
             <div class="main-wrapper">
-                <h3 class="title">棱锥相关概念的测试<span class="count-time">答题用时：{{fmtTime()}}</span></h3>
+                <h3 class="title">棱锥相关概念的测试<span v-if="isInArray" class="count-time">答题用时：{{fmtTime()}}</span></h3>
                 <p class="answer-desc">注：请直接在答题框内答题或者修改答案</p>
                 <div class="list-box">
                     <div class="list" v-for="(item,index) in questList" :key="index+10">
@@ -72,7 +72,7 @@
                     </div>
                     <div class="ansowerd-btn">
                         <button class="btn" v-if="isInArray && hasSubmit == false" @click="subForm">提交答案</button>
-                        <button class="btn" v-if="hasSubmit" @click="lookReport">查看成绩</button>
+                        <button class="btn" v-else @click="lookReport">查看成绩</button>
                     </div>
                 </div>
             </div>
@@ -431,6 +431,9 @@ created() {
     let num = 1
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
+        if(self.isInArray == false) {
+            clearInterval(self.timer)
+        }
     })
     self.timer = setInterval(function() {
        self.fmtTime()

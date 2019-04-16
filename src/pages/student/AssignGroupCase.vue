@@ -76,6 +76,7 @@ created() {
                 batch:store.state.batch
             }
             base.getUrl(API.allUrl.findPyramid,params1).then((res) => {
+                console.log(res)
                 if(res.code == 200 && res.success == 1) {
                     this.groupList = res.obj;
                 }
@@ -88,6 +89,7 @@ created() {
                     batch:res.obj
                 }
                 base.getUrl(API.allUrl.findPyramid,params1).then((res) => {
+                    console.log(res)
                     if(res.code == 200 && res.success == 1) {
                         this.groupList = res.obj;
                     }
@@ -99,6 +101,9 @@ created() {
     let num = 2
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
+        if(self.isInArray == false) {
+            this.$router.push('/stuuploadpicList')
+        }
     })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）

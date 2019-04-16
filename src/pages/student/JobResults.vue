@@ -272,7 +272,6 @@ created() {
                     let optionx = [];
                     let optiont = [];
                     let optionb = [];
-
                     if(self.groupResult && self.groupResult.length > 0) {
                         self.groupResult.forEach((item) => {
                             optionx.push(item['group_name']+'组')
@@ -290,6 +289,7 @@ created() {
                     token:store.state.token,
                     batch:res.obj
                 }
+                console.log(params)
                 base.getUrl(API.allUrl.courseSummary,params).then((res) => {
                     console.log(res)
                     if(res.code == 200 && res.success == 1) {

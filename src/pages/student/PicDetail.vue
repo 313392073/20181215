@@ -24,12 +24,12 @@
             <div class="back-btn">
                 <div v-if="isZan" class="bg-btn">
                     <p><i style="color:red;" class="iconfont icon-xin"></i></p>
-                    <span>{{info.likesUserNum}}</span>
+                    <span>{{info.likesUserNum?info.likesUserNum:0}}</span>
                 </div>
                 <div v-else class="bg-btn" @click="getZan">
                     <template v-if="isInArray">
                         <p><i class="iconfont icon-xin"></i></p>
-                        <span>{{info.likesUserNum}}</span>
+                        <span>{{info.likesUserNum?info.likesUserNum:0}}</span>
                     </template>
                 </div>
             </div>
@@ -135,7 +135,6 @@ created() {
     let num = 2
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
-        console.log(self.isInArray)
     })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）

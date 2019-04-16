@@ -276,14 +276,12 @@ created() {
             listtype:11*1
         }
         base.getUrl(API.allUrl.uploadList,params).then((res) => {
-             console.log(res)
             if(res.code == 200 && res.success == 1) {
                 self.groupList = res.obj;
             }
         })
     }else{
          base.getUrl(API.allUrl.batch,params).then(res => {
-            
             if(res.code == 200 && res.success ==  1) {
                 this.batch = res.obj;
                 let params = {

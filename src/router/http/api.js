@@ -30,7 +30,7 @@ const allUrl = {
     subConfirm:'/v1/api/tea/group/repartDiscuss/confirm',//老师提交小组分配
     userList:'/v1/api/tea/task/userlist', //老师分组 获取组员
     taskSubmit:'/v1/api/tea/task/repart', //分组完成
-    courseSummary:'/v1/api/comm/work/result', //老师课堂总结
+    courseSummary:'/v1/api/comm/work/result', //学生/老师-作业分享
     homeComment:'/v1/api/comm/works/comment/submit', //作业评论
     workShare:'/v1/api/stu/works/share', //作业分享提交
     classTest:'/v1/api/tea/scorereport/classTest', //课堂总结(老师)

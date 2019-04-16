@@ -81,7 +81,6 @@ methods: {
                     url:API.allUrl.upload+'?token='+store.state.token+'&batch='+self.batch+'&fileType=6',
                     data:formData,
                 }).then((res) => {
-                    console.log(res)
                     if(res.data.code == 200 && res.data.success == 1) {
                         self.$router.push('/stuvidedetail')
                     }else{
@@ -117,6 +116,9 @@ created() {
     let num = 5
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
+        if(self.isInArray == false) {
+            this.$router.push('/stuvidedetail')
+        }
     })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
