@@ -41,8 +41,8 @@
                         </div>
                     </div>
                     <div v-for="(pitem,index) in item" :key="index+20">
-                         <div class="sub-item nosub-item" v-if="pitem['inGroup']">
-                            <div class="not-upload"><img @click="showUpload" src="../../assets/images/noupload.png" alt="noupload"></div>
+                         <div class="sub-item nosub-item" v-if="pitem['inGroup'] && isInArray">
+                            <div class="not-upload"><img  @click="showUpload" src="../../assets/images/noupload.png" alt="noupload"></div>
                         </div>
                     </div>
                    
@@ -140,7 +140,6 @@ computed: {
         for (var i = 0; i < newkey.length; i++) {//遍历newkey数组
             newObj[newkey[i]] = obj[newkey[i]];//向新创建的对象中按照排好的顺序依次增加键值对
         }
-        console.log(newObj)
         return newObj;
     }
 },
@@ -277,12 +276,14 @@ created() {
             listtype:11*1
         }
         base.getUrl(API.allUrl.uploadList,params).then((res) => {
+             console.log(res)
             if(res.code == 200 && res.success == 1) {
                 self.groupList = res.obj;
             }
         })
     }else{
          base.getUrl(API.allUrl.batch,params).then(res => {
+            
             if(res.code == 200 && res.success ==  1) {
                 this.batch = res.obj;
                 let params = {
@@ -299,8 +300,7 @@ created() {
         })
     }
    
-    // let num = 4
-    let num = 10
+    let num = 4
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
     })

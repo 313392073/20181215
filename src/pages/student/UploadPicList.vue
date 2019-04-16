@@ -10,7 +10,7 @@
         <div class="main-box">
             <div class="group-wrapper clearfix">
                 <div class="item" v-for="(item, key, index) in setItem" :key="index">
-                    <p class="group-name">{{key}}组</p>
+                    <p class="group-name">{{key != 'undefined'?key:ordered(index)}}组</p>
                     <div class="sub-item clearfix" v-for="(subitem,subIndex) in item" :key="subIndex">
                         <div class="left-img" v-if="subitem['attid']" @click="goDetail(subitem['attid'],key,subitem['user_head_image'])">
                             <img v-if="subitem.upload_net_url" :src="subitem.upload_net_url" :alt="subitem.user_name">
@@ -80,6 +80,7 @@ computed: {
         sortArr.forEach(function (item,index) {
             sortObj[item] = obj[item]
         })
+        console.log(sortObj)
         return sortObj;
     }
 },
@@ -128,6 +129,9 @@ methods: {
     getrefresh(){
         this.reload();
     },
+    ordered(num) {
+        return share.order[num]
+    }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
@@ -142,7 +146,6 @@ created() {
                 batch:res.obj,
                 listtype:1*1
             }
-            console.log(params)
             base.getUrl(API.allUrl.uploadList,params).then((res) => {
                 console.log(res)
                 if(res.code == 200 && res.success == 1) {

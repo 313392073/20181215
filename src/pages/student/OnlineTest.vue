@@ -70,8 +70,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="ansowerd-btn" v-if="isInArray">
-                        <button class="btn" @click="subForm">提交答案</button>
+                    <div class="ansowerd-btn">
+                        <button class="btn" v-if="isInArray && hasSubmit == false" @click="subForm">提交答案</button>
+                        <button class="btn" v-if="hasSubmit" @click="lookReport">查看成绩</button>
                     </div>
                 </div>
             </div>
@@ -133,7 +134,8 @@ return {
     start_time:new Date().getTime(),
     mind:'',
     secd:'',
-    timeStamp:0
+    timeStamp:0,
+    hasSubmit:false
 };
 },
 //监听属性 类似于data概念
@@ -279,7 +281,6 @@ methods: {
     getCourseList(params){ //获取题型
         base.getUrl(API.allUrl.course_list,params).then(res => {
             if(res.code == 200 && res.success == 1){
-                console.log(res.obj)
                 res.obj.forEach((item,index) => {
                   this.questList.push(item)
                 })
@@ -407,6 +408,7 @@ methods: {
             self.getCourseList(params1)
         }else{
             base.getUrl(API.allUrl.batch,params).then(res => {
+               
                 if(res.code == 200 && res.success == 1){
                     this.classBatch = res.obj?res.obj:store.state.batch;
                     let params1 = {
@@ -424,20 +426,17 @@ methods: {
 created() {
     let self = this;
     self.classBatch = store.state.batch;
-    // if(localStorage.getItem('hasSubmit')) {
-    //     self.$router.push('/stutestreport')
-    // }else{
-        if (share.isMathjaxConfig === false) { // 如果：没有配置MathJax
-            share.initMathjaxConfig();
-        }
-        this.getInit();
-        // let num = 1
-        let num = 8
-        base.getMenuStep().then((res) => {
-            console.log(res)
-         self.isInArray = base.arrContain(res,num)
-        })
-    // }
+    if(localStorage.getItem('hasSubmit')) {
+        self.hasSubmit = true
+    }
+    if (share.isMathjaxConfig === false) { // 如果：没有配置MathJax
+        share.initMathjaxConfig();
+    }
+    this.getInit();
+    let num = 1
+    base.getMenuStep().then((res) => {
+        self.isInArray = base.arrContain(res,num)
+    })
     self.timer = setInterval(function() {
        self.fmtTime()
     },1000)

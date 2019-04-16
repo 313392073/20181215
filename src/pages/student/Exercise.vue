@@ -37,7 +37,7 @@
                             <div class="gs" :class="getChangeClass" v-if="JSON.parse(item.course_item).gs" v-for="(greq,gindex) in JSON.parse(item.course_item).gs" :key="gindex+80">
                                 <span v-html="greq"></span>
                                 <div class="answer-div" v-if="item.if_handle == -1">
-                                    <input class="answer-btn" type="button" value="作答" @focus="showWriteFormula($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)"/>
+                                    <input class="answer-btn" type="button"  v-if="isInArray" value="作答" @focus="showWriteFormula($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)"/>
                                     <textarea class="answer-boxed" v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']" cols="60" rows="1" @keyup="getGsValue($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)" :value="(list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:''" ></textarea>
                                     <div class="answerd-wrapper">
                                         您的答案：
@@ -403,7 +403,7 @@ created() {
         })
     }
     
-    let num = 6
+    let num = 9
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
     })

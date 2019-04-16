@@ -120,7 +120,6 @@ created() {
     
     let num = 2
     base.getMenuStep().then((res) => {
-        console.log(res)
         self.isInArray = base.arrContain(res,num)
     })
 },

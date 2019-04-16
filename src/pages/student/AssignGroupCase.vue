@@ -87,7 +87,6 @@ created() {
                     batch:res.obj
                 }
                 base.getUrl(API.allUrl.findPyramid,params1).then((res) => {
-                    console.log(res)
                     if(res.code == 200 && res.success == 1) {
                         this.groupList = res.obj;
                     }
