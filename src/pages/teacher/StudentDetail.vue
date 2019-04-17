@@ -2,10 +2,10 @@
 <div class="wrapper">
     <div class="left-wrapper">
         <div class="left-box">
-            <div class="desc-menu">制作棱锥<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
+            <div class="desc-menu">在线测试<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
             <!-- 主要内容 -->
             <div class="main-wrapper">
-                <h3 class="title">任务详情</h3>
+                <h3 class="title">棱锥相关概念的测试</h3>
                 <p class="answer-desc">注：请直接在答题框内答题或者修改答案</p>
                 <div class="list-box">
                     <div class="list" v-for="(item,index) in questList" :key="index+10">
@@ -70,9 +70,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="ansowerd-btn">
-                        <button class="btn" v-if="isInArray" @click="subForm">提交答案</button>
-                    </div>
                 </div>
             </div>
             <div class="tips" v-show="toggleTips">
@@ -128,7 +125,8 @@ return {
     },
     list:{},
     test:'',
-    isInArray:false
+    userLoginname:'',
+    type:''
 };
 },
 //监听属性 类似于data概念
@@ -139,7 +137,6 @@ computed: {
     getChangeClass(){
         return this.classNames;
     }
-    
 },
 //监控data中的数据变化
 watch: {
@@ -165,8 +162,18 @@ watch: {
 },
 //方法集合
 methods: {
-    getrefresh(){
-        this.reload();
+    fmtTime() {
+        let dis_time = Math.round(this.getTime())
+        let  hours = dis_time % 60
+        let mins = Math.round((dis_time - 30)/60);
+        this.secd = "" +((hours > 9) ? hours : '0'+hours);
+        this.mind = "" +((mins > 9) ? mins : '0'+mins);
+        return this.mind+"分"+this.secd+"秒"
+    },
+    getTime:function() {
+        let now_time = new Date();
+        this.timeStamp = Math.floor((now_time.getTime() - this.start_time)/1000)
+        return ((now_time.getTime() - this.start_time)/1000)
     },
     toAsync(str){
         if(str){
@@ -174,7 +181,6 @@ methods: {
         }else{
             return ''
         }
-        
     },
     closePtap(){
         this.isWrite = false;
@@ -202,7 +208,7 @@ methods: {
     },
     lookReport(){
         this.toggleTips = false
-        this.$router.push('/stujobresults')
+        this.$router.push('/stutestreport')
     },
     HideTip(){
         this.tipsMsg = '';
@@ -262,7 +268,8 @@ methods: {
         })
     },
     getCourseList(params){ //获取题型
-        base.getUrl(API.allUrl.course_list,params).then(res => {
+        base.getUrl(API.allUrl.studetail,params).then(res => {
+            console.log(params)
             if(res.code == 200 && res.success == 1){
                 res.obj.forEach((item,index) => {
                   this.questList.push(item)
@@ -279,9 +286,13 @@ methods: {
     },
     subForm(){ //提交数据
         // this.list //所有的答案和得分情况
+       if(this.timer) {
+            clearInterval(this.timer)
+        }
         let arr = []
         Object.keys(this.list).forEach((item,index) => {
             var obj = {};
+             obj.useTime = this.timeStamp;
             obj.answer = '';
             let type = item['type'];
             let answers = {};
@@ -300,10 +311,9 @@ methods: {
                 })
                 obj.answer=JSON.stringify(answers)
                 obj.score = JSON.stringify(answerscore);
-                obj.useTime = 0;
                 JSON.stringify(obj)
             }
-
+        
              if(this.list[item].tj.arr.length>0){
                 this.list[item].tj.arr.forEach((subitem,subindex) => {
                     answers['tj'].push(subitem.answer);
@@ -312,7 +322,6 @@ methods: {
                 })
                 obj.answer=JSON.stringify(answers)
                 obj.score = JSON.stringify(answerscore);
-                obj.useTime = 0;
                 JSON.stringify(obj)
             }
 
@@ -324,7 +333,6 @@ methods: {
                 })
                 obj.answer=JSON.stringify(answers)
                 obj.score = JSON.stringify(answerscore);
-                obj.useTime = 0;
                 JSON.stringify(obj)
             }
 
@@ -336,7 +344,6 @@ methods: {
                 })
                 obj.answer=JSON.stringify(answers)
                 obj.score = JSON.stringify(answerscore);
-                obj.useTime = 0;
                 JSON.stringify(obj)
             }
             arr.push(obj)
@@ -365,53 +372,64 @@ methods: {
             data:JSON.stringify(arr),
         }).then((res) => {
             if(res.data.code = 200 && res.data.success == 1){
+                localStorage.setItem('hasSubmit',true)
                 this.toggleTips = true;
                 this.tipsMsg = '本轮结束';
             }
         })
+    },
+    getrefresh(){
+        this.reload()
+    },
+    getInit(){
+        let self = this;
+        let params = {
+            token:store.state.token
+        }
+        if(store.state.batch) {
+            let params1 = {
+                token:store.state.token,
+                batch:store.state.batch,
+                type:self.type,
+                userLoginname:self.userLoginname
+            }
+            self.getCourseList(params1)
+        }else{
+            base.getUrl(API.allUrl.batch,params).then(res => {
+                if(res.code == 200 && res.success == 1){
+                    this.classBatch = res.obj?res.obj:store.state.batch;
+                    let params1 = {
+                        token:store.state.token,
+                        batch:res.obj,
+                        type:0*1
+                    }
+                    self.getCourseList(params1)
+                }
+            })
+        }
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
+    let self = this;
+    self.classBatch = store.state.batch;
+    if(localStorage.getItem('hasSubmit')) {
+        self.hasSubmit = true
+    }
     if (share.isMathjaxConfig === false) { // 如果：没有配置MathJax
         share.initMathjaxConfig();
     }
-    let self = this;
-    self.classBatch = store.state.batch
-    let params = {
-        token:store.state.token
-    }
-    if(store.state.batch) {
-         let params1 = {
-                token:store.state.token,
-                batch:store.state.batch,
-                type:1*1
-            }
-            self.getCourseList(params1)
-    }else{
-         base.getUrl(API.allUrl.batch,params).then(res => {
-            if(res.code == 200 && res.success == 1){
-                this.classBatch = res.obj;
-                let params1 = {
-                    token:store.state.token,
-                    batch:res.obj,
-                    type:1*1
-                }
-                self.getCourseList(params1)
-            }
-        })
-    }
-   
-    let num = 3
-    base.getMenuStep().then((res) => {
-        self.isInArray = base.arrContain(res,num)
-    })
+    self.userLoginname = self.$route.params.userloginname
+    self.type = self.$route.params.type*1
+    this.getInit();
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
     this.$nextTick(() => {
         window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
     })
+},
+beforeDestroy() {
 }
 }
 </script>
@@ -427,6 +445,11 @@ mounted() {
         text-align: center;
         font-size: 0.352rem;
         color: @fcolor;
+        position: relative;
+        .count-time{
+            position: absolute;
+            right: 0.4*0.02*20rem;
+        }
     }
     .answer-desc{
         color: #f32d2d;

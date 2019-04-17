@@ -47,6 +47,7 @@ import ClassTotalResult from '@/pages/teacher/ClassTotalResult'    // 课堂总�
 import PraafterClass from '@/pages/teacher/PraafterClass'//课后习题
 import CourseManagement from '@/pages/teacher/CourseManagement'//课后习题（课件管理）
 import AfterExpTotal from '@/pages/teacher/AfterExpTotal'    // 课后实验成绩统计
+import StudentDetail from '@/pages/teacher/StudentDetail'    // 查看学生答题详情
 // 老师-end
 
 //学生start
@@ -78,7 +79,7 @@ import CourseSet from '@/pages/CourseSet'    // 课后安排设置
 Vue.use(Router)
 
 const router = new Router({
-  // mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
+  mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
   routes: [
     {
       path: '/time',
@@ -528,7 +529,15 @@ const router = new Router({
         auth: true
       }
     },
-
+    {
+      path: '/studetail',
+      name: 'StudentDetail',
+      component: StudentDetail,
+      meta: {
+        title: '学生答题详情',
+        auth: true
+      }
+    }
   ]
 })
 

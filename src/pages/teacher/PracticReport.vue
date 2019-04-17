@@ -39,7 +39,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(item,index) in scoreDetail" :key="index" :class="index>4?trHide:''">
-                                <td class="td-left"><i>{{index+1}}</i><img :src="item.user_head_image" class="head-pic" :alt="item.user_name"><span>{{item.user_name}}</span></td>
+                                <td class="td-left"><i>{{index+1}}</i><img :src="item.user_head_image" class="head-pic" :alt="item.user_name" @click="goDetail(item.user_loginname)"><span>{{item.user_name}}</span></td>
                                 <td>{{item.sum_score}}分</td>
                                 <td class="use-time">{{getMinute(item.avg_usetime)}}</td>
                             </tr>
@@ -176,6 +176,9 @@ methods: {
         if (options && typeof options === "object") {
             this.charts.setOption(options, true);
         }
+    },
+    goDetail(userloginname) {
+        this.$router.push({name:'StudentDetail',params:{userloginname:userloginname,type:0}})
     }
     
 },

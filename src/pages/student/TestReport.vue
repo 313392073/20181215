@@ -174,9 +174,8 @@ created() {
                          rightNum += item['test_user_rightnum'];
                         if(item['user_loginname'] == user_loginname) {
                             this.resSituation.score = item['sum_score']?item['sum_score']:0
-                            this.resSituation.rank = item['sys_class_id']?item['sys_class_id']:0
+                            this.resSituation.rank = index+1
                             this.resSituation.useTime = item['avg_usetime']?item['avg_usetime']:0
-                            console.log(this.resSituation)
                         }
                     })
                     this.resSituation.rightPercent = rightNum/res.obj.score_rank.length;
@@ -205,7 +204,7 @@ created() {
                                  rightNum += item['test_user_rightnum'];
                                 if(item['user_loginname'] == user_loginname) {
                                     this.resSituation.score = item['sum_score']?item['sum_score']:0
-                                    this.resSituation.rank = item['sys_class_id']?item['sys_class_id']:0
+                                    this.resSituation.rank = index+1
                                     this.resSituation.useTime = item['avg_usetime']?item['avg_usetime']:0
                                 }
                             })

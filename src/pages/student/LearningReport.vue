@@ -3,18 +3,18 @@
 <div class="wrapper">
 <div class="left-wrapper">
  <div class="left-box">
-    <div class="desc-menu">课堂学习<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
+    <div class="desc-menu">课堂总结<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
-        <h3 class="title">课堂练习成绩报告单</h3>
+        <h3 class="title">课堂总结成绩报告单</h3>
         <div class="main-box">
             <div class="situation-box">
                 <p class="main-title">成绩概况:</p>
                 <div class="situation-detail clearfix">
-                    <div class="item">分数: <span class="score">{{scoreReport.sum_score}}</span></div>
-                    <div class="item">班级排名: <span class="order">{{getScore()}}</span></div>
-                    <div class="item">正确率: <span class="rights">{{parseInt(scoreReport.rightnum*1/(scoreReport.rightnum*1+scoreReport.errornum*1))*100}}%</span></div>
-                    <div class="item">用时: <span class="time">{{getMinute(scoreReport.sum_usetime)}}</span></div>
+                    <div class="item">分数: <span class="score">{{resSituation.score}}</span></div>
+                    <div class="item">班级排名: <span class="order">{{resSituation.rank}}</span></div>
+                    <div class="item">正确率: <span class="rights">{{resSituation.rightPercent?(resSituation.rightPercent.toFixed(2)*100):0}}%</span></div>
+                    <div class="item">用时: <span class="time">{{getMinute(resSituation.useTime)}}</span></div>
                 </div>
             </div>
 
@@ -37,13 +37,13 @@
                         </thead>
                         <tbody>
                             <tr v-for="(item,index) in scoreRank" :key="index" :class="index>5?trHide:''">
-                                <td>
+                                <td class="td-left">
                                     <i>{{index+1}}</i>
                                     <img :src="item.user_head_image" class="head-pic" alt="default">
                                     <span>{{item.user_name}}</span>
                                 </td>
                                 <td>{{item.sum_score}}分</td>
-                                <td class="use-time">{{getMinute(item.sum_usetime)}}</td>
+                                <td class="use-time">{{getMinute(item.avg_usetime)}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -80,7 +80,13 @@ return {
     trHide:'tr-hide',
     charts:'',
     optionX:['基础知识','计算能力','建模能力'],
-    optionY:[2.6, 5.9, 9.0]
+    optionY:[2.6, 5.9, 9.0],
+    resSituation:{
+        score:0,
+        rightPercent:0,
+        useTime:0,
+        rank:0
+    }
 };
 },
 //监听属性 类似于data概念
@@ -99,17 +105,7 @@ methods: {
         }
     },
     getMinute(min){
-        return share.getMinute(min);
-    },
-    getScore(){
-        let self = this;
-        let score = 0;
-        self.scoreRank.forEach((item,index) => {
-            if(item.user_loginname == self.scoreReport.user_loginname) {
-                score = index
-            }
-        })
-        return score;
+        return min?share.getMinute(min):'0分0秒';
     },
     initEchart(id){
         this.charts = echarts.init(document.getElementById(id))
@@ -195,13 +191,27 @@ created() {
     let params = {
         token:store.state.token
     }
+    let rightNum = 0;
     if(store.state.batch) {
         let params = {
             token:store.state.token,
             batch:store.state.batch
         }
         base.getUrl(API.allUrl.stuClassTest,params).then((res) => {
+            console.log(res)
             if(res.code == 200 && res.success == 1) {
+                if(res.obj.score_rank.length > 0) {
+                    let user_loginname = JSON.parse(store.state.user)['userLoginname']
+                    res.obj.score_rank.forEach((item,index) => {
+                         rightNum += item['test_user_rightnum'];
+                        if(item['user_loginname'] == user_loginname) {
+                            this.resSituation.score = item['sum_score']?item['sum_score']:0
+                            this.resSituation.useTime = item['avg_usetime']?item['avg_usetime']:0
+                            this.resSituation.rank = index+1
+                        }
+                    })
+                    this.resSituation.rightPercent = rightNum/res.obj.score_rank.length;
+                }
                 self.scoreRank = res.obj.score_rank;
                 self.scoreReport = res.obj.score_report;
             }
@@ -215,6 +225,18 @@ created() {
                 }
                 base.getUrl(API.allUrl.stuClassTest,params).then((res) => {
                     if(res.code == 200 && res.success == 1) {
+                        if(res.obj.score_rank.length > 0) {
+                            let user_loginname = JSON.parse(store.state.user)['userLoginname']
+                            res.obj.score_rank.forEach((item,index) => {
+                                rightNum += item['test_user_rightnum'];
+                                if(item['user_loginname'] == user_loginname) {
+                                    this.resSituation.score = item['sum_score']?item['sum_score']:0
+                                    this.resSituation.useTime = item['avg_usetime']?item['avg_usetime']:0
+                                    this.resSituation.rank = index+1
+                                }
+                            })
+                            this.resSituation.rightPercent = rightNum/res.obj.score_rank.length;
+                        }
                         self.scoreRank = res.obj.score_rank;
                         self.scoreReport = res.obj.score_report;
                     }
@@ -357,6 +379,13 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                                 }
                                 &.use-time{
                                     color: #6c63ff;
+                                }
+                                &.td-left{
+                                    padding-left: 50*0.4*0.02rem;
+                                    text-align: left;
+                                    i{
+                                        text-align: center;
+                                    }
                                 }
                             }
                              &.tr-hide{
