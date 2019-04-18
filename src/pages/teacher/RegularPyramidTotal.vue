@@ -21,12 +21,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item,index) in 16" :key="item">
+                            <tr v-for="(item,index) in dataList" :key="index">
                                 <td>{{index+1}}</td>
-                                <td>流星雨</td>
-                                <td>正确</td>
-                                <td>14.33</td>
-                                <td class="right-result">66.22</td>
+                                <td>{{item.user_name}}</td>
+                                <td :class="{'is_red':item.is_right != 0}">{{item.is_right == 0 ? '正确':"错误"}}</td>
+                                <td> <span class="gs-box" v-for="(usubItem,usubIndex) in JSON.parse(item.useranswer)['tj']" :key="usubIndex">{{toAsync(usubItem)}}</span></td>
+                                <td class="right-result"> <span class="gs-box" v-for="(rsubItem,rsubIndex) in JSON.parse(item.answer)['tj']" :key="rsubIndex">{{toAsync(rsubItem)}}</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -47,7 +47,10 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
-
+import base from '../../router/http/base.js'
+import API from '../../router/http/api.js';
+import store from '../../store/store.js';
+import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {SideBar},
@@ -55,7 +58,7 @@ inject:['reload'],
 data() {
 //这里存放数据
 return {
-   
+   dataList:[]
 };
 },
 //监听属性 类似于data概念
@@ -66,15 +69,48 @@ watch: {},
 methods: {
     getrefresh(){
         this.reload();
+    },
+     toAsync(str){
+        if(str){
+            return '$'+str+'$';
+        }else{
+            return ''
+        }
+    },
+    getInit(params) {
+        let self = this
+        base.getUrl(API.allUrl.totaldetail,params).then(res => {
+            console.log(res)
+            if(res.code == 200 && res.success == 1){
+                self.dataList = res.obj
+            }
+        })
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-    
+    let self = this;
+    let params = {
+        batch:store.state.batch?store.state.batch:'',
+        token:store.state.token?store.state.token:'',
+        ctype:2*1
+    }
+    if(store.state.batch) {
+        self.getInit(params)
+    }else{
+        base.getUrl(API.allUrl.batch,params).then(res => {
+            if(res.code == 200 && res.success == 1){
+                params['batch'] = res.obj
+                self.getInit(params)
+            }
+        })
+    }
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
-   
+   this.$nextTick(() => {
+        window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
+    })
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前

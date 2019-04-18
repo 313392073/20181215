@@ -9,7 +9,7 @@
         <div class="main-box">
             <div class="echart" id="echart"></div>
             <div class="detail-box clearfix">
-                <div class="item">
+                <div class="item" @click="godetail">
                     <p>未作答</p>
                     <h3>{{nodonum}}</h3>
                 </div>
@@ -62,6 +62,9 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
+    godetail() {
+        this.$router.push('/tearegularvolumetotal')
+    },
     getrefresh(){
         this.reload();
     },
@@ -95,67 +98,47 @@ methods: {
                 }
             ]
         })
+    },
+    getInit(params) {
+        let self = this
+        base.getUrl(API.allUrl.ctotal,params).then(res => {
+            if(res.code == 200 && res.success == 1){
+                res.obj.report.forEach((item,index) => {
+                    if(item.is_right == 0) {
+                        self.rightnum = item.usernum
+                    }else{
+                        self.wrongnum = item.usernum?item.usernum:0
+                    }
+                })
+                self.nodonum = res.obj.usersize - self.rightnum - self.wrongnum;
+                self.optionX[0]['value'] = self.nodonum;
+                self.optionX[1]['value'] = self.rightnum;
+                self.optionX[2]['value'] = self.wrongnum;
+                self.$nextTick(function(){
+                    self.initEchart('echart')
+                })
+            }
+        })
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
-    let params = {
-        token:store.state.token
+    let self = this;
+    let paramd = {
+        token:store.state.token?store.state.token:'',
+        batch:store.state.batch?store.state.batch:'',
+        ctype:2*1
     }
     if(store.state.batch) {
-        let paramd = {
-            token:store.state.token,
-            batch:store.state.batch,
-            courseType:4*1
-        }
-        base.getUrl(API.allUrl.checkSum,paramd).then((res) => {
-            if(res.success == 1 && res.code == 200) {
-                res.obj.alltest_error.forEach((item,index) => {
-                    if(item.is_right == 0) {
-                        this.rightnum = item.usernum
-                    }else{
-                        this.wrongnum = item.usernum?item.usernum:0
-                    }
-                })
-                this.nodonum = res.obj.class_usernum - this.rightnum - this.wrongnum;
-                this.optionX[0]['value'] = this.nodonum;
-                this.optionX[1]['value'] = this.rightnum;
-                this.optionX[2]['value'] = this.wrongnum;
-                this.$nextTick(function(){
-                    this.initEchart('echart')
-                })
-            }
-        })
+        self.getInit(paramd)
     }else{
+        let params = {
+            token:store.state.token
+        }
         base.getUrl(API.allUrl.batch,params).then((res) => {
-            if(res.code == 200 && res.success == 1) {
-                let paramd = {
-                    token:store.state.token,
-                    batch:res.obj,
-                    courseType:4*1
-                }
-                base.getUrl(API.allUrl.checkSum,paramd).then((res) => {
-                    if(res.success == 1 && res.code == 200) {
-                        res.obj.alltest_error.forEach((item,index) => {
-                            if(item.is_right == 0) {
-                                this.rightnum = item.usernum
-                            }else{
-                                this.wrongnum = item.usernum?item.usernum:0
-                            }
-                        })
-                        this.nodonum = res.obj.class_usernum - this.rightnum - this.wrongnum;
-                        this.optionX[0]['value'] = this.nodonum;
-                        this.optionX[1]['value'] = this.rightnum;
-                        this.optionX[2]['value'] = this.wrongnum;
-                        this.$nextTick(function(){
-                            this.initEchart('echart')
-                        })
-                    }
-                })
-            }
+            self.getInit(paramd)
         })
     }
-    
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

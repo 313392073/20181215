@@ -21,12 +21,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(item,index) in 16" :key="item">
-                                <td>{{index+1}}</td>
-                                <td>流星雨</td>
-                                <td>正确</td>
-                                <td>14.33</td>
-                                <td class="right-result">66.22</td>
+                            <tr v-for="(item,index) in dataList" :key="index">
+                                <td @click="godetail">{{index+1}}</td>
+                                <td>{{item.user_name}}</td>
+                                <td :class="{'is_red':item.is_right != 0}">{{item.is_right == 0 ? '正确':"错误"}}</td>
+                                <td> <span class="gs-box" v-for="(usubItem,usubIndex) in JSON.parse(item.useranswer)['tj']" :key="usubIndex">{{toAsync(usubItem)}}</span></td>
+                                <td class="right-result"> <span class="gs-box" v-for="(rsubItem,rsubIndex) in JSON.parse(item.answer)['tj']" :key="rsubIndex">{{toAsync(rsubItem)}}</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -58,7 +58,7 @@ inject:['reload'],
 data() {
 //这里存放数据
 return {
-   
+   dataList:[]
 };
 },
 //监听属性 类似于data概念
@@ -67,15 +67,25 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
+    godetail() {
+        this.$router.push('/tearegularpyramidtotal')
+    },
     getrefresh(){
         this.reload();
     },
+    toAsync(str){
+        if(str){
+            return '$'+str+'$';
+        }else{
+            return ''
+        }
+    },
     getInit(params) {
-        console.log(params)
-        base.getUrl(API.allUrl.ctotal,params).then(res => {
+        let self = this
+        base.getUrl(API.allUrl.totaldetail,params).then(res => {
             console.log(res)
             if(res.code == 200 && res.success == 1){
-                console.log(res)
+                self.dataList = res.obj
             }
         })
     }
@@ -101,7 +111,9 @@ created() {
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
-   
+   this.$nextTick(() => {
+        window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
+    })
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前
@@ -168,6 +180,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                             }
                             .right-result{
                                 color: #6c63ff;
+                            }
+                            .is_red{
+                                color: red;
                             }
                         }
                     }
