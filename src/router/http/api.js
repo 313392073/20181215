@@ -38,7 +38,8 @@ const allUrl = {
     deleteUploadfile:'/v1/api/tea/uploadfile/delete', //删除附件
     afterClassTest:'/v1/api/tea/scorereport/afterclassTest', //老师课后实验
     checkSum:'/v1/api/tea/scorereport/checksum', //老师-检测数据统计-表面积、体积
-    studetail:'/v1/api/course/list/user' //老师端查看学生的答题情况
+    studetail:'/v1/api/course/list/user', //老师端查看学生的答题情况
+    ctotal:'/v1/api/tea/scorereport/ctype' //老师-成绩单-检测数据统计
 }
 export default {
     allUrl

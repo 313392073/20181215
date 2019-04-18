@@ -82,15 +82,42 @@ methods: {
                     data:formData,
                 }).then((res) => {
                     if(res.data.code == 200 && res.data.success == 1) {
-                        self.$router.push('/stuvidedetail')
+                        self.$layer.open({
+                            type:0,
+                            content: res.data.msg,
+                            shade:true,
+                            time:2,
+                            anim:'scale',
+                            success(layer) {
+                                console.log('layer id is:',layer.id)
+                            },
+                            yes(index) {
+                                self.$layer.close(index)
+                            },
+                            end() {
+                                console.log('end')
+                            }
+                        });
                     }else{
-                        self.tipsMsg = '网络错误，上传头像失败'
-                        self.toggleTips = true;
-                        return false;
+                        self.$layer.open({
+                            type:0,
+                            content: '网络错误',
+                            shade:true,
+                            time:2,
+                            anim:'scale',
+                            success(layer) {
+                                console.log('layer id is:',layer.id)
+                            },
+                            yes(index) {
+                                self.$layer.close(index)
+                            },
+                            end() {
+                                console.log('end')
+                            }
+                        });
                     }
                 })
             }else{
-                 let self = this;
                 self.$layer.open({
                     type:0,
                     content: '网络错误',
@@ -116,9 +143,6 @@ created() {
     let num = 5
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
-        if(self.isInArray == false) {
-            this.$router.push('/stuvidedetail')
-        }
     })
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
