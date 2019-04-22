@@ -401,8 +401,7 @@ created() {
             }
         })
     }
-    // let num = 3
-    let num = 5
+    let num = 3
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
     })

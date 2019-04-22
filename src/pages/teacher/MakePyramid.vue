@@ -35,7 +35,7 @@
             </div>
             <h3 class="title">任务分组</h3>
             <div class="info-group clearfix">
-                <div class="item" v-for="(item,index) in groupLists()" :key="index">
+                <div class="item" v-for="(item,index) in quteData" :key="index">
                     <p class="item-title">{{orderd(index)}}组</p>
                     <div class="item-member clearfix">
                         <div v-if="item" class="tips-item" v-for="(subitem,subIndex) in item" :key="subIndex">
@@ -69,7 +69,7 @@
                 </div>
                 <div class="tips-btns">
                     <a href="javascript:void(0)" @click="emptyList">清空选择</a>
-                    <a href="javascript:void(0)" @click="hideAddList">确定选择</a>
+                    <a href="javascript:void(0)" @click="makeSure">确定选择</a>
                 </div>
             </div>
         </div>
@@ -116,6 +116,7 @@ export default {
             list:[],
             order:''
         },
+        quteData:[],
         unCheckUsers:[],
         isInArray:false
     };
@@ -236,9 +237,9 @@ export default {
                self.tipsMsg = '分组完成'
                self.toggleTips = true
                self.getrefresh()
-               setTimeout(function() {
-                   self.$router.push("/tchuploadlist")
-               },1000)
+            //    setTimeout(function() {
+            //        self.$router.push("/tchuploadlist")
+            //    },1000)
           })
       },
       HideTip(){
@@ -253,10 +254,8 @@ export default {
         let self = this;
         for(var i=0;i<self.unCheckUsers.length;i++){
             self.unCheckUsers[i] = Object.assign({},self.unCheckUsers[i],{"cgroupId":"uncheck"})
-            // self.$set(self.unCheckUsers[i],"cgroupId",'uncheck')
             self.$set(self.unCheckUsers[i],"gorder",i)
         }
-        console.log(self.unCheckUsers)
         return self.unCheckUsers
       },
       emptyList(){
@@ -266,6 +265,12 @@ export default {
           this.checkUsers.list.splice(0,this.checkUsers.list.length);
           this.checkUsers.order = '';
           this.changeState()
+      },
+      makeSure() {
+        localStorage.removeItem('datas')
+        localStorage.setItem('datas',JSON.stringify(this.groupList))
+        this.quteData = JSON.parse(localStorage.getItem('datas'))
+        this.isaddList = false;
       },
       hideAddList(){
         this.isaddList = false;
@@ -282,7 +287,6 @@ export default {
           this.changeState()
       },
       addUser(index,pindex){
-          console.log(index,pindex)
           /**index 没被选中的第几个 pindex  当前点击的第几个 */
           this.unCheckUsers[index]['cgroupId'] = pindex;
           this.checkUsers.list.push(this.unCheckUsers[index]);
@@ -293,8 +297,9 @@ export default {
         base.getUrl(API.allUrl.userList, params).then(res => {
             if (res.code == 200 && res.success == 1) {
                 this.userList = res.obj;
+                this.quteData = this.groupLists()
             }
-      });
+        });
       },
       getCourseList(params){ //获取题型
         base.getUrl(API.allUrl.course_list,params).then(res => {
@@ -346,7 +351,6 @@ export default {
     }
     let num = 3
     base.getMenuStep().then((res) => {
-        console.log(res)
         self.isInArray = base.arrContain(res,num)
     })
   },

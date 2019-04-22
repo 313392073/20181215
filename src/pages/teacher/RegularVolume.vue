@@ -84,8 +84,10 @@ methods: {
         }
     },
     getInit(params) {
+        console.log(params)
         let self = this
         base.getUrl(API.allUrl.totaldetail,params).then(res => {
+            console.log(res)
             if(res.code == 200 && res.success == 1){
                 self.dataList = res.obj
             }
