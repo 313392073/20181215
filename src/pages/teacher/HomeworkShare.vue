@@ -34,10 +34,7 @@
                             <a href="javascript:void(0)"><i class="iconfont icon-xuanzhong"></i>{{subitem.look_num}}</a>
                         </div>
                         <div class="detail-imgs">
-                            <img src="../../assets/images/group-pic.png" alt="group-pic">
-                            <img src="../../assets/images/group-pic.png" alt="group-pic">
-                            <img src="../../assets/images/group-pic.png" alt="group-pic">
-                            <img src="../../assets/images/group-pic.png" alt="group-pic">
+                            <img v-if="subitem.upload_net_url" :src="subitem.upload_net_url" alt="subitem.user_name">
                         </div>
                     </div>
                 </div>
@@ -93,6 +90,7 @@ computed: {
         for (var i = 0; i < newkey.length; i++) {//遍历newkey数组
             newObj[newkey[i]] = obj[newkey[i]];//向新创建的对象中按照排好的顺序依次增加键值对
         }
+        console.log(newObj)
         return newObj;
     }
 },
@@ -303,8 +301,8 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                     .detail-imgs{
                         text-align: center;
                         img{
-                            width: 62*0.4*0.02rem;
-                            height: 62*0.4*0.02rem;
+                            width: 100*0.4*0.02rem;
+                            height: 100*0.4*0.02rem;
                         }
                     }
                     

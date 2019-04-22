@@ -205,12 +205,6 @@ methods: {
         e.preventDefault();
         e.currentTarget.querySelector('input').dispatchEvent(new MouseEvent('click'))
         let getGrouptype = e.currentTarget.querySelector('input').value*1
-        // let params = {
-        //     token:store.state.token,
-        //     method:getGrouptype*1?getGrouptype*1:this.checkValue*1,
-        //     gmaxPnum:this.pnum*1
-        // }
-        // this.getInit(params)
     },   
     getInit(params){
         base.postUrl(API.allUrl.getAssignTeam,params).then((res) => {
@@ -286,6 +280,7 @@ methods: {
             if(res.data.code == 200 && res.data.success == 1) {
                 self.toggleTips = true;
                 self.tipsMsg =  `已完成小组分配，每${self.pnum?self.pnum:1}人，共${self.allmener?self.allmener:1}组！`;
+                self.$router.push('/tchuploadlist')
                 // setTimeout((function() {
                 //     let params = {
                 //         token:store.state.token,
@@ -329,8 +324,10 @@ created() {
             self.sel_class = res.obj.sel_class;
         }
     })
+  
     let num = 2
     base.getMenuStep().then((res) => {
+        console.log(res)
         self.isInArray = base.arrContain(res,num)
     })
 },

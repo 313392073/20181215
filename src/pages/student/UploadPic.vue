@@ -8,7 +8,7 @@
     <div class="main-wrapper">
         <h3 class="title">图片上传</h3>
         <div class="main-box">
-            <p class="main-title">美美的包装盒做好啦~上传属于你的包装盒制作过程的视频，和同学们一起探讨棱锥的奥秘吧！</p>
+            <p class="main-title">美美的包装盒做好啦~上传属于你的包装盒制作过程的图片，和同学们一起探讨棱锥的奥秘吧！</p>
             <div class="upload-box">
                 <input type="file" name="file"  ref="filElem" class="upload-file" @change="uploadImg">
                 <img @click="chooseImg" :src="defaultUrl" alt="upload" class="default-bg">

@@ -130,28 +130,37 @@ methods: {
     },
     ordered(num) {
         return share.order[num]
+    },
+    getInit(params) {
+        let self = this;
+        base.getUrl(API.allUrl.uploadList,params).then((res) => {
+            if(res.code == 200 && res.success == 1) {
+                self.groupList = res.obj;
+            }
+        })
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
     let self = this;
     let params = {
-        token:store.state.token
+        token:store.state.token,
+        batch:store.state.batch,
+        listtype:1*1
     }
-    base.getUrl(API.allUrl.batch,params).then(res => {
-        if(res.code == 200 && res.success ==  1) {
-            let params = {
-                token:store.state.token,
-                batch:res.obj,
-                listtype:1*1
-            }
-            base.getUrl(API.allUrl.uploadList,params).then((res) => {
-                if(res.code == 200 && res.success == 1) {
-                    self.groupList = res.obj;
-                }
-            })
+    if(store.state.batch) {
+        self.getInit(params)
+    }else{
+        let param = {
+            token:store.state.token
         }
-    })
+         base.getUrl(API.allUrl.batch,param).then(res => {
+            if(res.code == 200 && res.success ==  1) {
+                params.batch = res.obj
+                self.getInit(params)
+            }
+        })
+    }
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

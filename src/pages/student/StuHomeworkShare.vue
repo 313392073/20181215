@@ -221,20 +221,26 @@ methods: {
         reader.onload = function(){
             var formData = new FormData();
             formData.append("file", self.$refs.filElem.files[0]);
-            Axios({
-                method:'post',
-                baseURL:base.baseURL,
-                url:API.allUrl.uploadfile+'?token=1',
-                data:formData,
-            }).then((res) => {
-                if(res.data.code == 200 && res.data.success == 1) {
-                    self.picList.push(res.data.obj)
-                }else{
-                    self.tipsMsg = '网络错误，上传头像失败'
-                    self.toggleTips = true;
-                    return false;
-                }
-            })
+            if(formData.get('file') != 'undefined') {
+                Axios({
+                    method:'post',
+                    baseURL:base.baseURL,
+                    url:API.allUrl.upload+'?token='+store.state.token+'&batch='+self.batch+'&fileType=11',
+                    data:formData,
+                }).then((res) => {
+                    if(res.data.code == 200 && res.data.success == 1) {
+                        self.picList.push(res.data.obj)
+                    }else{
+                        self.tipsMsg = '网络错误，上传头像失败'
+                        self.toggleTips = true;
+                        return false;
+                    }
+                })
+            }else{
+                self.tipsMsg = '请先选择要上传的图片'
+                self.toggleTips = true;
+                return false;
+            }
         }
     },
     shareUpload(){
@@ -261,39 +267,37 @@ methods: {
                 this.isSave = false;
              }
         })
+    },
+    getInit(params) {
+        let self = this;
+        base.getUrl(API.allUrl.uploadList,params).then((res) => {
+            console.log(res)
+            if(res.code == 200 && res.success == 1) {
+                self.groupList = res.obj;
+            }
+        })
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
    let self = this;
    let params = {
-        token:store.state.token
+        token:store.state.token,
+        batch:store.state.batch,
+        listtype:11*1
     }
+    self.batch = store.state.batch
     if(store.state.batch) {
-        let params = {
-            token:store.state.token,
-            batch:store.state.batch,
-            listtype:11*1
-        }
-        base.getUrl(API.allUrl.uploadList,params).then((res) => {
-            if(res.code == 200 && res.success == 1) {
-                self.groupList = res.obj;
-            }
-        })
+        this.getInit(params)
     }else{
-         base.getUrl(API.allUrl.batch,params).then(res => {
+        let param = {
+            token:store.state.token
+        }
+         base.getUrl(API.allUrl.batch,param).then(res => {
             if(res.code == 200 && res.success ==  1) {
-                this.batch = res.obj;
-                let params = {
-                    token:store.state.token,
-                    batch:res.obj,
-                    listtype:11*1
-                }
-                base.getUrl(API.allUrl.uploadList,params).then((res) => {
-                    if(res.code == 200 && res.success == 1) {
-                        self.groupList = res.obj;
-                    }
-                })
+                self.batch = res.obj;
+                params['batch'] = res.obj
+                self.getInit(params)
             }
         })
     }

@@ -48,6 +48,7 @@ import PraafterClass from '@/pages/teacher/PraafterClass'//课后习题
 import CourseManagement from '@/pages/teacher/CourseManagement'//课后习题（课件管理）
 import AfterExpTotal from '@/pages/teacher/AfterExpTotal'    // 课后实验成绩统计
 import StudentDetail from '@/pages/teacher/StudentDetail'    // 查看学生答题详情
+import TchUploadList from '@/pages/teacher/UploadPicList'    // 学生端上传详情
 // 老师-end
 
 //学生start
@@ -535,6 +536,15 @@ const router = new Router({
       component: StudentDetail,
       meta: {
         title: '学生答题详情',
+        auth: true
+      }
+    },
+    {
+      path: '/tchuploadlist',
+      name: 'TchUploadList',
+      component: TchUploadList,
+      meta: {
+        title: '学生上传列表',
         auth: true
       }
     }

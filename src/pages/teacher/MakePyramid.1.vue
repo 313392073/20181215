@@ -35,7 +35,7 @@
             </div>
             <h3 class="title">任务分组</h3>
             <div class="info-group clearfix">
-                <div class="item" v-for="(item,index) in groupLists()" :key="index">
+                <div class="item" v-for="(item,index) in groupList" :key="index">
                     <p class="item-title">{{orderd(index)}}组</p>
                     <div class="item-member clearfix">
                         <div v-if="item" class="tips-item" v-for="(subitem,subIndex) in item" :key="subIndex">
@@ -122,9 +122,6 @@ export default {
   },
   //监听属性 类似于data概念
   computed: {
-      chooseList(){
-          return this.checkUsers.list.concat(this.unCheckUsers)
-      },
       groupList(){
             let flag = 0;
             let arr = [];        
@@ -160,50 +157,16 @@ export default {
                 }
             })
             return list;
+      },
+      chooseList(){
+          return this.checkUsers.list.concat(this.unCheckUsers)
       }
   },
   //监控data中的数据变化
   watch: {
-     
   },
   //方法集合
   methods: {
-       groupLists(){
-            let flag = 0;
-            let arr = [];        
-            for(var i = 0; i< this.userList.length; i++) {
-                var az = '';
-                for (var j = 0; j < arr.length; j++) {
-                    if(arr[j][0].groupId == this.userList[i].groupId) {
-                        flag = 1;
-                        az = j;
-                        break;
-                    }
-                }
-                if(flag == 1){
-                    arr[az].push(this.userList[i]);
-                    flag = 0;
-                } else if (flag == 0) {
-                    let brr = new Array();
-                    brr.push(this.userList[i]);
-                    arr.push(brr);
-                }
-            }
-            let len = 4;
-            let list = [];
-            for(var i=0;i<len;i++){
-                list[i] = [];
-                list[i] = arr[i]?arr[i]:[]
-            }
-            list.forEach((item,index) => {
-                if(item){
-                    for(var k=0;k<item.length;k++){
-                        list[index][k]['cgroupId'] = index;
-                    }
-                }
-            })
-            return list;
-      },
       orderd(num) {
           return share.order[num] 
       },
@@ -234,8 +197,8 @@ export default {
           }).then((res) => {
                this.tipsMsg = '分组完成'
                this.toggleTips = true
-               this.getrefresh()
           })
+         
       },
       HideTip(){
             this.tipsMsg = ''
@@ -246,14 +209,12 @@ export default {
             this.toggleTips = false
       },
       changeState(){
-        let self = this;
-        for(var i=0;i<self.unCheckUsers.length;i++){
-            self.unCheckUsers[i] = Object.assign({},self.unCheckUsers[i],{"cgroupId":"uncheck"})
-            // self.$set(self.unCheckUsers[i],"cgroupId",'uncheck')
-            self.$set(self.unCheckUsers[i],"gorder",i)
-        }
-        console.log(self.unCheckUsers)
-        return self.unCheckUsers
+           var arr = this.unCheckUsers;
+           for(var i=0;i<arr.length;i++){
+               arr[i]['cgroupId'] = 'uncheck';
+               arr[i]['gorder'] = i;
+            }
+          return arr
       },
       emptyList(){
           this.checkUsers.list.forEach((item,index) => {
@@ -267,7 +228,7 @@ export default {
         this.isaddList = false;
       },
       showAddList(index){
-          this.checkUsers.list = this.groupList.length>0?this.groupList[index]:[];
+          this.checkUsers.list = this.groupList[index]?this.groupList[index]:[];
           this.checkUsers.order = index;
           this.isaddList = true;
       },
@@ -278,7 +239,6 @@ export default {
           this.changeState()
       },
       addUser(index,pindex){
-          console.log(index,pindex)
           /**index 没被选中的第几个 pindex  当前点击的第几个 */
           this.unCheckUsers[index]['cgroupId'] = pindex;
           this.checkUsers.list.push(this.unCheckUsers[index]);
@@ -287,6 +247,7 @@ export default {
       },
       getUserList(params){
         base.getUrl(API.allUrl.userList, params).then(res => {
+            console.log(res);
             if (res.code == 200 && res.success == 1) {
                 this.userList = res.obj;
             }

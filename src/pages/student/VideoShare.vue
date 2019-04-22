@@ -11,7 +11,8 @@
             <p class="main-title">美美的包装盒做好啦~上传属于你的包装盒制作过程的视频，和同学们一起探讨棱锥的奥秘吧！</p>
             <div class="upload-box">
                 <input type="file" name="file" accept="video/mp4,video/ogg,video/WebM" ref="filElem" class="upload-file" @change="uploadVideo">
-                <img @click="chooseVideo" :src="defaultUrl" alt="upload" class="default-bg">
+                <img v-if="flag" @click="chooseVideo" :src="defaultUrl" alt="upload" class="default-bg">
+                <video v-else :src="defaultUrl" controls class="default-bg"></video>
             </div>
             <div class="btn-box" v-if="isInArray"><a href="javascript:void(0)" @click="saveVideo">保存并上传</a></div>
         </div>
@@ -40,7 +41,8 @@ data() {
 return {
     defaultUrl:defaultUrls,
     batch:'',
-    isInArray:false
+    isInArray:false,
+    flag:true
 };
 },
 //监听属性 类似于data概念
@@ -69,6 +71,12 @@ methods: {
             self.toggleTips = true;
             return false;
         }
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(){
+            self.flag = false
+            self.defaultUrl = reader.result;
+        }
     },
     saveVideo(){
         let self = this;
@@ -84,7 +92,7 @@ methods: {
                     if(res.data.code == 200 && res.data.success == 1) {
                         self.$layer.open({
                             type:0,
-                            content: res.data.msg,
+                            content: "视频成功上传",
                             shade:true,
                             time:2,
                             anim:'scale',
@@ -144,6 +152,19 @@ created() {
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
     })
+
+    if(store.state.batch) {
+        self.batch = store.state.batch
+    }else{
+        let param = {
+            token:store.state.token
+        }
+        base.getUrl(API.allUrl.batch,param).then(res => {
+            if(res.code == 200 && res.success ==  1) {
+                self.batch = res.obj
+            }
+        })
+    }
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
