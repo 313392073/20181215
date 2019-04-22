@@ -199,7 +199,6 @@ methods: {
     },
     lookReport(){
         this.toggleTips = false
-        this.$router.push('/stutestreport')
     },
     HideTip(){
         this.tipsMsg = '';
@@ -276,7 +275,6 @@ methods: {
         })
     },
     subForm(){ //提交数据
-        // this.list //所有的答案和得分情况
         let arr = []
         Object.keys(this.list).forEach((item,index) => {
             var obj = {};
@@ -365,6 +363,7 @@ methods: {
             if(res.data.code = 200 && res.data.success == 1){
                 this.toggleTips = true;
                 this.tipsMsg = '本轮结束';
+                this.getrefresh()
             }
         })
     },

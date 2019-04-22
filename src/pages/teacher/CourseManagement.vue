@@ -276,7 +276,6 @@ created() {
     self.getCourseList()
     let num = 9
     base.getMenuStep().then((res) => {
-        console.log(res)
         self.isInArray = base.arrContain(res,num)
     })
 },

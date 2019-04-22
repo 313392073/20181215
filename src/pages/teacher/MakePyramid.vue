@@ -211,13 +211,14 @@ export default {
         this.reload();
       },
       setTask(){
-          if(this.unCheckUsers.length > 0){
-               this.tipsMsg = '请将组员分配完成'
-               this.toggleTips = true
+          let self = this;
+          if(self.unCheckUsers.length > 0){
+               self.tipsMsg = '请将组员分配完成'
+               self.toggleTips = true
                return false;
           }
           let list = [];
-          this.groupList.forEach((item,index) => {
+          self.groupList.forEach((item,index) => {
               for(var i=0;i<item.length;i++){
                   let obj = {};
                   obj['userLoginname'] = '';
@@ -232,9 +233,12 @@ export default {
               url:API.allUrl.taskSubmit+"?token="+store.state.token,
               data:list
           }).then((res) => {
-               this.tipsMsg = '分组完成'
-               this.toggleTips = true
-               this.getrefresh()
+               self.tipsMsg = '分组完成'
+               self.toggleTips = true
+               self.getrefresh()
+               setTimeout(function() {
+                   self.$router.push("/tchuploadlist")
+               },1000)
           })
       },
       HideTip(){
@@ -340,8 +344,7 @@ export default {
             Axios.all([self.getUserList(params1)],self.getCourseList(params2))
         });
     }
-    // let num = 3
-    let num = 5
+    let num = 3
     base.getMenuStep().then((res) => {
         console.log(res)
         self.isInArray = base.arrContain(res,num)

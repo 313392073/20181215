@@ -199,7 +199,7 @@ methods: {
     },
     lookReport(){
         this.toggleTips = false
-        this.$router.push('/stutestreport')
+        this.getrefresh()
     },
     HideTip(){
         this.tipsMsg = '';
@@ -261,7 +261,6 @@ methods: {
     getCourseList(params){ //获取题型
         base.getUrl(API.allUrl.course_list,params).then(res => {
             if(res.code == 200 && res.success == 1){
-                console.log(res.obj)
                 res.obj.forEach((item,index) => {
                   this.questList.push(item)
                 })
@@ -409,6 +408,7 @@ created() {
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
     })
+    self.getInit()
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {

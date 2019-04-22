@@ -150,11 +150,6 @@ methods: {
         container.appendChild( labelRenderer.domElement );
 
         this.Draw(10,'A','B','C','D','E','F','R','r','a');//棱长，前六个点标注，后三个线标注
-        
-        //var textureLoader=new THREE.TextureLoader();  
-        
-        // var axesHelper = new THREE.AxesHelper( 10 );
-        // scene.add( axesHelper );
 
         window.addEventListener( 'resize', this.onWindowResize, false );
 

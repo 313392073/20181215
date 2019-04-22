@@ -319,7 +319,6 @@ created() {
         token:store.state.token
     }
     base.getUrl(API.allUrl.groupCondition,params).then((res) => { //获取班级的选项
-        console.log(res)
         if(res.code == 200 && res.success == 1) {
             self.sel_class = res.obj.sel_class;
         }
@@ -327,7 +326,6 @@ created() {
   
     let num = 2
     base.getMenuStep().then((res) => {
-        console.log(res)
         self.isInArray = base.arrContain(res,num)
     })
 },
