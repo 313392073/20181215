@@ -3,21 +3,21 @@
 <div class="wrapper">
 <div class="left-wrapper">
 <div class="left-box">
-    <div class="desc-menu">正棱锥体积检测数据统计<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
+    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>正棱锥体积检测数据统计<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
         <div class="main-box">
             <div class="echart" id="echart"></div>
             <div class="detail-box clearfix">
-                <div class="item">
+                <div class="item" @click="godetail">
                     <p>未作答</p>
                     <h3>{{nodonum}}</h3>
                 </div>
-                 <div class="item">
+                 <div class="item" @click="godetail">
                     <p>答题正确</p>
                     <h3>{{rightnum}}</h3>
                 </div>
-                 <div class="item">
+                 <div class="item" @click="godetail">
                     <p>答题错误</p>
                     <h3>{{wrongnum}}</h3>
                 </div>
@@ -62,6 +62,9 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
+     godetail() {
+        this.$router.push('/tearegularvolume')
+    },
     getrefresh(){
         this.reload();
     },
@@ -81,11 +84,19 @@ methods: {
                     name:'访问来源',
                     type:'pie',
                     radius: ['50%', '80%'],
-                     label: {
+                    label: {
                         normal: {
+                            show: true,
                             position: 'outside',
-                            fontSize:14
-                        }
+                            formatter: "{b}:{c}",//模板变量有 {a}、{b}、{c}、{d}，分别表示系列名，数据名，数据值，百分比。{d}数据会根据value值计算百分比
+                            textStyle : {                   
+                                color:'#696767',
+                                align:'center',
+                                verticalAlign:'middle',
+                                fontWeight:'normal',
+                                fontSize:14
+                            }
+                        },
                     },
                     labelLine:{
                         length:10,

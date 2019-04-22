@@ -144,6 +144,20 @@ methods: {
                     legendHoverLink:false,
                     hoverAnimation :false,
                     radius : ['40%', '55%'],
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'inside',
+                            formatter: "{c}({d}%)",//模板变量有 {a}、{b}、{c}、{d}，分别表示系列名，数据名，数据值，百分比。{d}数据会根据value值计算百分比
+                            textStyle : {                   
+                                color:'#696767',
+                                align:'center',
+                                verticalAlign:'middle',
+                                fontWeight:'normal',
+                                fontSize:8
+                            }
+                        },
+                    },
                     itemStyle : {
                         normal : {
                             label : {
@@ -179,23 +193,11 @@ methods: {
     },
     goDetail(userloginname) {
         this.$router.push({name:'StudentDetail',params:{userloginname:userloginname,type:0}})
-    }
-    
-},
-//生命周期 - 创建完成（可以访问当前this实例）
-created() {
-    let self = this;
-    let params = {
-        token:store.state.token
-    }
-    if(store.state.batch) {
-        let params1 = {
-            token:store.state.token,
-            userType:store.state.userType*1,
-            batch:store.state.batch
-        }
-        base.getUrl(API.allUrl.onlineTest,params1).then((res) => {
-            console.log(res)
+    },
+    getInit(params) {
+        let self = this;
+         base.getUrl(API.allUrl.onlineTest,params).then((res) => {
+             console.log(res)
             if(res.code == 200 && res.success == 1) {
                 self.resSituation.max_time = res.obj.class_report[0]?res.obj.class_report[0]['max_time']:new Date();
                 self.resSituation.min_time = res.obj.class_report[0]?res.obj.class_report[0]['min_time']:new Date();
@@ -203,53 +205,39 @@ created() {
                 self.resSituation.answered = res.obj.class_report[0]?res.obj.class_report[0]['test_usernum']:0+'/'+res.obj.score_rank.length;
                 self.resSituation.average = res.obj.class_report[0]?res.obj.class_report[0]['sum_score']*1:0/res.obj.class_report[0]?res.obj.class_report[0]['test_usernum']:0;
                 self.scoreDetail = res.obj.score_rank;
-                self.allTestUser = res.obj.alltest_item.length;
-                self.allTestInfo = res.obj.alltest_item;
-                this.allTestInfo.forEach((item,index) => {
+                self.allTestUser = res.obj.right_rate.length;
+                self.allTestInfo = res.obj.right_rate;
+                self.allTestInfo.forEach((item,index) => {
                     let obj = {
                         name:'',
                         value:''
                     };
                     obj.name = '第'+(index*1+1)+'题';
-                    obj.value = JSON.parse(item.course_item).num/this.allTestUser;
-                    this.dataArr.push(obj)
+                    obj.value = (item.right_usernum/self.scoreDetail.length).toFixed(2);
+                    self.dataArr.push(obj)
                 })
-                
             }
         })
+    }
+},
+//生命周期 - 创建完成（可以访问当前this实例）
+created() {
+    let self = this;
+    let params = {
+        token:store.state.token,
+        userType:store.state.userType*1,
+        batch:store.state.batch
+    }
+    if(store.state.batch) {
+        self.getInit(params)
     }else{
-        base.getUrl(API.allUrl.batch,params).then(res => {
+        let param = {
+            token:store.state.token
+        }
+        base.getUrl(API.allUrl.batch,param).then(res => {
             if(res.code == 200 && res.success ==  1) {
-                let params1 = {
-                    token:store.state.token,
-                    userType:store.state.userType*1,
-                    batch:res.obj
-                }
-                base.getUrl(API.allUrl.onlineTest,params1).then((res) => {
-                    console.log(res)
-                    if(res.code == 200 && res.success == 1) {
-                        self.resSituation.max_time = res.obj.class_report[0]?res.obj.class_report['max_time']:new Date();
-                        self.resSituation.min_time = res.obj.class_report[0]?res.obj.class_report['min_time']:new Date();
-                        self.resSituation.course_num = res.obj.class_report[0]?res.obj.class_report[0]['sum_course_num']:0;
-                        self.resSituation.answered = res.obj.class_report[0]?res.obj.class_report[0]['test_usernum']:0+'/'+res.obj.score_rank.length;
-                        self.resSituation.average = res.obj.class_report[0]?res.obj.class_report[0]['sum_score']*1:0/res.obj.class_report[0]?res.obj.class_report[0]['test_usernum']:0;
-                        self.scoreDetail = res.obj.score_rank;
-                        self.allTestUser = res.obj.alltest_item.length;
-                        self.allTestInfo = res.obj.alltest_item;
-                        this.allTestInfo.forEach((item,index) => {
-                            let obj = {
-                                name:'',
-                                value:''
-                            };
-                            obj.name = '第'+(index*1+1)+'题';
-                            obj.value = JSON.parse(item.course_item).num/this.allTestUser;
-                            this.dataArr.push(obj)
-                        })
-                        
-                    }else{
-                        console.log(res)
-                    }
-                })
+                params['batch'] = res.obj
+                self.getInit(params)                
             }
         })
     }
@@ -257,10 +245,10 @@ created() {
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
-    console.log(store.state)
    let self = this;
-    this.$nextTick(function(){
+   this.$nextTick(function(){
         setTimeout(function(){
+            console.log(self.dataArr)
             for(var i=0;i<self.allTestUser;i++){
                 self.initEchart('echart'+(i*1+1),self.dataArr[i]['name'],self.dataArr[i]['value'])
             }

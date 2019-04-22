@@ -3,7 +3,7 @@
 <div class="wrapper">
 <div class="left-wrapper">
 <div class="left-box">
-    <div class="desc-menu">正棱锥体积<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
+    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>正棱锥体积<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
         <h3 class="title">第一次计算体积数据统计</h3>
@@ -67,8 +67,11 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
+    goBack(){
+        this.$router.go(-1)
+    },
     godetail() {
-        this.$router.push('/tearegularpyramidtotal')
+        this.$router.push('/tearegularvolumetotal')
     },
     getrefresh(){
         this.reload();
@@ -83,7 +86,6 @@ methods: {
     getInit(params) {
         let self = this
         base.getUrl(API.allUrl.totaldetail,params).then(res => {
-            console.log(res)
             if(res.code == 200 && res.success == 1){
                 self.dataList = res.obj
             }

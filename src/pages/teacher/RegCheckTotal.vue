@@ -13,11 +13,11 @@
                     <p>未作答</p>
                     <h3>{{nodonum}}</h3>
                 </div>
-                 <div class="item">
+                 <div class="item" @click="godetail">
                     <p>答题正确</p>
                     <h3>{{rightnum}}</h3>
                 </div>
-                 <div class="item">
+                 <div class="item" @click="godetail">
                     <p>答题错误</p>
                     <h3>{{wrongnum}}</h3>
                 </div>
@@ -63,7 +63,8 @@ watch: {},
 //方法集合
 methods: {
     godetail() {
-        this.$router.push('/tearegularvolumetotal')
+        // this.$router.push('/tearegularvolumetotal')
+        this.$router.push('/tearegularpyramidtotal')
     },
     getrefresh(){
         this.reload();
@@ -84,11 +85,19 @@ methods: {
                     name:'访问来源',
                     type:'pie',
                     radius: ['50%', '80%'],
-                     label: {
+                    label: {
                         normal: {
+                            show: true,
                             position: 'outside',
-                            fontSize:14
-                        }
+                            formatter: "{b}:{c}",//模板变量有 {a}、{b}、{c}、{d}，分别表示系列名，数据名，数据值，百分比。{d}数据会根据value值计算百分比
+                            textStyle : {                   
+                                color:'#696767',
+                                align:'center',
+                                verticalAlign:'middle',
+                                fontWeight:'normal',
+                                fontSize:14
+                            }
+                        },
                     },
                     labelLine:{
                         length:10,

@@ -71,8 +71,8 @@
                         </div>
                     </div>
                     <div class="ansowerd-btn">
-                        <button class="btn" v-if="isInArray && hasSubmit == false" @click="subForm">提交答案</button>
-                        <button class="btn" v-else @click="lookReport">查看成绩</button>
+                        <button class="btn" v-if="isInArray" @click="subForm">提交答案</button>
+                        <button class="btn" v-if="hasSubmit == true" @click="lookReport">查看成绩</button>
                     </div>
                 </div>
             </div>
@@ -629,7 +629,7 @@ beforeDestroy() {
             margin: 82*0.4*0.02rem auto 0.8rem;
             text-align: center;
             .btn{
-                display: block;
+                display: inline-block;
                 width: 346*0.4*0.02rem;
                 height: 92*0.4*0.02rem;
                 margin: 0 auto;
