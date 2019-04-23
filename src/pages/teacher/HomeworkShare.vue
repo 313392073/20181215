@@ -9,7 +9,7 @@
         <div class="main-box">
             <div class="group-wrapper clearfix">
                 <div class="item clearfix" v-for="(item, key, index) in setItem" :key="index">
-                    <p class="group-name">{{key}}组</p>
+                    <p class="group-name">{{key == 'undefined'?getorder(index):key}}组</p>
                     <div class="sub-item" v-for="(subitem,subIndex) in item" :key="subIndex">
                         
                         <div class="not-upload"><img src="../../assets/images/noupload.png" alt="noupload"></div>
@@ -98,6 +98,9 @@ computed: {
 watch: {},
 //方法集合
 methods: {
+    getorder(num) {
+        return share.order[num]
+    },
     getrefresh(){
         this.reload();
     },
