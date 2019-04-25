@@ -10,7 +10,7 @@
         <div class="main-box">
             <div class="group-wrapper clearfix">
                 <div class="item clearfix" v-for="(item, key, index) in setItem" :key="index">
-                    <p class="group-name">{{key}}组</p>
+                    <p class="group-name">{{key == 'undefined'?getorder(index):key}}组</p>
                     <div class="sub-item clearfix" v-for="(subitem,subIndex) in item" :key="subIndex">
                         <div class="left-img">
                             <video v-if="subitem.upload_net_url" :src="subitem.upload_net_url"></video>
@@ -95,6 +95,9 @@ computed: {
 watch: {},
 //方法集合
 methods: {
+    getorder(num) {
+        return share.order[num]
+    },
     getrefresh(){
         this.reload();
     },
@@ -127,40 +130,35 @@ methods: {
     goDetail(attid,group,headImage){
         let attId = attid; 
         this.$router.push({name:'VideDetail',params:{attids:attId,groupInfo:group,headImage:headImage}})
-    }
-},
-//生命周期 - 创建完成（可以访问当前this实例）
-created() {
-    let self = this;
-    let params = {
-        token:store.state.token
-    }
-    if(store.state.batch) {
-        let params = {
-            token:store.state.token,
-            batch:store.state.batch,
-            listtype:6*1
-        }
+    },
+    getInit(params) {
+        let self = this;
         base.getUrl(API.allUrl.uploadList,params).then((res) => {
             console.log(res)
             if(res.code == 200 && res.success == 1) {
                 self.groupList = res.obj;
             }
         })
+    }
+},
+//生命周期 - 创建完成（可以访问当前this实例）
+created() {
+    let self = this;
+    let params = {
+        token:store.state.token,
+        batch:store.state.batch,
+        listtype:6*1
+    }
+    if(store.state.batch) {
+        self.getInit(params)
     }else{
-        base.getUrl(API.allUrl.batch,params).then(res => {
+        let param = {
+            token:store.state.token
+        }
+        base.getUrl(API.allUrl.batch,param).then(res => {
             if(res.code == 200 && res.success ==  1) {
-                let params = {
-                    token:store.state.token,
-                    batch:res.obj,
-                    listtype:6*1
-                }
-                base.getUrl(API.allUrl.uploadList,params).then((res) => {
-                    console.log(res)
-                    if(res.code == 200 && res.success == 1) {
-                        self.groupList = res.obj;
-                    }
-                })
+                params['batch'] = res.obj
+                self.getInit(params)
             }
         })
     }

@@ -109,6 +109,10 @@ methods: {
                     // self.$router.push('/stuonlinetest')
                 }else if(JSON.parse(res.obj.user).userType == 1){ //老师
                     if( res.obj.user &&  JSON.parse(res.obj.user)['sysClassId']) {
+<<<<<<< HEAD
+                        // self.$router.push('/tearegularvolume')
+=======
+>>>>>>> 7fb8f4615df959971e8473bcb1a1c7a6b9059c88
                         self.$router.push('/teacoursehistory')
                     }else{
                         self.$router.push('/teaselectclass')
