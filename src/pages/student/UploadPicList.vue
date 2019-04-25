@@ -100,6 +100,7 @@ methods: {
         brr.forEach((item,index)  => {
             obj[item] = [];
         })
+        console.log(obj)
         return obj;
     },
     goDetail(attid,group,headImage){
@@ -146,6 +147,7 @@ created() {
                 listtype:1*1
             }
             base.getUrl(API.allUrl.uploadList,params).then((res) => {
+                console.log(res)
                 if(res.code == 200 && res.success == 1) {
                     self.groupList = res.obj;
                 }
