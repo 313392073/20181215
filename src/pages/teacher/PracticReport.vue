@@ -20,7 +20,7 @@
 
             <div class="detail-box clearfix">
                 <div class="detail-left">
-                    <p class="main-title">各小组正确率统计:</p>
+                    <p class="main-title">各题目正确率统计:</p>
                     <div class="echart-box clearfix">
                         <div v-for="(item,index) in allTestUser" :key="item" class="echarts" :id="gernerateId(index)">
 
