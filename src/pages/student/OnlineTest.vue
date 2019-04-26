@@ -5,7 +5,9 @@
             <div class="desc-menu">在线测试<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
             <!-- 主要内容 -->
             <div class="main-wrapper">
-                <h3 class="title">棱锥相关概念的测试<span v-if="isInArray" class="count-time">答题用时：{{fmtTime()}}</span></h3>
+                <h3 class="title">棱锥相关概念的测试 
+                    <CountDown v-if="isInArray" class="count-time" ref="myTime"></CountDown>    
+                </h3>
                 <p class="answer-desc">注：请直接在答题框内答题或者修改答案</p>
                 <div class="list-box">
                     <div class="list" v-for="(item,index) in questList" :key="index+10">
@@ -18,19 +20,20 @@
                             <!-- 题目q -->
                             <span v-if="JSON.parse(item.course_item).q" v-for="(req,rindex) in JSON.parse(item.course_item).q" :key="rindex+30">{{req}}
                                 <input v-if="item.if_handle == -1" type="text" class="answer-input"  :ref="'q_'+index+'_'+rindex"/>
-                                <input v-else type="text" class="answer-input"   :ref="'q_'+index+'_'+rindex" :value="item.handled_answer?JSON.parse(item.handled_answer).q[rindex]:''">
+                                <input v-else type="text" class="answer-input" :ref="'q_'+index+'_'+rindex" v-model="JSON.parse(item.handled_answer).q[rindex]">
+                                <!-- <input v-else type="text" class="answer-input aa" style="color:red" :ref="'q_'+index+'_'+rindex" v-model="questList"> -->
                             </span>
                             <!-- bmj -->
                             <p class="bmj" v-if="JSON.parse(item.course_item).bmj" v-for="(breq,bindex) in JSON.parse(item.course_item).bmj" :key="bindex+50">
                                 {{breq}}
                                 <input v-if="item.if_handle == -1" type="text" class="answer-input" :ref="'bmj_'+index+'_'+bindex"/>
-                                <input v-else type="text" class="answer-input" :value="item.handled_answer?JSON.parse(item.handled_answer).bmj[bindex]:''" :ref="'bmj_'+index+'_'+bindex">
+                                <input v-else type="text" class="answer-input" v-model="JSON.parse(item.handled_answer).bmj[bindex]" :ref="'bmj_'+index+'_'+bindex">
                             </p>
                             <!-- 体积  -->
                             <p class="tj" v-if="JSON.parse(item.course_item).tj" v-for="(treq,tindex) in JSON.parse(item.course_item).tj" :key="tindex">
                                 {{treq}}
                                 <input v-if="item.if_handle == -1" type="text" class="answer-input"  :ref="'tj_'+index+'_'+tindex"/>
-                                <input v-else type="text" class="answer-input" :value="item.handled_answer?JSON.parse(item.handled_answer).tj[tindex]:''" :ref="'tj_'+index+'_'+tindex">
+                                <input v-else type="text" class="answer-input" v-model="JSON.parse(item.handled_answer).tj[tindex]" :ref="'tj_'+index+'_'+tindex">
                             </p>
 
                             <!-- 公式  -->
@@ -44,7 +47,7 @@
                                         <p v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']">
                                             <span :class="getChangeClass" v-html="toAsync((list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:'')"></span>
                                         </p>
-                                        <input type="hidden" :value="test">
+                                        <input type="hidden" v-model="test">
                                     </div>
                                 </div>
                                 <div class="answer-div" v-if="item.if_handle == 0">
@@ -55,7 +58,7 @@
                                         <p>
                                             <span :class="getChangeClass" v-html="toAsync((list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:(item.handled_answer?JSON.parse(item.handled_answer).gs[gindex]:''))"></span>
                                         </p>
-                                        <input type="hidden" :value="test">
+                                        <input type="hidden" v-model="test">
                                     </div>
                                 </div>
                             </div>
@@ -99,6 +102,7 @@
 //例如：import 《组件名称》 from '《组件路径》';
 import SideBar from "@/common/SideBar";
 import WriteFormula from "@/common/WriteFormula";
+import CountDown from "@/common/CountDown";
 import share from '../../router/http/share.js';
 import base from '../../router/http/base.js'
 import API from '../../router/http/api.js';
@@ -106,7 +110,7 @@ import store from '../../store/store.js';
 import Axios from 'axios';
 export default {
 //import引入的组件需要注入到对象中才能使用
-components: {SideBar,WriteFormula},
+components: {SideBar,WriteFormula,CountDown},
 inject:['reload'],
 data() {
 //这里存放数据
@@ -130,13 +134,6 @@ return {
     list:{},
     test:'',
     isInArray:false,
-    timer:'',
-    start_time:new Date().getTime(),
-    mind:'',
-    secd:'',
-    timeStamp:0,
-    nowTime:'',
-    values:[],
     hasSubmit:false
 };
 },
@@ -147,29 +144,10 @@ computed: {
     },
     getChangeClass(){
         return this.classNames;
-    }
+    },
 },
 //监控data中的数据变化
 watch: {
-    questList(){
-        var obj = {};
-        this.questList.forEach((item,index) => {
-            obj[index] = {
-                q:{},
-                bmj:{},
-                tj:{},
-                gs:{},
-            };
-            obj[index]['q'].arr = [];  //具体的答案和得分情况
-            obj[index]['bmj'].arr = [];  //具体的答案和得分情况
-            obj[index]['tj'].arr = [];  //具体的答案和得分情况
-            obj[index]['gs'].arr = [];  //具体的答案和得分情况
-        })
-        this.list = obj;
-        this.$nextTick(() => {
-            window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
-        })
-    },
 },
 //方法集合
 methods: {
@@ -180,7 +158,6 @@ methods: {
         this.secd = "" +((hours > 9) ? hours : '0'+hours);
         this.mind = "" +((mins > 9) ? mins : '0'+mins);
         this.nowTime = this.mind+"分"+this.secd+"秒"
-        return this.mind+"分"+this.secd+"秒"
     },
     getTime:function() {
         let now_time = new Date();
@@ -282,15 +259,19 @@ methods: {
         })
         return obj;
     },
-    subForm(){ //提交数据
+    subForm(){ //提交数
+        console.log(this.$refs.myTime.passTime())
+        let timeObj = this.$refs.myTime.passTime()
         var dataArr = this.$refs;
         var drr = [];
         for(var attr in dataArr) {
-            let obj = {
-                key:attr,
-                value:dataArr[attr]
+            if(attr != 'myTime') {
+                 let obj = {
+                    key:attr,
+                    value:dataArr[attr]
+                }
+                drr.push(obj)
             }
-            drr.push(obj)
         }
         let keyObj = this.getAllkey(drr)
         drr.forEach((item,index) => {
@@ -304,7 +285,7 @@ methods: {
         let arr = []
         this.questList.forEach((item,index) => {
             let obj = {};
-            obj.useTime = this.timeStamp;
+            obj.useTime = timeObj.timeStamp;
             let answers = {};
             answers['gs'] = [];
             answers['bmj'] = [];
@@ -324,7 +305,7 @@ methods: {
             }
             obj['answer'] = JSON.stringify(answers);
             let answerscore = 0;
-            obj.isRight = 0;
+            obj.isRight = -1;
             obj.score = 0;
             obj.classBatch = this.classBatch;
             arr.push(obj);
@@ -334,7 +315,7 @@ methods: {
             arr[i]['userLoginname'] = JSON.parse(store.state.user).userLoginname;
             arr[i]['courseItemId'] = this.questList[i]['course_item_id'];
             if(this.questList[i].answer == arr[i].answer){
-                arr[i].isRight = 1;
+                arr[i].isRight = 0;
                 arr[i].score = this.questList[i]['item_score']?this.questList[i]['item_score']:0
             }
         }
@@ -398,14 +379,9 @@ created() {
     this.getInit();
     let num = 1
     base.getMenuStep().then((res) => {
+        console.log(res)
         self.isInArray = base.arrContain(res,num)
-        if(self.isInArray == false) {
-            clearInterval(self.timer)
-        }
     })
-    self.timer = setInterval(function() {
-       self.fmtTime()
-    },1000)
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
@@ -414,9 +390,7 @@ mounted() {
     })
 },
 beforeDestroy() {
-    if(this.timer) {
-        clearInterval(this.timer)
-    }
+
 }
 }
 </script>

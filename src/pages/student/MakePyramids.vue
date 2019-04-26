@@ -335,7 +335,7 @@ methods: {
             })
             obj['answer'] = JSON.stringify(answers);
             let answerscore = 0;
-            obj.isRight = 0;
+            obj.isRight = -1;
             obj.score = 0;
             obj.classBatch = this.classBatch;
             arr.push(obj);
@@ -345,7 +345,7 @@ methods: {
             arr[i]['userLoginname'] = JSON.parse(store.state.user).userLoginname;
             arr[i]['courseItemId'] = this.questList[i]['course_item_id'];
             if(this.questList[i].answer == arr[i].answer){
-                arr[i].isRight = 1;
+                arr[i].isRight = 0;
                 arr[i].score = this.questList[i]['item_score']?this.questList[i]['item_score']:0
             }
         }

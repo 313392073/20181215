@@ -1,7 +1,7 @@
 <!--  -->
 <template>
 <div class='time-box'>
-    答题时间：<span>{{fmtTime()}}</span>    
+    答题时间：<span >{{nowTime}}</span>    
 </div>
 </template>
 
@@ -19,7 +19,8 @@ return {
     start_time:new Date().getTime(),
     mind:'',
     secd:'',
-    timeStamp:0
+    timeStamp:0,
+    nowTime:'00分00秒'
 };
 },
 //监听属性 类似于data概念
@@ -28,15 +29,23 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
+    passTime() {
+        if(this.timer) {
+            clearInterval(this.timer)
+        }
+        let obj = {
+            startTime:this.start_time,
+            timeStamp:this.timeStamp
+        }
+        return obj;
+    },
     fmtTime() {
         let dis_time = Math.round(this.getTime())
         let  hours = dis_time % 60
         let mins = Math.round((dis_time - 30)/60);
-        
         this.secd = "" +((hours > 9) ? hours : '0'+hours);
         this.mind = "" +((mins > 9) ? mins : '0'+mins);
-        console.log(this.mind+":"+this.secd)
-        return this.mind+"分"+this.secd+"秒"
+        this.nowTime = this.mind+"分"+this.secd+"秒"
     },
     getTime:function() {
         let now_time = new Date();
@@ -47,6 +56,7 @@ methods: {
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
     let self = this
+    self.fmtTime();
     self.timer = setInterval(function() {
        self.fmtTime()
     },1000)
