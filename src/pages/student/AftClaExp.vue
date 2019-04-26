@@ -404,7 +404,7 @@ created() {
     }
     let self = this
     self.classBatch = store.state.batch
-    let num = 10
+    let num = 8
     base.getMenuStep().then((res) => {
         self.isInArray = base.arrContain(res,num)
     })
