@@ -75,7 +75,7 @@
                     </div>
                     <div class="ansowerd-btn">
                         <button class="btn" v-if="isInArray" @click="subForm">提交答案</button>
-                        <button class="btn" v-if="hasSubmit == true" @click="lookReport">查看成绩</button>
+                        <button class="btn" @click="lookReport">查看成绩</button>
                     </div>
                 </div>
             </div>
@@ -133,8 +133,7 @@ return {
     },
     list:{},
     test:'',
-    isInArray:false,
-    hasSubmit:false
+    isInArray:false
 };
 },
 //监听属性 类似于data概念
@@ -330,7 +329,6 @@ methods: {
             data:JSON.stringify(arr),
         }).then((res) => {
             if(res.data.code = 200 && res.data.success == 1){
-                localStorage.setItem('hasSubmit',true)
                 this.toggleTips = true;
                 this.tipsMsg = '本轮结束';
             }
@@ -370,14 +368,13 @@ methods: {
 created() {
     let self = this;
     self.classBatch = store.state.batch;
-    if(localStorage.getItem('hasSubmit')) {
-        self.hasSubmit = true
-    }
+    console.log(true)
     if (share.isMathjaxConfig === false) { // 如果：没有配置MathJax
         share.initMathjaxConfig();
     }
     this.getInit();
     let num = 1
+    // let num = 2
     base.getMenuStep().then((res) => {
         console.log(res)
         self.isInArray = base.arrContain(res,num)

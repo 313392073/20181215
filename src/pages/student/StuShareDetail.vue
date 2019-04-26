@@ -20,22 +20,21 @@
                     <div class="desc-btns">
                         <a v-if="isZan || isInArray == false" href="javascript:void(0)"><i style="color:red" class="iconfont icon-xin"></i>赞</a>
                         <a v-else href="javascript:void(0)" @click="getZan"><i class="iconfont icon-xin"></i>赞</a>
-                        <a href="javascript:void(0)"><i class="iconfont icon-guanbi"></i>评论</a>
                     </div>
                 </div>
             </div>
             <div class="detail-box">
-                <div class="zan-box" v-if="info.comments && info.comments.length>0">
+                <div class="zan-box" v-if="info.likesUserHeadimage && info.likesUserHeadimage.split(',').length>0">
                     <div class="icon-box clearfix">
                         <p class="left-icon"><i class="iconfont icon-xin"></i></p>
                         <div class="zan-wrapper">
-                            <img v-for="(cItem,cIndex) in info.comments" :key="cIndex" :src="cItem.userHeadImage" alt="default">
+                            <!-- <p v-for="(cItem,cIndex) in info.likesUserLoginname.split(',')" :key="cIndex">{{cItem}}</p> -->
+                            <img v-for="(cItem,cIndex) in info.likesUserHeadimage.split(',')" :key="cIndex" :src="cItem" v-if="cItem" alt="default">
                         </div>
                     </div>
                 </div>
                 <div class="comment-box" v-if="info.comments && info.comments.length>0">
                     <div class="icon-box clearfix">
-                        <p class="left-icon"><i class="iconfont icon-xin"></i></p>
                         <div class="comment-wrapper">
                             <div class="list clearfix" v-for="(cItem,cIndex) in info.comments" :key="cIndex">
                                 <div class="left-icon">
@@ -51,7 +50,7 @@
                 <div class="input-box clearfix">
                     <p v-if="type"> 你回复 <span class="old-comment">{{oldComment}}</span></p>
                     <textarea placeholder="请填写评论内容" v-model="comments"></textarea>
-                    <a href="javascript:void(0)" v-if="isInArray" @click="getComment"><i class="iconfont icon-xiaolian"></i></a>
+                    <a href="javascript:void(0)" v-if="isInArray" @click="getComment">发表评论</a>
                 </div>
             </div>
         </div>
@@ -85,6 +84,7 @@ return {
     comments:'',
     batch:'',
     info:{},
+    userLoginname:'',
     initInfo:{
         headImage:'',
         useName:''
@@ -123,12 +123,19 @@ methods: {
         let params = {
             token:store.state.token,
             attid:this.attId
-        }   
+        }  
+        console.log(params) 
         base.getUrl(API.allUrl.lookSingPic,params).then((res) => {
             console.log(res)
             if(res.code == 200 && res.success == 1) {
                 Object.assign({},this.info,res.obj)
                 this.info = res.obj
+                let nameArr = res.obj.likesUserLoginname?res.obj.likesUserLoginname.split(","):[]
+                nameArr.forEach((item,index) => {
+                    if(item == this.userLoginname) {
+                       this.isZan = true;
+                    }
+                })
             }
         })
     },
@@ -182,6 +189,7 @@ created() {
     this.attId = attId;
     this.initInfo.headImage = this.$route.params.headImage;
     this.initInfo.useName = this.$route.params.useName;
+    this.userLoginname = JSON.parse(store.state.user).userLoginname;
     let params = {
         token:store.state.token
     }
@@ -257,7 +265,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                     a{
                         font-size: 38*0.4*0.02rem;
                         color: #6c63ff;
-                        margin-left: 100*0.4*0.02rem;
+                        margin-right: 50*0.4*0.02rem;
                         i{
                             font-size: 44*0.4*0.02rem;
                             margin-right: 10*0.4*0.02rem;
@@ -356,23 +364,24 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                     float: left;
                     min-height: 60*0.4*0.02rem;
                     line-height: 60*0.4*0.02rem;
-                    width: calc(~"100% - 100*0.4*0.02rem");
+                    width: calc(~"100% - 160*0.4*0.02rem");
                     border-radius: 4px;
                     border: 1px solid #cfcccc;
                     padding: 0 15*0.4*0.02rem;
                     color: #989898;
                     font-size: 34*0.4*0.02rem;
+                    margin-right: 30*0.4*0.023rem;
                 }
                 a{
                     float: left;
-                    width: 100*0.4*0.02rem;
-                    min-height: 100*0.4*0.02rem;
-                    line-height: 100*0.4*0.02rem;
+                    width: 120*0.4*0.02rem;
+                    min-height: 70*0.4*0.02rem;
+                    line-height: 70*0.4*0.02rem;
                     text-align: center;
-                    color: #989898;
-                    i{
-                        font-size: 80*0.4*0.02rem;
-                    }
+                    background-color: #6c63ff;
+                    color: #f5f5f5;
+                    border-radius: 6px;
+                    margin-top: 0.2rem;
                 }
                 .old-comment{
                     color: #6c63ff;

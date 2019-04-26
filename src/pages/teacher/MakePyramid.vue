@@ -237,9 +237,6 @@ export default {
                self.tipsMsg = '分组完成'
                self.toggleTips = true
                self.getrefresh()
-            //    setTimeout(function() {
-            //        self.$router.push("/tchuploadlist")
-            //    },1000)
           })
       },
       HideTip(){

@@ -9,7 +9,7 @@
          <h3 class="title">图片上传列表</h3>
         <div class="main-box">
             <div class="group-wrapper clearfix">
-                <div class="item" v-for="(item, key, index) in setItem" :key="index">
+                <div class="item" v-for="(item, key, index) in setItem" :key="index" v-if="key!='undefined'">
                     <p class="group-name">{{key != 'undefined'?key:ordered(index)}}组</p>
                     <div class="sub-item clearfix" v-for="(subitem,subIndex) in item" :key="subIndex">
                         <div class="left-img" v-if="subitem['attid']" @click="goDetail(subitem['attid'],key != 'undefined'?key:ordered(index),subitem['user_head_image'])">
@@ -80,6 +80,7 @@ computed: {
         sortArr.forEach(function (item,index) {
             sortObj[item] = obj[item]
         })
+        console.log(sortObj);
         return sortObj;
     }
 },
@@ -100,6 +101,7 @@ methods: {
         brr.forEach((item,index)  => {
             obj[item] = [];
         })
+        
         return obj;
     },
     goDetail(attid,group,headImage){

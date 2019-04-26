@@ -9,8 +9,8 @@
         <div class="main-box">
             <div class="group-wrapper clearfix">
                 <div class="item clearfix" v-for="(item, key, index) in setItem" :key="index">
-                    <p class="group-name">{{key}}组</p>
-                    <div class="sub-item" v-for="(subitem,subIndex) in item" :key="subIndex">
+                    <p class="group-name">{{key == 'undefined'?order(index):key}}组</p>
+                    <div class="sub-item" v-for="(subitem,subIndex) in item" :key="subIndex" v-if="subitem.group_id != -1">
                         <div class="detail-desc clearfix">
                             <div class="desc-left">
                                  <img :src="subitem.user_head_image" :alt="subitem.user_name">
@@ -140,6 +140,7 @@ computed: {
         for (var i = 0; i < newkey.length; i++) {//遍历newkey数组
             newObj[newkey[i]] = obj[newkey[i]];//向新创建的对象中按照排好的顺序依次增加键值对
         }
+        console.log(newObj)
         return newObj;
     }
 },
@@ -147,6 +148,9 @@ computed: {
 watch: {},
 //方法集合
 methods: {
+    order(num) {
+        return share.order[num]
+    },
     getrefresh(){
         this.reload();
     },

@@ -203,7 +203,7 @@ methods: {
                 self.resSituation.min_time = res.obj.class_report[0]?res.obj.class_report[0]['min_time']:new Date();
                 self.resSituation.course_num = res.obj.class_report[0]?res.obj.class_report[0]['sum_course_num']:0;
                 self.resSituation.answered = res.obj.class_report[0]?res.obj.class_report[0]['test_usernum']:0+'/'+res.obj.score_rank.length;
-                self.resSituation.average = res.obj.class_report[0]?res.obj.class_report[0]['sum_score']*1:0/res.obj.class_report[0]?res.obj.class_report[0]['test_usernum']:0;
+                self.resSituation.average = res.obj.class_report[0]?res.obj.class_report[0]['test_usernum']/res.obj.class_report[0]['sum_score']:0;
                 self.scoreDetail = res.obj.score_rank;
                 self.allTestUser = res.obj.right_rate.length;
                 self.allTestInfo = res.obj.right_rate;

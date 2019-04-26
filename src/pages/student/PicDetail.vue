@@ -22,7 +22,7 @@
                 <img :src="info.uploadNetUrl" alt="暂无图片">
             </div>
             <div class="back-btn">
-                <div v-if="isZan" class="bg-btn">
+                <div v-if="isZan" :class="isZan?'bg-btn':''">
                     <p><i style="color:red;" class="iconfont icon-xin"></i></p>
                     <span>{{info.likesUserNum?info.likesUserNum:0}}</span>
                 </div>

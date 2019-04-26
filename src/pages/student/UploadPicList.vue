@@ -9,7 +9,7 @@
          <h3 class="title">图片上传列表</h3>
         <div class="main-box">
             <div class="group-wrapper clearfix">
-                <div class="item" v-for="(item, key, index) in setItem" :key="index">
+                <div class="item" v-for="(item, key, index) in setItem" :key="index" v-if="key != 'undefined'">
                     <p class="group-name">{{key != 'undefined'?key:ordered(index)}}组</p>
                     <div class="sub-item clearfix" v-for="(subitem,subIndex) in item" :key="subIndex">
                         <div class="left-img" v-if="subitem['attid']" @click="goDetail(subitem['attid'],key != 'undefined'?key:ordered(index),subitem['user_head_image'])">
@@ -93,7 +93,9 @@ methods: {
     getAllkey(){
         let arr = [];
         for(var i=0;i<this.groupList.length;i++){
-            arr.push(this.groupList[i]['groupname'])
+            
+                 arr.push(this.groupList[i]['groupname'])
+            
         }
         let brr = share.uniqArr(arr);
         let obj = {};
@@ -137,7 +139,8 @@ methods: {
 created() {
     let self = this;
     let params = {
-        token:store.state.token
+        token:store.state.token,
+        groupType:2
     }
     base.getUrl(API.allUrl.batch,params).then(res => {
         if(res.code == 200 && res.success ==  1) {

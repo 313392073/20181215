@@ -4,7 +4,7 @@
     <div class="left-wrapper">
     <div class="left-box">
         <div class="desc-menu">寻找棱锥<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
-        <!-- 主要内容 -->
+      
         <div class="main-wrapper">
             <h3 class="title">分配小组</h3>
             <div class="main-box clearfix">
@@ -47,7 +47,14 @@
                             <p>2、“分组人数”和“小组数量”中确顶一个参数，另外一个参数会自动调整</p>
                             <p>3、点击学生头像即可指定组长</p>
                         </div>
-                        <div class="group-submit" v-if="isInArray"><a href="javascript:void(0)" class="sbtn" @click="makeGroup">确认分组</a></div>
+                        <div class="group-submit" v-if="isInArray" style="display:flex;flex-direction: column;">
+                            <a href="javascript:void(0)" class="sbtn" @click="makeGroup">确认分组</a>
+                           
+                        </div>
+                          <div class="group-submit" style="display:flex;flex-direction: column;margin-top: 0;">
+                          
+                            <a href="javascript:void(0)" class="sbtn" @click="urlGroup">查看分组情况</a>
+                        </div>
                     </form>
                 </div>
                 <div class="main-right">
@@ -99,7 +106,7 @@
             <div class="main-tips">
                  <i class="iconfont icon-guanbi1" @click="HideTip"></i>
                 <img class="tip-img" src="../../assets/images/group.jpg" alt="">
-                <p class="tips-title">确认分组</p>
+                <!-- <p class="tips-title">确认分组</p> -->
                 <div class="tips-msg">
                     {{tipsMsg}}
                 </div>
@@ -246,6 +253,9 @@ methods: {
     },
     moveStart(evt,e) {
         console.log(evt,e)
+    },
+    urlGroup(){
+        this.$router.push('/tchuploadlist')
     },
     makeGroup(){ //确认分组
         let dataArr = [];
