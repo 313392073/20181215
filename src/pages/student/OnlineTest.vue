@@ -19,28 +19,28 @@
                             </p>
                             <!-- 题目q -->
                             <span v-if="JSON.parse(item.course_item).q" v-for="(req,rindex) in JSON.parse(item.course_item).q" :key="rindex+30">{{req}}
-                                <input v-if="item.if_handle == -1" type="text" class="answer-input"  :ref="'q_'+index+'_'+rindex"/>
-                                <input v-else type="text" class="answer-input" :ref="'q_'+index+'_'+rindex" v-model="JSON.parse(item.handled_answer).q[rindex]">
+                                <input v-if="item.if_handle == -1" type="text" class="answer-input"  :ref="index+'_q_'+rindex"/>
+                                <input v-else type="text" class="answer-input" :ref="index+'_q_'+rindex" v-model="JSON.parse(item.handled_answer).q[rindex]">
                                 <!-- <input v-else type="text" class="answer-input aa" style="color:red" :ref="'q_'+index+'_'+rindex" v-model="questList"> -->
                             </span>
                             <!-- bmj -->
                             <p class="bmj" v-if="JSON.parse(item.course_item).bmj" v-for="(breq,bindex) in JSON.parse(item.course_item).bmj" :key="bindex+50">
                                 {{breq}}
-                                <input v-if="item.if_handle == -1" type="text" class="answer-input" :ref="'bmj_'+index+'_'+bindex"/>
-                                <input v-else type="text" class="answer-input" v-model="JSON.parse(item.handled_answer).bmj[bindex]" :ref="'bmj_'+index+'_'+bindex">
+                                <input v-if="item.if_handle == -1" type="text" class="answer-input" :ref="index+'_bmj_'+bindex"/>
+                                <input v-else type="text" class="answer-input" v-model="JSON.parse(item.handled_answer).bmj[bindex]" :ref="index+'_bmj_'+bindex">
                             </p>
                             <!-- 体积  -->
                             <p class="tj" v-if="JSON.parse(item.course_item).tj" v-for="(treq,tindex) in JSON.parse(item.course_item).tj" :key="tindex">
                                 {{treq}}
-                                <input v-if="item.if_handle == -1" type="text" class="answer-input"  :ref="'tj_'+index+'_'+tindex"/>
-                                <input v-else type="text" class="answer-input" v-model="JSON.parse(item.handled_answer).tj[tindex]" :ref="'tj_'+index+'_'+tindex">
+                                <input v-if="item.if_handle == -1" type="text" class="answer-input"  :ref="index+'_tj_'+tindex"/>
+                                <input v-else type="text" class="answer-input" v-model="JSON.parse(item.handled_answer).tj[tindex]" :ref="index+'_tj_'+tindex">
                             </p>
 
                             <!-- 公式  -->
                             <div class="gs" :class="getChangeClass" v-if="JSON.parse(item.course_item).gs" v-for="(greq,gindex) in JSON.parse(item.course_item).gs" :key="gindex+80">
                                 <span v-html="greq"></span>
                                 <div class="answer-div" v-if="item.if_handle == -1">
-                                    <input class="answer-btn" type="button" value="作答" @focus="showWriteFormula($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)" :ref="'gs_'+index+'_'+rindex"/>
+                                    <input class="answer-btn" type="button" value="作答" @focus="showWriteFormula($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)" :ref="'gs_'+index+'_'+gindex"/>
                                     <textarea class="answer-boxed" v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']" cols="60" rows="1" :ref="'gs_'+index+'_'+gindex"></textarea>
                                     <div class="answerd-wrapper">
                                         您的答案：
@@ -248,18 +248,21 @@ methods: {
     getAllkey(drr){
         let arr = [];
         for(var i=0;i<drr.length;i++){
-            let str = drr[i]['key'].split("_")[0]+"_"+drr[i]['key'].split("_")[1]
+            let str = drr[i]['key'].split("_")[0]
             arr.push(str)
         }
         let brr = share.uniqArr(arr);
         let obj = {};
         brr.forEach((item,index)  => {
-            obj[item] = [];
+            obj[item] = {}
+             obj[item]['gs'] = []
+             obj[item]['bmj'] = []
+             obj[item]['tj'] = []
+             obj[item]['q'] = []
         })
         return obj;
     },
     subForm(){ //提交数
-        console.log(this.$refs.myTime.passTime())
         let timeObj = this.$refs.myTime.passTime()
         var dataArr = this.$refs;
         var drr = [];
@@ -274,14 +277,16 @@ methods: {
         }
         let keyObj = this.getAllkey(drr)
         drr.forEach((item,index) => {
-            let str = item['key'].split("_")[0]+"_"+item['key'].split("_")[1]
-            for(var attr in keyObj) {
-                if(attr == str) {
-                    keyObj[attr].push(item['value'][0].value.toUpperCase())
-                }
+            let num = item['key'].split("_")[0];  //第几题
+            let type = item['key'].split("_")[1] //题型
+            if(type == 'q') {
+                keyObj[num][type].push(item['value'][0].value.toUpperCase())
+            }else{
+                keyObj[num][type].push(item['value'][0].value)
             }
         })
         let arr = []
+        console.log(this.questList)
         this.questList.forEach((item,index) => {
             let obj = {};
             obj.useTime = timeObj.timeStamp;
@@ -290,18 +295,10 @@ methods: {
             answers['bmj'] = [];
             answers['tj'] = [];
             answers['q'] = [];
-            if(Object.keys(keyObj)[index].split("_")[0] == 'gs') {
-                answers['gs'] = keyObj[Object.keys(keyObj)[index]]
-            }
-            if(Object.keys(keyObj)[index].split("_")[0] == 'bmj') {
-                answers['bmj'] = keyObj[Object.keys(keyObj)[index]]
-            }
-            if(Object.keys(keyObj)[index].split("_")[0] == 'tj') {
-                answers['tj'] = keyObj[Object.keys(keyObj)[index]]
-            }
-            if(Object.keys(keyObj)[index].split("_")[0] == 'q') {
-                answers['q'] = keyObj[Object.keys(keyObj)[index]]
-            }
+            answers['gs'] = keyObj[index]['gs']
+            answers['bmj'] =  keyObj[index]['bmj']
+            answers['tj'] =  keyObj[index]['tj']
+            answers['q'] =  keyObj[index]['q']
             obj['answer'] = JSON.stringify(answers);
             let answerscore = 0;
             obj.isRight = -1;
@@ -373,8 +370,7 @@ created() {
         share.initMathjaxConfig();
     }
     this.getInit();
-    let num = 1
-    // let num = 2
+    let num = 2
     base.getMenuStep().then((res) => {
         console.log(res)
         self.isInArray = base.arrContain(res,num)

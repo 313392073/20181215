@@ -17,28 +17,28 @@
                             </p>
                             <!-- 题目q -->
                             <span v-if="JSON.parse(item.course_item).q" v-for="(req,rindex) in JSON.parse(item.course_item).q" :key="rindex+30">{{req}}
-                                <input v-if="item.if_handle == -1" type="text" class="answer-input"  @keyup="getValue($event,index,rindex,JSON.parse(item.answer).q[rindex],item.item_score,item.course_id,'q')"/>
-                                <input v-else type="text" class="answer-input"  @keyup="getValue($event,index,rindex,JSON.parse(item.answer).q[rindex],item.item_score,item.course_id,'q')" :value="item.handled_answer?JSON.parse(item.handled_answer).q[rindex]:''">
+                                <input v-if="item.if_handle == -1" type="text" class="answer-input"  :ref="index+'_q_'+rindex"/>
+                                <input v-else type="text" class="answer-input" :ref="index+'_q_'+rindex" v-model="JSON.parse(item.handled_answer).q[rindex]">
                             </span>
                             <!-- bmj -->
                             <p class="bmj" v-if="JSON.parse(item.course_item).bmj" v-for="(breq,bindex) in JSON.parse(item.course_item).bmj" :key="bindex+50">
                                 {{breq}}
-                                <input v-if="item.if_handle == -1" type="text" class="answer-input" @keyup="getValue($event,index,bindex,JSON.parse(item.answer).bmj[bindex],item.item_score,item.course_id,'bmj')"/>
-                                <input v-else type="text" class="answer-input" :value="item.handled_answer?JSON.parse(item.handled_answer).bmj[bindex]:''" @keyup="getValue($event,index,bindex,JSON.parse(item.answer).bmj[bindex],item.item_score,item.course_id,'bmj')">
+                                <input v-if="item.if_handle == -1" type="text" class="answer-input" :ref="index+'_bmj_'+bindex"/>
+                                <input v-else type="text" class="answer-input" v-model="JSON.parse(item.handled_answer).bmj[bindex]" :ref="index+'_bmj_'+bindex">
                             </p>
                             <!-- 体积  -->
                             <p class="tj" v-if="JSON.parse(item.course_item).tj" v-for="(treq,tindex) in JSON.parse(item.course_item).tj" :key="tindex">
                                 {{treq}}
-                                <input v-if="item.if_handle == -1" type="text" class="answer-input" @keyup="getValue($event,index,tindex,JSON.parse(item.answer).tj[tindex],item.item_score,item.course_id,'tj')"/>
-                                <input v-else type="text" class="answer-input" :value="item.handled_answer?JSON.parse(item.handled_answer).tj[tindex]:''" @keyup="getValue($event,index,tindex,JSON.parse(item.answer).tj[tindex],item.item_score,item.course_id,'tj')">
+                                <input v-if="item.if_handle == -1" type="text" class="answer-input"  :ref="index+'_tj_'+tindex"/>
+                                <input v-else type="text" class="answer-input" v-model="JSON.parse(item.handled_answer).tj[tindex]" :ref="index+'_tj_'+tindex">
                             </p>
 
                             <!-- 公式  -->
                             <div class="gs" :class="getChangeClass" v-if="JSON.parse(item.course_item).gs" v-for="(greq,gindex) in JSON.parse(item.course_item).gs" :key="gindex+80">
                                 <span v-html="greq"></span>
                                 <div class="answer-div" v-if="item.if_handle == -1">
-                                    <input class="answer-btn" type="button"  v-if="isInArray" value="作答" @focus="showWriteFormula($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)"/>
-                                    <textarea class="answer-boxed" v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']" cols="60" rows="1" @keyup="getGsValue($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)" :value="(list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:''" ></textarea>
+                                    <input class="answer-btn" type="button" value="作答" @focus="showWriteFormula($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)" />
+                                    <textarea class="answer-boxed" v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']" cols="60" rows="1" :ref="index+'_gs_'+gindex" :value="(list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:''"></textarea>
                                     <div class="answerd-wrapper">
                                         您的答案：
                                         <p v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']">
@@ -49,7 +49,7 @@
                                 </div>
                                 <div class="answer-div" v-if="item.if_handle == 0">
                                     <input class="answer-btn" type="button" value="修改" @focus="showWriteFormula($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)"/>
-                                    <textarea class="answer-boxed" v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']" cols="60" rows="1" @keyup="getGsValue($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)" :value="(list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:''" ></textarea>
+                                    <textarea class="answer-boxed" v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']" cols="60" rows="1" :ref="index+'_gs_'+gindex" :value="(list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:''" ></textarea>
                                     <div class="answerd-wrapper">
                                         您的答案：
                                         <p>
@@ -202,7 +202,7 @@ methods: {
     },
     lookReport(){
         this.toggleTips = false
-        this.$router.push('/stutestreport')
+        this.getrefresh()
     },
     HideTip(){
         this.tipsMsg = '';
@@ -216,33 +216,6 @@ methods: {
         this.gsMsg.courseItemId = courseItemId;
         this.gsMsg.type = 'gs';
         this.isWrite = true;
-    },
-    getValue(e,index,nowIndex,rightAnswer,rightScore,courseItemId,type){ //边写答案边存数据
-        let rAnswer = rightAnswer;
-        let rScore = rightScore;
-        let nowValue = e.currentTarget.value;
-        let obj = {
-            answer:nowValue.toUpperCase(),
-            isRight:rightAnswer == nowValue.toUpperCase()?true:false,
-            score:rightAnswer == nowValue.toUpperCase()?rightScore:0,
-            courseItemId : courseItemId
-        }
-        switch(type) {
-            case 'q':
-                this.list[index].q.arr[nowIndex] = obj;
-                break;
-             case 'bmj':
-                this.list[index].bmj.arr[nowIndex] = obj;
-                break;
-            case 'tj':
-                this.list[index].tj.arr[nowIndex] = obj;
-                break;
-            case 'gs':
-                this.list[index].gs.arr[nowIndex] = obj;
-                break;
-            default:
-                return;
-        }
     },
     getGsValue(e,index,nowIndex,rightAnswer,rightScore,courseItemId,type){
         let self = this;
@@ -278,82 +251,71 @@ methods: {
             }
         })
     },
+    getAllkey(drr){
+        let arr = [];
+        for(var i=0;i<drr.length;i++){
+            let str = drr[i]['key'].split("_")[0]
+            arr.push(str)
+        }
+        let brr = share.uniqArr(arr);
+        let obj = {};
+        brr.forEach((item,index)  => {
+            obj[item] = {}
+             obj[item]['gs'] = []
+             obj[item]['bmj'] = []
+             obj[item]['tj'] = []
+             obj[item]['q'] = []
+        })
+        return obj;
+    },
     subForm(){ //提交数据
-        // this.list //所有的答案和得分情况
+        var dataArr = this.$refs;
+        var drr = [];
+        for(var attr in dataArr) {
+            let obj = {
+                key:attr,
+                value:dataArr[attr]
+            }
+            drr.push(obj)
+        }
+        let keyObj = this.getAllkey(drr)
+        drr.forEach((item,index) => {
+            let num = item['key'].split("_")[0];  //第几题
+            let type = item['key'].split("_")[1] //题型
+            if(type == 'q') {
+                keyObj[num][type].push(item['value'][0].value.toUpperCase())
+            }else{
+                keyObj[num][type].push(item['value'][0].value)
+            }
+        })
         let arr = []
-        Object.keys(this.list).forEach((item,index) => {
-            var obj = {};
-            obj.answer = '';
-            let type = item['type'];
+        this.questList.forEach((item,index) => {
+            let obj = {};
+            obj.useTime = 0;
             let answers = {};
-            answers['q'] = [];
-            answers['tj'] = [];
-            answers['bmj'] = [];
             answers['gs'] = [];
+            answers['bmj'] = [];
+            answers['tj'] = [];
+            answers['q'] = [];
+            answers['gs'] = keyObj[index]['gs']
+            answers['bmj'] =  keyObj[index]['bmj']
+            answers['tj'] =  keyObj[index]['tj']
+            answers['q'] =  keyObj[index]['q']
+            obj['answer'] = JSON.stringify(answers);
             let answerscore = 0;
-            obj.isRight = 0;
+            obj.isRight = -1;
+            obj.score = 0;
             obj.classBatch = this.classBatch;
-             if(this.list[item].gs.arr.length>0){
-                this.list[item].gs.arr.forEach((subitem,subindex) => {
-                    answers['gs'].push(subitem.answer);
-                    answerscore += subitem.score;
-                    obj.courseItemId = subitem.courseItemId;
-                })
-                obj.answer=JSON.stringify(answers)
-                obj.score = JSON.stringify(answerscore);
-                obj.useTime = 0;
-                JSON.stringify(obj)
-            }
-
-             if(this.list[item].tj.arr.length>0){
-                this.list[item].tj.arr.forEach((subitem,subindex) => {
-                    answers['tj'].push(subitem.answer);
-                    answerscore += subitem.score;
-                    obj.courseItemId = subitem.courseItemId;
-                })
-                obj.answer=JSON.stringify(answers)
-                obj.score = JSON.stringify(answerscore);
-                obj.useTime = 0;
-                JSON.stringify(obj)
-            }
-
-            if(this.list[item].bmj.arr.length>0){
-                this.list[item].bmj.arr.forEach((subitem,subindex) => {
-                    answers['bmj'].push(subitem.answer);
-                    answerscore += subitem.score;
-                    obj.courseItemId = subitem.courseItemId;
-                })
-                obj.answer=JSON.stringify(answers)
-                obj.score = JSON.stringify(answerscore);
-                obj.useTime = 0;
-                JSON.stringify(obj)
-            }
-
-            if(this.list[item].q.arr.length>0){
-                this.list[item].q.arr.forEach((subitem,subindex) => {
-                    answers['q'].push(subitem.answer);
-                    answerscore += subitem.score;
-                    obj.courseItemId = subitem.courseItemId;
-                })
-                obj.answer=JSON.stringify(answers)
-                obj.score = JSON.stringify(answerscore);
-                obj.useTime = 0;
-                JSON.stringify(obj)
-            }
-            arr.push(obj)
+            arr.push(obj);
         })
         for(var i=0;i<this.questList.length;++i){
             let user_loginname = this.questList[i]['user_loginname']
             arr[i]['userLoginname'] = JSON.parse(store.state.user).userLoginname;
             arr[i]['courseItemId'] = this.questList[i]['course_item_id'];
             if(this.questList[i].answer == arr[i].answer){
-                arr[i].isRight = 1;
+                arr[i].isRight = 0;
+                arr[i].score = this.questList[i]['item_score']?this.questList[i]['item_score']:0
             }
-            if(this.questList[i].if_handle == 0 && arr[i].answer == '') {
-                arr[i].answer =this.questList[i].answer;
-                arr[i].score = this.questList[i]['answer'] == this.questList[i]['handled_answer']?this.questList[i]['item_score']:0
-                arr[i].isRight =  this.questList[i]['answer'] == this.questList[i]['handled_answer']?1:0
-            } 
         }
         Axios({
             method:'post',
