@@ -201,7 +201,7 @@ methods: {
             if(res.code == 200 && res.success == 1) {
                 self.resSituation.max_time = res.obj.class_report[0]?res.obj.class_report[0]['max_time']:new Date();
                 self.resSituation.min_time = res.obj.class_report[0]?res.obj.class_report[0]['min_time']:new Date();
-                self.resSituation.course_num = res.obj.class_report[0]?res.obj.class_report[0]['sum_course_num']:0;
+                self.resSituation.course_num = res.obj.right_rate?res.obj.right_rate.length:0;
                 self.resSituation.answered = res.obj.class_report[0]?res.obj.class_report[0]['test_usernum']:0+'/'+res.obj.score_rank.length;
                 self.resSituation.average = res.obj.class_report[0]?res.obj.class_report[0]['test_usernum']/res.obj.class_report[0]['sum_score']:0;
                 self.scoreDetail = res.obj.score_rank;

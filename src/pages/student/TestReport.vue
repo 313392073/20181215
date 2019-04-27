@@ -165,23 +165,29 @@ created() {
             userType:store.state.userType*1,
             batch:store.state.batch
         }
-        let rightNum = 0;
         base.getUrl(API.allUrl.onlineTest,params1).then((res) => {
             console.log(res)
             if(res.code == 200 && res.success == 1) {
                 if(res.obj.score_rank.length > 0) {
                     let user_loginname = JSON.parse(store.state.user)['userLoginname']
                     res.obj.score_rank.forEach((item,index) =>{
-                         rightNum += item['test_user_rightnum'];
                         if(item['user_loginname'] == user_loginname) {
                             this.resSituation.score = item['sum_score']?item['sum_score']:0
                             this.resSituation.rank = index+1
                             this.resSituation.useTime = item['avg_usetime']?item['avg_usetime']:0
                         }
                     })
-                    this.resSituation.rightPercent = rightNum/res.obj.score_rank.length;
                 }
                 this.scoreDetail = res.obj.score_report
+                if(res.obj.score_report.length>0) {
+                    let num = 0;
+                    res.obj.score_report.forEach((item,index) => {
+                        if(item.is_right == 0) {
+                            num++;
+                        }
+                    })
+                     this.resSituation.rightPercent = num/res.obj.score_report.length;
+                }
                 this.scoreRank = res.obj.score_rank
                 this.$nextTick(() => {
                     window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);

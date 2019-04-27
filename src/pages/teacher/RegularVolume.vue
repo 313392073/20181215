@@ -25,8 +25,18 @@
                                 <td @click="godetail">{{index+1}}</td>
                                 <td>{{item.user_name}}</td>
                                 <td :class="{'is_red':item.is_right != 0}">{{item.is_right == 0 ? '正确':"错误"}}</td>
-                                <td> <span class="gs-box" v-for="(usubItem,usubIndex) in JSON.parse(item.useranswer)['tj']" :key="usubIndex">{{toAsync(usubItem)}}</span></td>
-                                <td class="right-result"> <span class="gs-box" v-for="(rsubItem,rsubIndex) in JSON.parse(item.answer)['tj']" :key="rsubIndex">{{toAsync(rsubItem)}}</span></td>
+                                 <td>
+                                    <span v-for="(subItem,subIndex) in JSON.parse(item.useranswer).q" :key="subIndex+5">{{subItem}}</span>
+                                    <span v-for="(subItem,subIndex) in JSON.parse(item.useranswer).bmj" :key="subIndex+10">{{subItem}}</span>
+                                    <span v-for="(subItem,subIndex) in JSON.parse(item.useranswer).tj" :key="subIndex+15">{{subItem}}</span>
+                                    <span class="gs-box" v-for="(subItem,subIndex) in JSON.parse(item.useranswer).gs" :key="subIndex+25">{{toAsync(subItem)}}</span>
+                                </td>
+                                <td class="right-result"> 
+                                     <span v-for="(subItem,subIndex) in JSON.parse(item.answer).q" :key="subIndex+5">{{subItem}}</span>
+                                    <span v-for="(subItem,subIndex) in JSON.parse(item.answer).bmj" :key="subIndex+10">{{subItem}}</span>
+                                    <span v-for="(subItem,subIndex) in JSON.parse(item.answer).tj" :key="subIndex+15">{{subItem}}</span>
+                                    <span class="gs-box" v-for="(subItem,subIndex) in JSON.parse(item.answer).gs" :key="subIndex+25">{{toAsync(subItem)}}</span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -84,12 +94,13 @@ methods: {
         }
     },
     getInit(params) {
-        console.log(params)
         let self = this
         base.getUrl(API.allUrl.totaldetail,params).then(res => {
-            console.log(res)
             if(res.code == 200 && res.success == 1){
                 self.dataList = res.obj
+                 this.$nextTick(() => {
+                    window.MathJax.Hub.Queue(["Typeset", MathJax.Hub, document.getElementsByClassName('gs-box')]);
+                })
             }
         })
     }
