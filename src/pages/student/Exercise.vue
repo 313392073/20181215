@@ -83,7 +83,7 @@
                     <div class="tips-msg">
                         {{tipsMsg}}
                     </div>
-                    <div class="tips-btn"><button class="cbtn tbtn" @click="lookReport">查看成绩</button></div>
+                    <div class="tips-btn"><button class="cbtn tbtn" @click="lookReport">确定</button></div>
                 </div>
             </div>
         </div>

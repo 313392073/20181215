@@ -130,7 +130,7 @@ methods: {
                     align:'center',
                     verticalAlign:'middle',
                     fontWeight:'normal',
-                    fontSize:8
+                    fontSize:10
                 }
             },
             tooltip : {
@@ -154,7 +154,7 @@ methods: {
                                 align:'center',
                                 verticalAlign:'middle',
                                 fontWeight:'normal',
-                                fontSize:8
+                                fontSize:12
                             }
                         },
                     },
