@@ -381,10 +381,15 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                     .detail-box{
                         margin: 20*0.4*0.02rem;
                         padding: 0 30*0.4*0.02rem; 
+                        height: 120*0.4*0.02rem;
+                        width:380*0.4*0.02rem;
+                        overflow-x: auto;
+                        box-sizing: border-box;
                         &>div{
                             float: left;
-                            width: 25%;
+                            width: 0.8rem;
                             text-align: center;
+                          
                             font-size: 12px!important;
                             img{
                                 width: 75*0.4*0.02rem;

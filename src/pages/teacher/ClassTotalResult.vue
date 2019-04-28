@@ -31,7 +31,7 @@
                                     </tr>
                                     <tr>
                                         <td class="td-title">正确率</td>
-                                        <td v-for="(item,index) in alltest_item" :key="index" v-if="item.course_type == 3">{{Math.ceil(item.is_right_num/alltest_item.length)/100}}%</td>
+                                        <td v-for="(item,index) in alltest_item" :key="index" v-if="item.course_type == 3">{{(item.is_right_num*100/alltest_user.length).toFixed(2)}}%</td>
                                     </tr>
                                 </table>
                                 <p class="desc">表面积检测</p>
@@ -44,7 +44,7 @@
                                     </tr>
                                     <tr>
                                         <td class="td-title">正确率</td>
-                                        <td v-for="(item,index) in alltest_item" :key="index" v-if="item.course_type == 4">{{Math.ceil(item.is_right_num/alltest_item.length)/100}}%</td>
+                                        <td v-for="(item,index) in alltest_item" :key="index" v-if="item.course_type == 4">{{(item.is_right_num*100/alltest_user.length).toFixed(2)}}%</td>
                                     </tr>
                                 </table>
                                 <p class="desc">体积检测</p>
@@ -405,7 +405,7 @@ created() {
                                     str = '线线关系'
                                 }
                                 if(item.is_right == 0 && item.is_right_num) {
-                                wrong = item.usernum - item.is_right_num
+                                    wrong = item.usernum - item.is_right_num
                                 }
                                 if(item.is_right == -1) {
                                     wrong = 0

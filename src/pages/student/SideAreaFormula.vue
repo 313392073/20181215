@@ -233,6 +233,7 @@ methods: {
     },
     getCourseList(params){ //获取题型
         base.getUrl(API.allUrl.course_list,params).then(res => {
+            console.log(res)
             if(res.code == 200 && res.success == 1){
                 res.obj.forEach((item,index) => {
                   this.questList.push(item)
@@ -281,7 +282,7 @@ methods: {
             if(type == 'q') {
                 keyObj[num][type].push(item['value'][0].value.toUpperCase())
             }else{
-                keyObj[num][type].push(item['value'][0].value)
+                keyObj[num][type].push(this.trim(item['value'][0].value))
             }
         })
         let arr = []
@@ -328,6 +329,10 @@ methods: {
                 this.tipsMsg = '本轮结束';
             }
         })
+    },
+    trim(s){
+        console.log(s)
+        return s.replace(/(^\s*)|(\s*$)/g, "");
     },
     getrefresh(){
         this.reload()
