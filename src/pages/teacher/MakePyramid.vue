@@ -46,7 +46,10 @@
                     <div class="item-add" @click="showAddList(index)"></div>
                 </div>
             </div>
-            <div class="back-btn" v-if="isInArray"><button class="btn" @click="setTask">任务布置</button></div>
+            <div class="back-btn">
+                <button class="btn" v-if="isInArray" @click="setTask">任务布置</button>
+                 <button class="btn" @click="lookReport">查看成绩</button>
+            </div>
         </div>
         <div class="tips-wrapper" v-show="isaddList">
             <div class="tips-box">
@@ -169,6 +172,9 @@ export default {
   },
   //方法集合
   methods: {
+      lookReport() {
+          this.$router.push("/teajobresult")
+      },
        groupLists(){
             let flag = 0;
             let arr = [];        
@@ -348,6 +354,7 @@ export default {
     }
     let num = 3
     base.getMenuStep().then((res) => {
+        console.log(res)
         self.isInArray = base.arrContain(res,num)
     })
   },
@@ -479,7 +486,7 @@ export default {
       margin: 0.4rem auto 0.6rem;
       text-align: center;
       .btn {
-        display: block;
+        display: inline-block;
         width: 340 * 0.4 * 0.02rem;
         height: 95 * 0.4 * 0.02rem;
         margin: 0 auto;

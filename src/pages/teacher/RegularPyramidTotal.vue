@@ -164,9 +164,10 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
             }
             .detail-left{
                 float: left;
-                width: calc(~"50% - 1px");
-                padding: 0 30*0.4*0.02rem;
-                border-right:1px solid #ececec; 
+                width: 100%;
+                // width: calc(~"50% - 1px");
+                // padding: 0 30*0.4*0.02rem;
+                // border-right:1px solid #ececec; 
                 table{
                     width: 100%;
                     thead{

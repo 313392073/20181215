@@ -3,10 +3,10 @@
 <div class="wrapper">
 <div class="left-wrapper">
 <div class="left-box">
-    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>正棱锥体积<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
+    <div class="desc-menu"><i class="iconfont icon-2fanhui" @click="goBack"></i>线线关系<a class="refresh-btn" href="javascript:void(0)" @click="getrefresh"><img src="../../assets/images/refresh.png" alt="refresh.png">刷新</a></div>
     <!-- 主要内容 -->
     <div class="main-wrapper">
-        <h3 class="title">第一次计算体积数据统计</h3>
+        <h3 class="title">线线关系数据统计</h3>
         <div class="main-box">
             <div class="detail-box clearfix">
                 <div class="detail-left">
@@ -111,7 +111,7 @@ created() {
     let params = {
         batch:store.state.batch?store.state.batch:'',
         token:store.state.token?store.state.token:'',
-        ctype:4*1
+        ctype:5*1
     }
     if(store.state.batch) {
         self.getInit(params)
