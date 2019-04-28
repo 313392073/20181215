@@ -365,14 +365,12 @@ methods: {
 created() {
     let self = this;
     self.classBatch = store.state.batch;
-    console.log(true)
     if (share.isMathjaxConfig === false) { // 如果：没有配置MathJax
         share.initMathjaxConfig();
     }
     this.getInit();
-    let num = 2
+    let num = 1
     base.getMenuStep().then((res) => {
-        console.log(res)
         self.isInArray = base.arrContain(res,num)
     })
 },

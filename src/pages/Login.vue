@@ -90,7 +90,6 @@ methods: {
             userPassword:self.dataObj.pwd
         }
         base.getUrl(API.allUrl.login,params).then((res) => {
-            console.log(res)
             if(res.code == 200 && res.success == 1){
                 let obj = {
                     userInfo:res.obj.user,

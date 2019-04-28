@@ -49,7 +49,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="tips-btn"><button class="sbtn">确认发送</button></div>
+            <!-- <div class="tips-btn"><button class="sbtn">确认发送</button></div> -->
        </div>
     </div>
     <div class="tips" v-show="toggleTips">

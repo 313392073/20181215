@@ -135,7 +135,7 @@ methods: {
             },
             tooltip : {
                 trigger: 'item',
-                formatter: "{a} <br/>{b} : {c} ({d}%)"
+                formatter: "{c}({d}%)"
             },
             calculable : true,
             series : [

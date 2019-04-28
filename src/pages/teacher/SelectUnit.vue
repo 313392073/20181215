@@ -148,14 +148,13 @@ methods: {
                         menuUrlTeacher:subItem['menuUrlTeacher'],
                         pmenuId:subItem['state'],
                         state:subItem['state'],
-                        sysclassId:subItem['sysclassId']
+                        sysclassId:subItem['sysClassId']
                     }
                     obj['menuOrder']?obj['menuOrder']:delete obj['menuOrder']
 ;                   self.arr.push(obj)
                 })
             }
         })
-         console.log(store.state)
         Axios({
             method:'post',
             baseURL:base.baseURL,

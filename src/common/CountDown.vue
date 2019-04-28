@@ -59,7 +59,6 @@ created() {
     self.fmtTime();
     self.timer = setInterval(function() {
        self.fmtTime()
-       console.log(11111111)
     },1000)
 },
 //生命周期 - 挂载完成（可以访问DOM元素）

@@ -29,6 +29,7 @@ import CourseHistory from '@/pages/teacher/CourseHistory'// 课程历史
 import PracticReport from '@/pages/teacher/PracticReport'// 在线测试(老师)
 import LookingForPyramid from '@/pages/teacher/lookingforpyramid'    // 寻找棱锥
 import MakePyramid from '@/pages/teacher/MakePyramid'// 制作棱锥
+import TeaJobResults from '@/pages/teacher/JobResults'// 制作棱锥成绩
 import HomeworkShare from '@/pages/teacher/HomeworkShare'    //作业分享1
 import ShareDetail from '@/pages/teacher/ShareDetail'    // 作业分享2
 
@@ -49,6 +50,8 @@ import CourseManagement from '@/pages/teacher/CourseManagement'//课后习题（
 import AfterExpTotal from '@/pages/teacher/AfterExpTotal'    // 课后实验成绩统计
 import StudentDetail from '@/pages/teacher/StudentDetail'    // 查看学生答题详情
 import TchUploadList from '@/pages/teacher/UploadPicList'    // 学生端上传详情
+import LinesResult from '@/pages/teacher/LinesResult'    //线线关系详情
+import LineDetail from '@/pages/teacher/LineDetail'    //线线关系详情
 // 老师-end
 
 //学生start
@@ -228,6 +231,15 @@ const router = new Router({
       }
     },
     {
+      path: '/teajobresult',
+      name: 'TeaJobResults',
+      component: TeaJobResults,
+      meta: {
+        title: '制作棱锥成绩',
+        auth: true
+      }
+    },
+    {
       path: '/teahomeworkshare',
       name: 'HomeworkShare',
       component: HomeworkShare,
@@ -343,7 +355,25 @@ const router = new Router({
         title: '课后实验成绩统计',
         auth: true
       }
-    }, //老师end
+    },
+      {
+        path: '/teaexpregpyramid',
+        name: 'LinesResult',
+        component:LinesResult,
+        meta: {
+          title: '线线关系',
+          auth: true
+        }
+    }, 
+    {
+      path: '/tealinedetail',
+      name: 'LineDetail',
+      component:LineDetail,
+      meta: {
+        title: '线线关系详情',
+        auth: true
+      }
+    },//老师end
     { //学生start
       path: '/stucoursehistory',
       name: 'CourseShistory',
