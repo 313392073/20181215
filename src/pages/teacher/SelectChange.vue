@@ -136,6 +136,9 @@ methods: {
                 let pindexd = item.split('_')[0]
                 let indexd = item.split('_')[1]
                 self.$set(self.courseList[pindexd]['menuList'][indexd],'menuOrder',index+1)
+                if(self.courseList[pindexd]['menuList'][index]['state'] != 2) {
+                    self.$set(self.courseList[pindexd]['menuList'][indexd],'state',1)
+                }
             })
         }
         self.courseList.forEach((item,index) => {
@@ -150,8 +153,8 @@ methods: {
                         menuUrlStu:subItem['menuUrlStu'],
                         menuUrlTeacher:subItem['menuUrlTeacher'],
                         pmenuId:subItem['state'],
-                        state:subItem['state']==2?1:subItem['state'],
-                        sysclassId:subItem['sysclassId']
+                        state:subItem['state'],
+                        sysclassId:subItem['sysClassId']
                     }
                     obj['menuOrder']?obj['menuOrder']:delete obj['menuOrder']
 ;                   arr.push(obj)

@@ -17,20 +17,20 @@
                             </p>
                             <!-- 题目q -->
                             <span v-if="JSON.parse(item.course_item).q" v-for="(req,rindex) in JSON.parse(item.course_item).q" :key="rindex+30">{{req}}
-                                <input v-if="item.if_handle == -1" type="text" class="answer-input"  @keyup="getValue($event,index,rindex,JSON.parse(item.answer).q[rindex],item.item_score,item.course_id,'q')" :ref="index+'_q_'+rindex"/>
-                                <input v-else type="text" class="answer-input"  @keyup="getValue($event,index,rindex,JSON.parse(item.answer).q[rindex],item.item_score,item.course_id,'q')" :value="item.handled_answer?JSON.parse(item.handled_answer).q[rindex]:''" :ref="index+'_q_'+rindex">
+                                <input v-if="item.if_handle == -1" type="text" class="answer-input"  :ref="index+'_q_'+rindex"/>
+                                <input v-else type="text" class="answer-input"  :ref="index+'_q_'+rindex">
                             </span>
                             <!-- bmj -->
                             <p class="bmj" v-if="JSON.parse(item.course_item).bmj" v-for="(breq,bindex) in JSON.parse(item.course_item).bmj" :key="bindex+50">
                                 {{breq}}
-                                <input v-if="item.if_handle == -1" type="text" class="answer-input" @keyup="getValue($event,index,bindex,JSON.parse(item.answer).bmj[bindex],item.item_score,item.course_id,'bmj')" :ref="index+'_bmj_'+bindex"/>
-                                <input v-else type="text" class="answer-input" :value="item.handled_answer?JSON.parse(item.handled_answer).bmj[bindex]:''" @keyup="getValue($event,index,bindex,JSON.parse(item.answer).bmj[bindex],item.item_score,item.course_id,'bmj')" :ref="index+'_bmj_'+bindex">
+                                <input v-if="item.if_handle == -1" type="text" class="answer-input" :ref="index+'_bmj_'+bindex"/>
+                                <input v-else type="text" class="answer-input" :value="item.handled_answer?JSON.parse(item.handled_answer).bmj[bindex]:''" :ref="index+'_bmj_'+bindex">
                             </p>
                             <!-- 体积  -->
                             <p class="tj" v-if="JSON.parse(item.course_item).tj" v-for="(treq,tindex) in JSON.parse(item.course_item).tj" :key="tindex">
                                 {{treq}}
-                                <input v-if="item.if_handle == -1" type="text" class="answer-input" @keyup="getValue($event,index,tindex,JSON.parse(item.answer).tj[tindex],item.item_score,item.course_id,'tj')" :ref="index+'_tj_'+tindex"/>
-                                <input v-else type="text" class="answer-input" :value="item.handled_answer?JSON.parse(item.handled_answer).tj[tindex]:''" @keyup="getValue($event,index,tindex,JSON.parse(item.answer).tj[tindex],item.item_score,item.course_id,'tj')" :ref="index+'_tj_'+tindex">
+                                <input v-if="item.if_handle == -1" type="text" class="answer-input" :ref="index+'_tj_'+tindex"/>
+                                <input v-else type="text" class="answer-input" :value="item.handled_answer?JSON.parse(item.handled_answer).tj[tindex]:''" :ref="index+'_tj_'+tindex">
                             </p>
 
                             <!-- 公式  -->

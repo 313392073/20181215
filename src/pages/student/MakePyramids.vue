@@ -73,6 +73,7 @@
                     </div>
                     <div class="ansowerd-btn">
                         <button class="btn" v-if="isInArray" @click="subForm">提交答案</button>
+                        <button class="btn" @click="lookReport">查看成绩</button>
                     </div>
                 </div>
             </div>
@@ -394,6 +395,7 @@ created() {
     }
     let num = 3
     base.getMenuStep().then((res) => {
+        console.log(res)
         self.isInArray = base.arrContain(res,num)
     })
 },
@@ -577,7 +579,7 @@ mounted() {
             margin: 82*0.4*0.02rem auto 0.8rem;
             text-align: center;
             .btn{
-                display: block;
+                display: inline-block;
                 width: 346*0.4*0.02rem;
                 height: 92*0.4*0.02rem;
                 margin: 0 auto;

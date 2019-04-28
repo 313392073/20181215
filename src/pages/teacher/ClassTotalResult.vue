@@ -299,6 +299,7 @@ created() {
             batch:store.state.batch
         }
         base.getUrl(API.allUrl.classTest,params).then((res) => {
+            console.log(res)
             if(res.code == 200 && res.success == 1) {
                 this.alltest_error = res.obj.alltest_error
                 this.alltest_error_remark = res.obj.alltest_coursetype_remark?res.obj.alltest_coursetype_remark.split(','):''
