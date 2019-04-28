@@ -42,7 +42,7 @@
                     </div>
                     <div v-for="(pitem,index) in item" :key="index+20">
                          <div class="sub-item nosub-item" v-if="pitem['inGroup'] && isInArray">
-                            <div class="not-upload"><img  @click="showUpload" src="../../assets/images/noupload.png" alt="noupload"></div>
+                            <div class="not-upload"><img  @click="showUpload" src="../../assets/images/uploaded.png" alt="noupload"></div>
                         </div>
                     </div>
                    
@@ -306,8 +306,10 @@ created() {
         })
     }
    
-    let num = 4
+    // let num = 4
+    let num = 8
     base.getMenuStep().then((res) => {
+        console.log(res)
         self.isInArray = base.arrContain(res,num)
     })
 },

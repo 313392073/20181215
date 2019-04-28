@@ -25,7 +25,7 @@
                         <thead>
                             <tr>
                                 <th>你的答案</th>
-                                <th>正确答案</th>
+                                <!-- <th>正确答案</th> -->
                                 <th>得分</th>
                             </tr>
                         </thead>
@@ -40,9 +40,8 @@
                                 </td>
                                 <td v-else class="td-left"> 
                                     <i>{{index+1}}</i>
-                                   
                                 </td>
-                                <td v-if="item.right_answer"> 
+                                <!-- <td v-if="item.right_answer"> 
                                     <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).q" :key="rsubIndex+10">{{rsubItem}}</span>
                                     <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).bmj" :key="rsubIndex+20">{{rsubItem}}</span>
                                     <span v-for="(rsubItem,rsubIndex) in JSON.parse(item.right_answer).tj" :key="rsubIndex+30">{{rsubItem}}</span>
@@ -50,7 +49,7 @@
                                 </td>
                                 <td v-else class="td-left">
                                     
-                                </td>
+                                </td> -->
                                 <td class="use-time">{{item.score}}分</td>
                             </tr>
                         </tbody>
@@ -334,6 +333,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                             td{
                                 text-align: center;
                                 font-size: 34*0.4*0.02rem;
+                                border-bottom: 1px solid #eeeeee;
                                 .head-pic{
                                     width: 85*0.4*0.02rem;
                                     height: 85*0.4*0.02rem;
@@ -362,6 +362,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                                 &.td-left{
                                     padding-left: 50*0.4*0.02rem;
                                     text-align: left;
+                                    border-right: 1px solid #eeeeee;
                                     i{
                                         text-align: center;
                                     }
