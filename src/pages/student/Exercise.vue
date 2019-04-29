@@ -38,7 +38,8 @@
                                 <span v-html="greq"></span>
                                 <div class="answer-div" v-if="item.if_handle == -1">
                                     <input class="answer-btn" type="button" value="作答" @focus="showWriteFormula($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)" />
-                                    <textarea class="answer-boxed" v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']" cols="60" rows="1" :ref="index+'_gs_'+gindex" :value="(list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:''"></textarea>
+                                    <textarea v-if="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']" class="answer-boxed" cols="60" rows="1" :ref="index+'_gs_'+gindex" :value="(list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:''"></textarea>
+                                    <textarea v-else class="answer-boxed" cols="60" rows="1" :ref="index+'_gs_'+gindex"></textarea>
                                     <div class="answerd-wrapper">
                                         您的答案：
                                         <p v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']">
@@ -49,7 +50,8 @@
                                 </div>
                                 <div class="answer-div" v-if="item.if_handle == 0">
                                     <input class="answer-btn" type="button" value="修改" @focus="showWriteFormula($event,index,gindex,JSON.parse(item.answer).gs[gindex],item.item_score,item.course_id)"/>
-                                    <textarea class="answer-boxed" v-show="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']" cols="60" rows="1" :ref="index+'_gs_'+gindex" :value="(list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:''" ></textarea>
+                                    <textarea v-if="list[index]['gs']['arr'][gindex] && list[index]['gs']['arr'][gindex]['answer']" class="answer-boxed" cols="60" rows="1" :ref="index+'_gs_'+gindex" :value="(list[index]['gs']['arr'][gindex]&&list[index]['gs']['arr'][gindex]['answer'])?list[index]['gs']['arr'][gindex]['answer']:''"></textarea>
+                                    <textarea v-else class="answer-boxed" cols="60" rows="1" :ref="index+'_gs_'+gindex" v-model="JSON.parse(item.handled_answer).gs[gindex]"></textarea>
                                     <div class="answerd-wrapper">
                                         您的答案：
                                         <p>

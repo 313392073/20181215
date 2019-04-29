@@ -83,7 +83,7 @@ import CourseSet from '@/pages/CourseSet'    // 课后安排设置
 Vue.use(Router)
 
 const router = new Router({
-  mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
+  // mode: 'history', //打包的时候需要把这个注释掉  不然图片的路径找不到
   routes: [
     {
       path: '/time',
