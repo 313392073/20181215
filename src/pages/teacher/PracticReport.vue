@@ -14,7 +14,7 @@
                     <div class="item time clearfix"><p class="desc-time">时间: </p><div class="detail-time"><p class="start-time">{{timestampToTime(resSituation.min_time)}}</p><p class="end-time">{{timestampToTime(resSituation.max_time)}}</p></div></div>
                     <div class="item num">题量: <span class="order">{{resSituation.course_num}}题</span></div>
                     <div class="item submitd">已交: <span class="rights">{{resSituation.answered}}人</span></div>
-                    <div class="item score">平均分: <span class="time">{{resSituation.average}}分</span></div>
+                    <div class="item score">平均分: <span class="time">{{resSituation.average.toFixed(2)}}分</span></div>
                 </div>
             </div>
 
@@ -203,7 +203,7 @@ methods: {
                 self.resSituation.min_time = res.obj.class_report[0]?res.obj.class_report[0]['min_time']:new Date();
                 self.resSituation.course_num = res.obj.right_rate?res.obj.right_rate.length:0;
                 self.resSituation.answered = res.obj.class_report[0]?res.obj.class_report[0]['test_usernum']:0+'/'+res.obj.score_rank.length;
-                self.resSituation.average = res.obj.class_report[0]?res.obj.class_report[0]['test_usernum']/res.obj.class_report[0]['sum_score']:0;
+                self.resSituation.average = res.obj.class_report[0]?res.obj.class_report[0]['sum_score']/res.obj.class_report[0]['test_usernum']:0;
                 self.scoreDetail = res.obj.score_rank;
                 self.allTestUser = res.obj.right_rate.length;
                 self.allTestInfo = res.obj.right_rate;
